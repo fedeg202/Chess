@@ -107,6 +107,21 @@ void AChessBoard::SpawnWhitePieces()
 	WhitePieces.Add(Obj);
 
 	y = 3;
+	Location = GameField->GetRelativeLocationByXYPosition(x, y);
+	Obj = GetWorld()->SpawnActor<AWhiteQueen>(WhiteQueenClass, Location, FRotator::ZeroRotator);
+	Obj->SetGridPosition(x, y);
+	GameField->GetTileBYXYPosition(x, y)->SetTileStatus(ETileStatus::OCCUPIED);
+	GameField->GetTileBYXYPosition(x, y)->SetTileOwner(ETileOwner::WHITE);
+	GameField->GetTileBYXYPosition(x, y)->SetOnPiece(Obj);
+	WhitePieces.Add(Obj);
+
+	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
+	Obj = GetWorld()->SpawnActor<AWhiteKing>(WhiteKingClass, Location, FRotator::ZeroRotator);
+	Obj->SetGridPosition(x, GameField->Size - y - 1);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileOwner(ETileOwner::WHITE);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetOnPiece(Obj);
+	WhitePieces.Add(Obj);
 
 
 }
@@ -180,6 +195,24 @@ void AChessBoard::SpawnBlackPieces()
 	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
 	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
 	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	BlackPieces.Add(Obj);
+
+
+	y = 3;
+	Location = GameField->GetRelativeLocationByXYPosition(x, y);
+	Obj = GetWorld()->SpawnActor<ABlackKing>(BlackKingClass, Location, FRotator::ZeroRotator);
+	Obj->SetGridPosition(x, y);
+	GameField->GetTileBYXYPosition(x, y)->SetTileStatus(ETileStatus::OCCUPIED);
+	GameField->GetTileBYXYPosition(x, y)->SetTileOwner(ETileOwner::BLACK);
+	GameField->GetTileBYXYPosition(x, y)->SetOnPiece(Obj);
+	BlackPieces.Add(Obj);
+
+	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
+	Obj = GetWorld()->SpawnActor<ABlackQueen>(BlackQueenClass, Location, FRotator::ZeroRotator);
+	Obj->SetGridPosition(x, GameField->Size - y - 1);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetOnPiece(Obj);
 	BlackPieces.Add(Obj);
 
 }

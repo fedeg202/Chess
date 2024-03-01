@@ -21,11 +21,12 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	TArray<ATile*> AvaibleMoves;
 	FVector2D CurrentLocation = GetGridPosition();
 	
-	ABishop Bishop; Bishop.SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
-	ARook Rook; Rook.SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
+	ABishop* Bishop = NewObject<ABishop>(this);  Bishop->SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
+	ARook* Rook = NewObject<ARook>(this);		 Rook->SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
+			
 
-	AvaibleMoves.Append(Bishop.AvaibleMovesByColor(GameField, SameColor));
-	AvaibleMoves.Append(Rook.AvaibleMovesByColor(GameField, SameColor));
+	AvaibleMoves.Append(Bishop->AvaibleMovesByColor(GameField, SameColor));
+	AvaibleMoves.Append(Rook->AvaibleMovesByColor(GameField, SameColor));
 
 	return AvaibleMoves;
 }

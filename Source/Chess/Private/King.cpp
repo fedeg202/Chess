@@ -11,12 +11,10 @@ TArray<FVector2D> AKing::Moves()
 	const FVector2D DiagonalMove(1, 1);
 
 	Moves.Add(BaseMove);
-	Moves.Add(2 * BaseMove);
 	Moves.Add(DiagonalMove);
 	Moves.Add(DiagonalMove.GetRotated(-90));
 
 	Moves.Add(-BaseMove);
-	Moves.Add(-2 * BaseMove);
 	Moves.Add(-DiagonalMove);
 	Moves.Add(DiagonalMove.GetRotated(+90));
 

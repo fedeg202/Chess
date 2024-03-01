@@ -14,7 +14,7 @@ APiece::APiece()
 	SetRootComponent(Scene);
 	StaticMeshComponent->SetupAttachment(Scene);
 
-	this->SetGridPosition(0, 0);
+	PieceGridPosition.Set(0, 0);
 
 }
 
