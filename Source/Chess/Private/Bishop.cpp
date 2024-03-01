@@ -8,13 +8,11 @@ TArray<FVector2D> ABishop::Moves()
 	TArray<FVector2D> Moves;
 	const int32 Size = 8;
 
-	// Definisci il vettore base per i movimenti dell'alfiere
 	const FVector2D BaseMove1(1, 1);
 	const FVector2D BaseMove2(-1, 1);
 	const FVector2D BaseMove3(-1, -1);
 	const FVector2D BaseMove4(1, -1);
 
-	// Genera i movimenti applicando la trasformazione del vettore base
 	for (int32 i = 1; i < Size; ++i)
 	{
 		Moves.Add(BaseMove1 * i);
