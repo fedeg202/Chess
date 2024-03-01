@@ -2,26 +2,24 @@
 
 #pragma once
 
+
 #include "Chess_GameInstance.h"
 #include "ChessBoard.h"
 #include "Chess_PlayerInterface.h"
-#include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Chess_HumanPlayer.generated.h"
+#include "Chess_RandomPlayer.generated.h"
 
 UCLASS()
-class CHESS_API AChess_HumanPlayer : public APawn, public IChess_PlayerInterface
+class CHESS_API AChess_RandomPlayer : public APawn, public IChess_PlayerInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AChess_HumanPlayer();
-
-	UCameraComponent* Camera;
+	AChess_RandomPlayer();
 
 	UChess_GameInstance* GameInstance;
 
@@ -32,9 +30,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 	bool IsMyTurn = false;
-
+	
 	APiece* SelectedPiece;
 
 public:	
@@ -44,10 +41,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
 	virtual void OnTurn() override;
 	virtual void OnWin() override;
 	virtual void OnLose() override;
 
-	UFUNCTION()
-	void OnClick();
 };

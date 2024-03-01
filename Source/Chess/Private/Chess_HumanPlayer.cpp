@@ -2,6 +2,7 @@
 
 
 #include "Chess_HumanPlayer.h"
+#include "ChessGameMode.h"
 
 
 // Sets default values
@@ -69,16 +70,31 @@ void AChess_HumanPlayer::OnClick()
 {
 	FHitResult Hit = FHitResult(ForceInit);
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
+	ATile* CurrTile = nullptr;
 	if (Hit.bBlockingHit && IsMyTurn)
 	{
-		if (ATile* CurrTile = Cast<ATile>(Hit.GetActor()))
+		if (ATile* HitTile = Cast<ATile>(Hit.GetActor()))
 		{
-			if (CurrTile->GetTileStatus() == ETileStatus::SELECTABLE && SelectedPiece!=nullptr)
+			CurrTile = HitTile;
+		}
+		else if (APiece* CurrPiece = Cast<APiece>(Hit.GetActor()))
+		{
+			FVector2D Position = CurrPiece->GetGridPosition();
+			CurrTile = ChessBoard->GetGameField()->GetTileBYXYPosition(Position.X, Position.Y);
+		}
+
+
+		if (CurrTile != nullptr) {
+			if (CurrTile->GetTileStatus() == ETileStatus::SELECTABLE && SelectedPiece != nullptr)
 			{
-				SelectedPiece->Move(CurrTile,ChessBoard->GetGameField());
+				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
 				SelectedPiece = nullptr;
 				ChessBoard->UnShowSelectableTiles(SelectableMoves);
 				SelectableMoves.SetNum(0);
+
+				AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+				GameMode->TurnNextPlayer();
+				IsMyTurn = false;
 			}
 			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
 			{
@@ -95,36 +111,9 @@ void AChess_HumanPlayer::OnClick()
 			{
 				//SelectedPiece->Eat(CurrTile);
 			}
-
 		}
-		if (APiece* CurrPiece = Cast<APiece>(Hit.GetActor()))
-		{
-			FVector2D Position = CurrPiece->GetGridPosition();
-			ATile* CurrTile = ChessBoard->GetGameField()->GetTileBYXYPosition(Position.X, Position.Y);
-			if (CurrTile->GetTileStatus() == ETileStatus::SELECTABLE && SelectedPiece != nullptr)
-			{
-				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
-				SelectedPiece = nullptr;
-				ChessBoard->UnShowSelectableTiles(SelectableMoves);
-				SelectableMoves.SetNum(0);
-			}
-			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
-			{
-				if (SelectedPiece != nullptr)
-					ChessBoard->UnShowSelectableTiles(SelectableMoves);
-
-				SelectedPiece = CurrPiece;
-
-				SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
-				ChessBoard->ShowSelectableTiles(SelectableMoves);
-
-			}
-			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::BLACK && SelectedPiece != nullptr)
-			{
-				//SelectedPiece->Eat(CurrTile);
-			}
-			
-		}
+		
+				
 	}
 }
 
