@@ -13,7 +13,6 @@ UCLASS()
 class CHESS_API AQueen : public APiece
 {
 	GENERATED_BODY()
-	GENERATED_BODY()
 public:
 	TArray<FVector2D> Moves() override;
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor);

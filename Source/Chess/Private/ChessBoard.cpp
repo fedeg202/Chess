@@ -106,6 +106,9 @@ void AChessBoard::SpawnWhitePieces()
 	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
 	WhitePieces.Add(Obj);
 
+	y = 3;
+
+
 }
 
 void AChessBoard::SpawnBlackPieces()

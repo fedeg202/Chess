@@ -7,6 +7,8 @@
 #include "Knight.h"
 #include "Rook.h"
 #include "Bishop.h"
+#include "Queen.h"
+#include "King.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -29,6 +31,10 @@ public:
 	TSubclassOf<ABlackRook> BlackRookClass;
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ABlackBishop> BlackBishopClass;
+	UPROPERTY(EditDefaultsOnly);
+	TSubclassOf<ABlackQueen> BlackQueenClass;
+	UPROPERTY(EditDefaultsOnly);
+	TSubclassOf<ABlackKing> BlackKingClass;
 
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<AWhitePawn> WhitePawnClass;
@@ -38,6 +44,10 @@ public:
 	TSubclassOf<AWhiteRook> WhiteRookClass;
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<AWhiteBishop> WhiteBishopClass;
+	UPROPERTY(EditDefaultsOnly);
+	TSubclassOf<AWhiteQueen> WhiteQueenClass;
+	UPROPERTY(EditDefaultsOnly);
+	TSubclassOf<AWhiteKing> WhiteKingClass;
 
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<AGameField> GameFieldClass;
