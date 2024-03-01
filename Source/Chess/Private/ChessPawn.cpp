@@ -48,7 +48,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	
 
 	tmp_move = CurrentLocation + Move[startMove];
-	if (tmp_move.X < Size)
+	if (tmp_move.X < Size && tmp_move.X >= 0)
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::EMPTY)
@@ -64,7 +64,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	}
 
 	tmp_move = CurrentLocation + Move[startMove + 2];
-	if (tmp_move.X < Size && tmp_move.Y < Size)
+	if (tmp_move.X < Size && tmp_move.X > 0 && tmp_move.Y < Size && tmp_move.Y > 0)
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::OCCUPIED && tile->GetTileOwner() == OpponentColor)
@@ -72,7 +72,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	}
 
 	tmp_move = CurrentLocation + Move[startMove + 3];
-	if (tmp_move.X < Size && tmp_move.Y < Size)
+	if (tmp_move.X < Size && tmp_move.X > 0 && tmp_move.Y < Size && tmp_move.Y)
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::OCCUPIED && tile->GetTileOwner() == OpponentColor)

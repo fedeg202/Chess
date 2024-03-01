@@ -2,6 +2,7 @@
 
 
 #include "Piece.h"
+#include "ChessBoard.h"
 
 APiece::APiece()
 {
@@ -31,6 +32,33 @@ FVector2D APiece::GetGridPosition()
 TArray<FVector2D> APiece::Moves()
 {
 	return TArray<FVector2D>();
+}
+
+void APiece::Eat(ATile* EatTile, AChessBoard* ChessBoard)
+{
+	ATile* CurrTile = ChessBoard->GetGameField()->GetTileBYXYPosition(PieceGridPosition.X, PieceGridPosition.Y);
+
+	FVector EatenLocation;
+	if (CurrTile->GetTileOwner() == ETileOwner::BLACK)
+		EatenLocation = AGameField::GetRelativeLocationByXYPosition(4, -4);
+	else EatenLocation = AGameField::GetRelativeLocationByXYPosition(4, 12);
+
+	APiece* EatenPiece = EatTile->GetOnPiece();
+	EatenPiece->SetActorLocation(EatenLocation);
+
+	if (CurrTile->GetTileOwner() == ETileOwner::BLACK) 
+	{
+		ChessBoard->GetWhitePieces().Remove(EatenPiece);
+		ChessBoard->AddWhiteEatenPiece(EatenPiece);
+	}
+	else 
+	{ 
+		ChessBoard->GetBlackPieces().Remove(EatenPiece);
+		ChessBoard->AddBlackEatenPiece(EatenPiece);
+	}
+	
+
+	this->Move(EatTile, ChessBoard->GetGameField());
 }
 
 TArray<ATile*> APiece::AvaibleMoves(AGameField* GameField)

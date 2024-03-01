@@ -59,21 +59,21 @@ void AChess_RandomPlayer::OnTurn()
 
 			if (SelectedPiece != nullptr)
 				SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
-			else SelectableMoves.SetNum(0);
+			else SelectableMoves.Empty();
 
-		} while (SelectableMoves.Num() <= 0);
+		} while (SelectableMoves.IsEmpty());
 
 		int32 ranTile = FMath::Rand() % SelectableMoves.Num();
 
 		ATile* SelectedTile = SelectableMoves[ranTile];
 
-		if (SelectedTile->GetTileStatus() == ETileStatus::OCCUPIED){}
-			//SelectedPiece->Eat(SelectedTile, ChessBoard->GetGameField());
+		if (SelectedTile->GetTileStatus() == ETileStatus::OCCUPIED)
+			SelectedPiece->Eat(SelectedTile, ChessBoard);
 
 		else SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
 
 		SelectedPiece = nullptr;
-		SelectableMoves.SetNum(0);
+		SelectableMoves.Empty();
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 		GameMode->TurnNextPlayer();

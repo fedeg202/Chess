@@ -53,7 +53,10 @@ public:
 	TSubclassOf<AGameField> GameFieldClass;
 
 	TArray<APiece*>& GetWhitePieces();
+	TArray<APiece*>& GetEatenWhitePieces();
+
 	TArray<APiece*>& GetBlackPieces();
+	TArray<APiece*>& GetEatenBlackPieces();
 
 	AGameField* GetGameField();
 
@@ -64,6 +67,9 @@ public:
 	void ShowSelectableTiles(TArray<ATile*>& SelectableTiles);
 	void UnShowSelectableTiles(TArray<ATile*>& SelectableTiles);
 
+	void AddWhiteEatenPiece(APiece* EatenPiece);
+	void AddBlackEatenPiece(APiece* EatenPiece);
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -72,7 +78,10 @@ protected:
 
 
 	TArray<APiece*> WhitePieces;
+	TArray<APiece*> EatenWhitePieces;
+
 	TArray<APiece*> BlackPieces;
+	TArray<APiece*> EatenBlackPieces;
 
 	AGameField* GameField;
 

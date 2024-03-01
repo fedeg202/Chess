@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameField.h"
+class AChessBoard;
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -22,6 +23,8 @@ public:
 	FVector2D GetGridPosition();
 
 	virtual TArray<FVector2D> Moves();
+
+	void Eat(ATile* EatTile, AChessBoard* ChessBoard);
 
 	virtual TArray<ATile*> AvaibleMoves(AGameField* GameField);
 

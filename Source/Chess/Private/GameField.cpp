@@ -58,7 +58,9 @@ FVector AGameField::GetRelativeLocationByXYPosition(const int32 inX, const int32
 
 ATile* AGameField::GetTileBYXYPosition(const int32 x, const int32 y)
 {
-	return TileMatrix[x][y];
+	if (x >= 0 && x < Size && y >= 0 && y < Size)
+		return TileMatrix[x][y];
+	else return nullptr;
 }
 
 

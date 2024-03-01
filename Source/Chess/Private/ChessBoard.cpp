@@ -10,7 +10,10 @@ AChessBoard::AChessBoard()
 	PrimaryActorTick.bCanEverTick = false;
 
 	WhitePieces.SetNum(16);
+	EatenWhitePieces.SetNum(0);
+
 	BlackPieces.SetNum(16);
+	EatenBlackPieces.SetNum(0);
 
 }
 
@@ -19,9 +22,19 @@ TArray<APiece*>& AChessBoard::GetWhitePieces()
 	return WhitePieces;
 }
 
+TArray<APiece*>& AChessBoard::GetEatenWhitePieces()
+{
+	return EatenWhitePieces;
+}
+
 TArray<APiece*>& AChessBoard::GetBlackPieces()
 {
 	return BlackPieces;
+}
+
+TArray<APiece*>& AChessBoard::GetEatenBlackPieces()
+{
+	return EatenBlackPieces;
 }
 
 AGameField* AChessBoard::GetGameField()
@@ -231,6 +244,7 @@ void AChessBoard::ShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 		}
 		else if (status == ETileStatus::OCCUPIED) 
 		{
+			Tile->SetTileStatus(ETileStatus::EATABLE);
 			Tile->SetTileMaterial(2);
 		}
 
@@ -248,8 +262,34 @@ void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 		{
 			Tile->SetTileStatus(ETileStatus::EMPTY);
 		}
+		else if (status == ETileStatus::EATABLE)
+		{
+			Tile->SetTileStatus(ETileStatus::OCCUPIED);
+		}
 		Tile->SetTileMaterial(0);
 
+	}
+}
+
+void AChessBoard::AddWhiteEatenPiece(APiece* EatenPiece)
+{
+	if (EatenWhitePieces.IsEmpty())
+		EatenWhitePieces.Add(EatenPiece);
+	else 
+	{
+		EatenWhitePieces.Top()->SetActorHiddenInGame(true);
+		EatenWhitePieces.Add(EatenPiece);
+	}
+}
+
+void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
+{
+	if (EatenBlackPieces.IsEmpty())
+		EatenBlackPieces.Add(EatenPiece);
+	else
+	{
+		EatenBlackPieces.Top()->SetActorHiddenInGame(true);
+		EatenBlackPieces.Add(EatenPiece);
 	}
 }
 

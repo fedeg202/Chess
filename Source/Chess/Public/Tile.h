@@ -13,9 +13,10 @@ class APiece;
 UENUM()
 enum class ETileStatus : uint8
 {
-	EMPTY	UMETA(DisplayName = "Empty"),
+	EMPTY		UMETA(DisplayName = "Empty"),
 	OCCUPIED	UMETA(DisplayName = "Occupied"),
-	SELECTABLE	UMETA(DisplayName = "Selectable")
+	SELECTABLE	UMETA(DisplayName = "Selectable"),
+	EATABLE		UMETA(DisplayName = "EATABLE")
 };
 
 UENUM()
