@@ -54,7 +54,7 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 				tmp_Piece = ChessBoard->VirtualMove(Tiles);
 				if (!ChessBoard->CheckOnCheck(SameColor))
 					AvaibleMoves.Add(tile);
-				ChessBoard->VirtualUnMove(Tiles,tmp);
+				ChessBoard->VirtualUnMove(Tiles,tmp_Piece);
 			}
 				
 

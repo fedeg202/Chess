@@ -9,10 +9,10 @@ AChessBoard::AChessBoard()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	WhitePieces.SetNum(16);
+	WhitePieces.SetNum(0);
 	EatenWhitePieces.SetNum(0);
 
-	BlackPieces.SetNum(16);
+	BlackPieces.SetNum(0);
 	EatenBlackPieces.SetNum(0);
 
 }
@@ -309,7 +309,7 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 
 	for (int32 i = 0; i < AllBlackSelectableMoves.Num(); i++)
 	{
-		if (AllBlackSelectableMoves[i].Tile2->GetOnPiece()->Name == EPieceName::KING)
+		if (AllBlackSelectableMoves[i].Tile2->GetOnPiece() != nullptr && AllBlackSelectableMoves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
 			return true;
 	}
 
@@ -354,7 +354,7 @@ APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 {
 	ETileStatus Status;
-	ETileOwner Owner;
+	ETileOwner TileOwner;
 
 	Tiles.Tile1->SetTileStatus(Tiles.Tile2->GetTileStatus());
 	Tiles.Tile1->SetTileOwner(Tiles.Tile2->GetTileOwner());
@@ -363,16 +363,16 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 	if (OldOnPiece != nullptr)
 	{
 		Status = ETileStatus::OCCUPIED;
-		if (OldOnPiece->Color == EPieceColor::BLACK) Owner = ETileOwner::BLACK;
-		else Owner = ETileOwner::WHITE;
+		if (OldOnPiece->GetColor() == EPieceColor::BLACK) TileOwner = ETileOwner::BLACK;
+		else TileOwner = ETileOwner::WHITE;
 	}
 	else {
 		Status = ETileStatus::EMPTY;
-		Owner = ETileOwner::NONE;
+		TileOwner = ETileOwner::NONE;
 	}
 
 	Tiles.Tile2->SetTileStatus(Status);
-	Tiles.Tile2->SetTileOwner(Owner);
+	Tiles.Tile2->SetTileOwner(TileOwner);
 	Tiles.Tile2->SetOnPiece(OldOnPiece);
 }
 
@@ -380,7 +380,7 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 {
 	TArray<APiece*> ColorPieces;
 	TArray<FCoupleTile> AllColorSelectableMoves;
-	TArray<ATile*> APieceSelctableMoves;
+	TArray<ATile*> APieceSelectableMoves;
 	ATile* Tile1_tmp;
 	FCoupleTile CoupleTile_tmp;
 
@@ -393,12 +393,11 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 	{
 		Tile1_tmp = GetGameField()->GetTileBYXYPosition(ColorPieces[i]->GetGridPosition().X, ColorPieces[i]->GetGridPosition().Y);
 		CoupleTile_tmp.Tile1 = Tile1_tmp;
-		APieceSelctableMoves = ColorPieces[i]->AvaibleMoves(this);
-		for (int32 j = 0; j < APieceSelctableMoves.Num(); j++) 
+		APieceSelectableMoves = ColorPieces[i]->AvaibleMoves(this);
+		for (int32 j = 0; j < APieceSelectableMoves.Num(); j++) 
 		{
-			CoupleTile_tmp.Tile2 = APieceSelctableMoves[i];
-			if (!AllColorSelectableMoves.Contains(CoupleTile_tmp))
-				AllColorSelectableMoves.Add(CoupleTile_tmp);
+			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
+			AllColorSelectableMoves.Add(CoupleTile_tmp);
 		}
 	}
 

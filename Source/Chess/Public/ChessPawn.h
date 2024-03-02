@@ -15,9 +15,10 @@ class CHESS_API AChessPawn : public APiece
 {
 	GENERATED_BODY()
 public:
-	const EPieceName Name = EPieceName::PAWN;
 	TArray<FVector2D> Moves() override;
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner OpponentColor);
+protected:
+	EPieceName Name = EPieceName::PAWN;
 };
 
 UCLASS()
@@ -26,7 +27,9 @@ class CHESS_API AWhitePawn : public AChessPawn
 	GENERATED_BODY()
 public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-	const EPieceColor Color = EPieceColor::WHITE;
+
+protected:
+	EPieceColor Color = EPieceColor::WHITE;
 };
 
 UCLASS()
@@ -35,5 +38,7 @@ class CHESS_API ABlackPawn : public AChessPawn
 	GENERATED_BODY()
 public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-	const EPieceColor Color = EPieceColor::BLACK;
+
+protected:
+	EPieceColor Color = EPieceColor::BLACK;
 };

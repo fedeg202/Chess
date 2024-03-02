@@ -21,6 +21,11 @@ public:
 	ATile* Tile2;
 
 	FCoupleTile() = default;
+
+	bool operator==(const FCoupleTile& Other) const
+	{
+		return (Tile1 == Other.Tile1 && Tile2 == Other.Tile2);
+	}
 };
 
 UENUM()
@@ -89,6 +94,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 		APiece* OnPiece;
 };
+
 
 UCLASS()
 class CHESS_API ATileWhite : public ATile

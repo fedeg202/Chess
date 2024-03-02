@@ -105,7 +105,7 @@ void AChess_HumanPlayer::OnClick()
 
 				SelectedPiece = CurrTile->GetOnPiece();
 
-				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
+				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
 				ChessBoard->ShowSelectableTiles(Piece_SelectableMoves);
 
 			}

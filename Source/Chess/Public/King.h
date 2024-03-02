@@ -26,7 +26,9 @@ class CHESS_API AWhiteKing : public AKing
 	GENERATED_BODY()
 public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-	const EPieceColor Color = EPieceColor::WHITE;
+
+protected:
+	EPieceColor Color = EPieceColor::WHITE;
 };
 
 UCLASS()
@@ -35,6 +37,8 @@ class CHESS_API ABlackKing : public AKing
 	GENERATED_BODY()
 public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-	const EPieceColor Color = EPieceColor::BLACK;
+
+protected:
+	EPieceColor Color = EPieceColor::BLACK;
 };
 
