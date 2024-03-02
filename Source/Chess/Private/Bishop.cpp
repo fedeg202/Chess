@@ -2,6 +2,7 @@
 
 
 #include "Bishop.h"
+#include "ChessBoard.h"
 
 TArray<FVector2D> ABishop::Moves()
 {
@@ -131,12 +132,20 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
-TArray<ATile*> AWhiteBishop::AvaibleMoves(AGameField* GameField)
+TArray<ATile*> AWhiteBishop::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	return AvaibleMovesByColor(GameField, ETileOwner::WHITE);
+	//Utile in combo con virtual move
+	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
+		return TArray<ATile*>();
+	else
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
-TArray<ATile*> ABlackBishop::AvaibleMoves(AGameField* GameField)
+TArray<ATile*> ABlackBishop::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	return AvaibleMovesByColor(GameField, ETileOwner::BLACK);
+	//Utile in combo con virtual move
+	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
+		return TArray<ATile*>();
+	else
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

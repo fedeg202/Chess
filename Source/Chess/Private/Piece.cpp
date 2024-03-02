@@ -61,7 +61,7 @@ void APiece::Eat(ATile* EatTile, AChessBoard* ChessBoard)
 	this->Move(EatTile, ChessBoard->GetGameField());
 }
 
-TArray<ATile*> APiece::AvaibleMoves(AGameField* GameField)
+TArray<ATile*> APiece::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	return TArray<ATile*>();
 }
@@ -92,6 +92,16 @@ void APiece::Move(ATile* Tile,AGameField* GameField)
 APiece* APiece::GetPiece()
 {
 	return this;
+}
+
+EPieceColor APiece::GetColor()
+{
+	return Color;
+}
+
+EPieceName APiece::GetName()
+{
+	return Name;
 }
 
 // Called when the game starts or when spawned

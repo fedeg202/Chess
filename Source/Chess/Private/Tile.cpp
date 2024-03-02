@@ -22,7 +22,7 @@ ATile::ATile()
 
 	MaterialArray.SetNum(3);
 
-	OnPiece = CreateDefaultSubobject<APiece>(TEXT("Piece"));
+	OnPiece = nullptr);
 
 
 }

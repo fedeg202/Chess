@@ -39,12 +39,14 @@ void AChessGameMode::BeginPlay()
 	HumanPlayer->SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
 
 	HumanPlayer->ChessBoard = ChessBoard;
+	HumanPlayer->Color = EColor::WHITE;
 
 	// Human player = 0
 	Players.Add(HumanPlayer);
 	// Random Player
 	auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
 	AI->ChessBoard = ChessBoard;
+	AI->Color = EColor::BLACK;
 	// MiniMax Player
 	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
 
@@ -73,3 +75,10 @@ void AChessGameMode::StartGame()
 	Player = true;
 	Players[0]->OnTurn();
 }
+
+/*void AChessGameMode::CheckOnCheck(APawn* Player)
+{
+	if ()
+	ChessBoard->CheckOnCheck()
+}
+*/

@@ -293,6 +293,121 @@ void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 	}
 }
 
+bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
+{
+	TArray<FCoupleTile> AllOpponentSelectableMoves;
+
+	if (SameColor == ETileOwner::BLACK) 
+	{
+		UpdateAllMoveBYColor(ETileOwner::WHITE);
+		AllOpponentSelectableMoves = AllWhiteSelectableMoves;
+	}
+	else {
+		UpdateAllMoveBYColor(ETileOwner::BLACK);
+		AllOpponentSelectableMoves = AllBlackSelectableMoves;
+	}
+
+	for (int32 i = 0; i < AllBlackSelectableMoves.Num(); i++)
+	{
+		if (AllBlackSelectableMoves[i].Tile2->GetOnPiece()->Name == EPieceName::KING)
+			return true;
+	}
+
+	return false;
+}
+
+bool AChessBoard::CheckOnCheckmate(ETileOwner SameColor)
+{
+	if (CheckOnCheck(SameColor))
+	{
+		if (CheckOnStalemate(SameColor))
+			return true;
+	}
+	return false;
+}
+
+bool AChessBoard::CheckOnStalemate(ETileOwner SameColor)
+{
+	UpdateAllMoveBYColor(SameColor);
+	if (SameColor == ETileOwner::BLACK)
+		if (AllBlackSelectableMoves.Num() == 0) return true;
+		else return false;
+	else
+		if (AllWhiteSelectableMoves.Num() == 0) return true;
+		else return false;
+}
+
+APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
+{
+	APiece* OldOnPiece = Tiles.Tile2->GetOnPiece();
+	Tiles.Tile2->SetTileStatus(Tiles.Tile1->GetTileStatus());
+	Tiles.Tile2->SetTileOwner(Tiles.Tile1->GetTileOwner());
+	Tiles.Tile2->SetOnPiece(Tiles.Tile1->GetOnPiece());
+
+	Tiles.Tile1->SetTileStatus(ETileStatus::EMPTY);
+	Tiles.Tile1->SetTileOwner(ETileOwner::NONE);
+	Tiles.Tile1->SetOnPiece(nullptr);
+
+	return OldOnPiece;
+}
+
+void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
+{
+	ETileStatus Status;
+	ETileOwner Owner;
+
+	Tiles.Tile1->SetTileStatus(Tiles.Tile2->GetTileStatus());
+	Tiles.Tile1->SetTileOwner(Tiles.Tile2->GetTileOwner());
+	Tiles.Tile1->SetOnPiece(Tiles.Tile2->GetOnPiece());
+
+	if (OldOnPiece != nullptr)
+	{
+		Status = ETileStatus::OCCUPIED;
+		if (OldOnPiece->Color == EPieceColor::BLACK) Owner = ETileOwner::BLACK;
+		else Owner = ETileOwner::WHITE;
+	}
+	else {
+		Status = ETileStatus::EMPTY;
+		Owner = ETileOwner::NONE;
+	}
+
+	Tiles.Tile2->SetTileStatus(Status);
+	Tiles.Tile2->SetTileOwner(Owner);
+	Tiles.Tile2->SetOnPiece(OldOnPiece);
+}
+
+void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
+{
+	TArray<APiece*> ColorPieces;
+	TArray<FCoupleTile> AllColorSelectableMoves;
+	TArray<ATile*> APieceSelctableMoves;
+	ATile* Tile1_tmp;
+	FCoupleTile CoupleTile_tmp;
+
+	if (Color == ETileOwner::BLACK)
+		ColorPieces = GetBlackPieces();
+	else
+		ColorPieces = GetWhitePieces();
+
+	for (int32 i = 0; i < ColorPieces.Num(); i++) 
+	{
+		Tile1_tmp = GetGameField()->GetTileBYXYPosition(ColorPieces[i]->GetGridPosition().X, ColorPieces[i]->GetGridPosition().Y);
+		CoupleTile_tmp.Tile1 = Tile1_tmp;
+		APieceSelctableMoves = ColorPieces[i]->AvaibleMoves(this);
+		for (int32 j = 0; j < APieceSelctableMoves.Num(); j++) 
+		{
+			CoupleTile_tmp.Tile2 = APieceSelctableMoves[i];
+			if (!AllColorSelectableMoves.Contains(CoupleTile_tmp))
+				AllColorSelectableMoves.Add(CoupleTile_tmp);
+		}
+	}
+
+	if (Color == ETileOwner::BLACK)
+		AllBlackSelectableMoves = AllColorSelectableMoves;
+	else
+		AllWhiteSelectableMoves = AllColorSelectableMoves;
+}
+
 // Called when the game starts or when spawned
 void AChessBoard::BeginPlay()
 {

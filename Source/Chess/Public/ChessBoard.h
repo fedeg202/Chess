@@ -70,6 +70,15 @@ public:
 	void AddWhiteEatenPiece(APiece* EatenPiece);
 	void AddBlackEatenPiece(APiece* EatenPiece);
 
+	bool CheckOnCheck(ETileOwner SameColor);
+	bool CheckOnCheckmate(ETileOwner SameColor);
+	bool CheckOnStalemate(ETileOwner SameColor);
+
+	APiece* VirtualMove(FCoupleTile Tiles);
+	void VirtualUnMove(FCoupleTile Tiles, APiece* OlOnPiece);
+
+	void UpdateAllMoveBYColor(ETileOwner Color);
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -79,9 +88,11 @@ protected:
 
 	TArray<APiece*> WhitePieces;
 	TArray<APiece*> EatenWhitePieces;
+	TArray<FCoupleTile> AllWhiteSelectableMoves;
 
 	TArray<APiece*> BlackPieces;
 	TArray<APiece*> EatenBlackPieces;
+	TArray<FCoupleTile> AllBlackSelectableMoves;
 
 	AGameField* GameField;
 

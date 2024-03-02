@@ -17,7 +17,8 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 	Color = EColor::NONE;
 
 	SelectedPiece = nullptr;
-	SelectableMoves.SetNum(0);
+	Piece_SelectableMoves.SetNum(0);
+	All_SelectableMoves.SetNum(16);
 }
 
 // Called when the game starts or when spawned
@@ -58,14 +59,14 @@ void AChess_RandomPlayer::OnTurn()
 			SelectedPiece = ChessBoard->GetBlackPieces()[ranPiece];
 
 			if (SelectedPiece != nullptr)
-				SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
-			else SelectableMoves.Empty();
+				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
+			else Piece_SelectableMoves.Empty();
 
-		} while (SelectableMoves.IsEmpty());
+		} while (Piece_SelectableMoves.IsEmpty());
 
-		int32 ranTile = FMath::Rand() % SelectableMoves.Num();
+		int32 ranTile = FMath::Rand() % Piece_SelectableMoves.Num();
 
-		ATile* SelectedTile = SelectableMoves[ranTile];
+		ATile* SelectedTile = Piece_SelectableMoves[ranTile];
 
 		if (SelectedTile->GetTileStatus() == ETileStatus::OCCUPIED)
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
@@ -73,7 +74,7 @@ void AChess_RandomPlayer::OnTurn()
 		else SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
 
 		SelectedPiece = nullptr;
-		SelectableMoves.Empty();
+		Piece_SelectableMoves.Empty();
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 		GameMode->TurnNextPlayer();

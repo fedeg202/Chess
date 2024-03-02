@@ -24,6 +24,8 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 	Color = EColor::NONE;
 
 	SelectedPiece = nullptr;
+	Piece_SelectableMoves.SetNum(0);
+	All_SelectableMoves.SetNum(16);
 
 }
 
@@ -89,8 +91,8 @@ void AChess_HumanPlayer::OnClick()
 			{
 				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
 				SelectedPiece = nullptr;
-				ChessBoard->UnShowSelectableTiles(SelectableMoves);
-				SelectableMoves.Empty();
+				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+				Piece_SelectableMoves.Empty();
 
 				AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 				GameMode->TurnNextPlayer();
@@ -99,19 +101,19 @@ void AChess_HumanPlayer::OnClick()
 			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
 			{
 				if (SelectedPiece != nullptr)
-					ChessBoard->UnShowSelectableTiles(SelectableMoves);
+					ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
 				SelectedPiece = CurrTile->GetOnPiece();
 
-				SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
-				ChessBoard->ShowSelectableTiles(SelectableMoves);
+				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard->GetGameField());
+				ChessBoard->ShowSelectableTiles(Piece_SelectableMoves);
 
 			}
 			else if (CurrTile->GetTileStatus() == ETileStatus::EATABLE && SelectedPiece != nullptr)
 			{
 				SelectedPiece->Eat(CurrTile,ChessBoard);
-				ChessBoard->UnShowSelectableTiles(SelectableMoves);
-				SelectableMoves.Empty();
+				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+				Piece_SelectableMoves.Empty();
 				SelectedPiece = nullptr;
 
 				AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());

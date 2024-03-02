@@ -40,5 +40,9 @@ public:
 	void TurnNextPlayer();
 
 	void StartGame();
+
+	//void CheckOnCheck(APawn* Player);
+	//void CheckOnCkeckmate(APawn* Player);
+	//void CheckOnStalemate(APawn* Player);
 	//void MovePiece();
 };

@@ -27,7 +27,14 @@ public:
 
 	AChessBoard* ChessBoard;
 
-	TArray<ATile*> SelectableMoves;
+	TArray<ATile*> Piece_SelectableMoves;
+
+	TArray<ATile*> All_SelectableMoves;
+
+
+	bool OnCheckMate;
+
+	bool OnStalemate;
 
 protected:
 	// Called when the game starts or when spawned
@@ -47,6 +54,8 @@ public:
 	virtual void OnTurn() override;
 	virtual void OnWin() override;
 	virtual void OnLose() override;
+
+
 
 	UFUNCTION()
 	void OnClick();

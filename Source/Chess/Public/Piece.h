@@ -9,6 +9,24 @@ class AChessBoard;
 #include "GameFramework/Actor.h"
 #include "Piece.generated.h"
 
+UENUM()
+enum class EPieceName : uint8
+{
+	PAWN		UMETA(DisplayName = "Pawn"),
+	ROOK		UMETA(DisplayName = "Rook"),
+	KNIGHT		UMETA(DisplayName = "Knight"),
+	BISHOP		UMETA(DisplayName = "Bishop"),
+	QUEEN		UMETA(DisplayName = "Queen"),
+	KING		UMETA(DisplayName = "King"),
+};
+
+UENUM()
+enum class EPieceColor : uint8
+{
+	WHITE		UMETA(DisplayName = "White"),
+	BLACK		UMETA(DisplayName = "Black"),
+};
+
 UCLASS()
 class CHESS_API APiece : public AActor
 {
@@ -26,11 +44,14 @@ public:
 
 	void Eat(ATile* EatTile, AChessBoard* ChessBoard);
 
-	virtual TArray<ATile*> AvaibleMoves(AGameField* GameField);
+	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard);
 
 	void Move(ATile* Tile, AGameField* GameField);
 
 	APiece* GetPiece();
+	
+	EPieceColor GetColor();
+	EPieceName GetName();
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,4 +65,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 	FVector2D PieceGridPosition;
+
+	EPieceColor Color;
+	EPieceName Name;
 };

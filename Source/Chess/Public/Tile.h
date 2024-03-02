@@ -10,6 +10,19 @@
 
 class APiece;
 
+
+USTRUCT()
+struct FCoupleTile 
+{
+	GENERATED_BODY()
+
+public:
+	ATile* Tile1;
+	ATile* Tile2;
+
+	FCoupleTile() = default;
+};
+
 UENUM()
 enum class ETileStatus : uint8
 {

@@ -2,6 +2,7 @@
 
 
 #include "Knight.h"
+#include "ChessBoard.h"
 
 
 TArray<FVector2D> AKnight::Moves() 
@@ -27,8 +28,7 @@ TArray<FVector2D> AKnight::Moves()
 	return Moves;
 }
 
-
-TArray<ATile*> AWhiteKnight::AvaibleMoves(AGameField* GameField)
+TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	TArray<ATile*> AvaibleMoves;
 	FVector2D CurrentLocation = GetGridPosition();
@@ -40,7 +40,7 @@ TArray<ATile*> AWhiteKnight::AvaibleMoves(AGameField* GameField)
 		if (tmp_move.X < GameField->Size && tmp_move.Y < GameField->Size && tmp_move.X >= 0 && tmp_move.Y >= 0)
 		{
 			ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
-			if (tile->GetTileOwner() != ETileOwner::WHITE) {
+			if (tile->GetTileOwner() != SameColor) {
 				AvaibleMoves.Add(tile);
 			}
 		}
@@ -49,24 +49,21 @@ TArray<ATile*> AWhiteKnight::AvaibleMoves(AGameField* GameField)
 	return AvaibleMoves;
 }
 
-TArray<ATile*> ABlackKnight::AvaibleMoves(AGameField* GameField)
-{
-	TArray<ATile*> AvaibleMoves;
-	FVector2D CurrentLocation = this->GetGridPosition();
-	TArray<FVector2D> Move = this->Moves();
-	FVector2D tmp_move;
-	for (int32 i = 0; i < Move.Num(); i++)
-	{
-		tmp_move = CurrentLocation + Move[i];
-		if (tmp_move.X < GameField->Size && tmp_move.Y < GameField->Size && tmp_move.X >= 0 && tmp_move.Y >= 0)
-		{
-			ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
-			if (tile->GetTileOwner() != ETileOwner::BLACK) 
-			{
-				AvaibleMoves.Add(tile);
-			}
-		}
-	}
 
-	return AvaibleMoves;
+TArray<ATile*> AWhiteKnight::AvaibleMoves(AChessBoard* ChessBoard)
+{
+	//Utile in combo con virtual move
+	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
+		return TArray<ATile*>();
+	else
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+}
+
+TArray<ATile*> ABlackKnight::AvaibleMoves(AChessBoard* ChessBoard)
+{
+	//Utile in combo con virtual move
+	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
+		return TArray<ATile*>();
+	else
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

@@ -25,7 +25,15 @@ public:
 
 	AChessBoard* ChessBoard;
 
-	TArray<ATile*> SelectableMoves;
+	TArray<ATile*> Piece_SelectableMoves;
+
+	TArray<ATile*> All_SelectableMoves;
+
+
+	bool OnCheckMate;
+
+	bool OnStalemate;
+
 
 protected:
 	// Called when the game starts or when spawned
