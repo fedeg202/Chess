@@ -50,6 +50,9 @@ void AChess_RandomPlayer::OnTurn()
 
 	FTimerHandle TimerHandle;
 	int32 randTime;
+	FCoupleTile Tiles;
+	APiece* tmp_Piece;
+
 	do { randTime = FMath::Rand() % 10; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
@@ -61,6 +64,20 @@ void AChess_RandomPlayer::OnTurn()
 			if (SelectedPiece != nullptr)
 				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
 			else Piece_SelectableMoves.Empty();
+
+			if (B_OnCheck && SelectedPiece != nullptr)
+			{
+				Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
+				for (int32 i = 0; i < Piece_SelectableMoves.Num(); i++)
+				{
+					Tiles.Tile2 = Piece_SelectableMoves[i];
+					tmp_Piece = ChessBoard->VirtualMove(Tiles);
+					ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+					if (ChessBoard->CheckOnCheck(ETileOwner::BLACK))
+						Piece_SelectableMoves.RemoveAt(i);
+					ChessBoard->VirtualUnMove(Tiles, tmp_Piece);
+				}
+			}
 
 		} while (Piece_SelectableMoves.IsEmpty());
 

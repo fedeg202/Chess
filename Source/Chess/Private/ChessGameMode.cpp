@@ -62,11 +62,25 @@ void AChessGameMode::TurnNextPlayer()
 	
 	if (Player) 
 	{
-		Players[0]->OnTurn();
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+		CheckOnCheck(Players[0]);
+		CheckOnStalemate(Players[0]);
+		CheckOnCkeckmate(Players[0]);
+		if (Players[0]->B_OnCheckmate) Players[0]->OnLose();
+		else if (Players[0]->B_OnStalemate) Players[0]->OnStalemate();
+		else if (Players[0]->B_OnCheck) Players[0]->OnCheck();
+		else Players[0]->OnTurn();
 	}
 	else
 	{
-		Players[1]->OnTurn();
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+		CheckOnCheck(Players[1]);
+		CheckOnStalemate(Players[1]);
+		CheckOnCkeckmate(Players[1]);
+		if (Players[1]->B_OnCheckmate) Players[0]->OnWin();
+		else if (Players[1]->B_OnStalemate) Players[1]->OnStalemate();
+		else if (Players[1]->B_OnCheck) Players[1]->OnCheck();
+		else Players[1]->OnTurn();
 	}
 }
 
@@ -76,9 +90,36 @@ void AChessGameMode::StartGame()
 	Players[0]->OnTurn();
 }
 
-/*void AChessGameMode::CheckOnCheck(APawn* Player)
+void AChessGameMode::CheckOnCheck(IChess_PlayerInterface* P)
 {
-	if ()
-	ChessBoard->CheckOnCheck()
+	if (P->Color == EColor::WHITE)
+	{
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::WHITE);
+	}
+	else
+	{
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::BLACK);
+	}
 }
-*/
+
+void AChessGameMode::CheckOnCkeckmate(IChess_PlayerInterface* P)
+{
+	P->B_OnCheckmate = P->B_OnCheck && P->B_OnStalemate;
+}
+
+void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
+{
+	if (P->Color == EColor::WHITE)
+	{
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+		P->B_OnStalemate = ChessBoard->CheckOnCheckmate(ETileOwner::WHITE);
+	}
+
+	else
+	{
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+		P->B_OnStalemate = ChessBoard->CheckOnCheckmate(ETileOwner::BLACK);
+	}
+}

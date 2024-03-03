@@ -34,10 +34,18 @@ class CHESS_API IChess_PlayerInterface
 public:
 	int32 PlayerNumber;
 	EColor Color;
+	bool B_OnCheck;
+	bool B_OnCheckmate;
+	bool B_OnStalemate;
+	
 
 	virtual void OnTurn() {};
 	virtual void OnWin() {};
 	virtual void OnLose() {};
+	virtual void OnCheck() {};
+	virtual void OnCheckmate() {};
+	virtual void OnStalemate() {};
+
 
 
 };
