@@ -299,17 +299,16 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 
 	if (SameColor == ETileOwner::BLACK) 
 	{
-		UpdateAllMoveBYColor(ETileOwner::WHITE);
 		AllOpponentSelectableMoves = AllWhiteSelectableMoves;
 	}
 	else {
-		UpdateAllMoveBYColor(ETileOwner::BLACK);
 		AllOpponentSelectableMoves = AllBlackSelectableMoves;
 	}
 
 	for (int32 i = 0; i < AllBlackSelectableMoves.Num(); i++)
 	{
-		if (AllBlackSelectableMoves[i].Tile2->GetOnPiece() != nullptr && AllBlackSelectableMoves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
+		if (AllOpponentSelectableMoves[i].Tile2->GetOnPiece() != nullptr 
+			&& AllOpponentSelectableMoves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
 			return true;
 	}
 

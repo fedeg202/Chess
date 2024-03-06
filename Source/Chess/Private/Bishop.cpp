@@ -4,6 +4,11 @@
 #include "Bishop.h"
 #include "ChessBoard.h"
 
+ABishop::ABishop() : APiece()
+{
+	Name = EPieceName::BISHOP;
+}
+
 TArray<FVector2D> ABishop::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -132,6 +137,11 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
+AWhiteBishop::AWhiteBishop() : ABishop()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhiteBishop::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -139,6 +149,11 @@ TArray<ATile*> AWhiteBishop::AvaibleMoves(AChessBoard* ChessBoard)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+}
+
+ABlackBishop::ABlackBishop() : ABishop()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackBishop::AvaibleMoves(AChessBoard* ChessBoard)

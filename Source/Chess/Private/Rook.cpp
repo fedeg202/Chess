@@ -4,6 +4,11 @@
 #include "Rook.h"
 #include "ChessBoard.h"
 
+ARook::ARook() : APiece()
+{
+	Name = EPieceName::ROOK;
+}
+
 TArray<FVector2D> ARook::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -133,6 +138,11 @@ TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner Same
 	return AvaibleMoves;
 }
 
+AWhiteRook::AWhiteRook() : ARook()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhiteRook::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -141,6 +151,11 @@ TArray<ATile*> AWhiteRook::AvaibleMoves(AChessBoard* ChessBoard)
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 
+}
+
+ABlackRook::ABlackRook() : ARook()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackRook::AvaibleMoves(AChessBoard* ChessBoard)

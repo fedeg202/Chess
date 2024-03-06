@@ -4,6 +4,11 @@
 #include "King.h"
 #include "ChessBoard.h"
 
+AKing::AKing() : APiece()
+{
+	Name = EPieceName::KING;
+}
+
 TArray<FVector2D> AKing::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -12,10 +17,12 @@ TArray<FVector2D> AKing::Moves()
 	const FVector2D DiagonalMove(1, 1);
 
 	Moves.Add(BaseMove);
+	Moves.Add(BaseMove.GetRotated(-90));
 	Moves.Add(DiagonalMove);
 	Moves.Add(DiagonalMove.GetRotated(-90));
 
 	Moves.Add(-BaseMove);
+	Moves.Add(BaseMove.GetRotated(+90));
 	Moves.Add(-DiagonalMove);
 	Moves.Add(DiagonalMove.GetRotated(+90));
 
@@ -32,8 +39,6 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 	FVector2D tmp_move;
 	ATile* tile;
 	ETileOwner SameColor = ETileOwner::NONE;
-	FCoupleTile Tiles;
-	APiece* tmp_Piece;
 
 	if (OpponentColor == ETileOwner::BLACK)
 		SameColor = ETileOwner::WHITE;
@@ -49,12 +54,7 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 
 			if (tile->GetTileStatus() == ETileStatus::EMPTY || tile->GetTileOwner() == OpponentColor) 
 			{
-				Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(CurrentLocation.X, CurrentLocation.Y);
-				Tiles.Tile2 = tile;
-				tmp_Piece = ChessBoard->VirtualMove(Tiles);
-				if (!ChessBoard->CheckOnCheck(SameColor))
-					AvaibleMoves.Add(tile);
-				ChessBoard->VirtualUnMove(Tiles,tmp_Piece);
+				AvaibleMoves.Add(tile);	
 			}
 				
 
@@ -64,9 +64,19 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 	return AvaibleMoves;
 }
 
+AWhiteKing::AWhiteKing() : AKing()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhiteKing::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	return AvaibleMovesByColor(ChessBoard, ETileOwner::BLACK);
+}
+
+ABlackKing::ABlackKing() : AKing()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackKing::AvaibleMoves(AChessBoard* ChessBoard)

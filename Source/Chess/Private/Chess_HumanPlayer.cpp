@@ -73,6 +73,10 @@ void AChess_HumanPlayer::OnClick()
 	FHitResult Hit = FHitResult(ForceInit);
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, true, Hit);
 	ATile* CurrTile = nullptr;
+	APiece* tmp_piece;
+	FCoupleTile Tiles;
+	TArray<ATile*> TilesToRemove;
+
 	if (Hit.bBlockingHit && IsMyTurn)
 	{
 		if (ATile* HitTile = Cast<ATile>(Hit.GetActor()))
@@ -106,6 +110,22 @@ void AChess_HumanPlayer::OnClick()
 				SelectedPiece = CurrTile->GetOnPiece();
 
 				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
+				Tiles.Tile1 = CurrTile;
+
+				for (int32 i = 0; i < Piece_SelectableMoves.Num(); i++) 
+				{
+					Tiles.Tile2 = Piece_SelectableMoves[i];
+					tmp_piece = ChessBoard->VirtualMove(Tiles);
+					ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+					if (ChessBoard->CheckOnCheck(ETileOwner::WHITE))
+						TilesToRemove.Add(Piece_SelectableMoves[i]);
+					ChessBoard->VirtualUnMove(Tiles, tmp_piece);
+				}
+
+				for (int32 i = 0; i < TilesToRemove.Num(); i++) 
+				{
+					Piece_SelectableMoves.Remove(TilesToRemove[i]);
+				}
 				ChessBoard->ShowSelectableTiles(Piece_SelectableMoves);
 
 			}

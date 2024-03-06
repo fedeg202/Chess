@@ -50,7 +50,7 @@ void AChess_RandomPlayer::OnTurn()
 
 	FTimerHandle TimerHandle;
 	int32 randTime;
-	do { randTime = FMath::Rand() % 10; } while (randTime < 2);
+	do { randTime = FMath::Rand() % 5; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
 		do {
