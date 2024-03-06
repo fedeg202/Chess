@@ -27,6 +27,8 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 	Piece_SelectableMoves.SetNum(0);
 	All_SelectableMoves.SetNum(16);
 
+	B_OnCheck = B_OnCheckmate = B_OnStalemate = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +68,24 @@ void AChess_HumanPlayer::OnLose()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You lose!"));
 	GameInstance->SetTurnMessage(TEXT("Human Loses!"));
+}
+
+void AChess_HumanPlayer::OnCheck()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in check"));
+	GameInstance->SetTurnMessage(TEXT("Human in check"));
+	this->OnTurn();
+}
+
+void AChess_HumanPlayer::OnStalemate()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
+	GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
+}
+
+void AChess_HumanPlayer::OnCheckmate()
+{
+	this->OnLose();
 }
 
 void AChess_HumanPlayer::OnClick()
@@ -127,6 +147,7 @@ void AChess_HumanPlayer::OnClick()
 					Piece_SelectableMoves.Remove(TilesToRemove[i]);
 				}
 				ChessBoard->ShowSelectableTiles(Piece_SelectableMoves);
+
 
 			}
 			else if (CurrTile->GetTileStatus() == ETileStatus::EATABLE && SelectedPiece != nullptr)

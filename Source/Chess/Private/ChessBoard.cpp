@@ -317,17 +317,11 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 
 bool AChessBoard::CheckOnCheckmate(ETileOwner SameColor)
 {
-	if (CheckOnCheck(SameColor))
-	{
-		if (CheckOnStalemate(SameColor))
-			return true;
-	}
-	return false;
+	return CheckOnCheck(SameColor) && CheckOnStalemate(SameColor);
 }
 
 bool AChessBoard::CheckOnStalemate(ETileOwner SameColor)
 {
-	UpdateAllMoveBYColor(SameColor);
 	if (SameColor == ETileOwner::BLACK)
 		if (AllBlackSelectableMoves.Num() == 0) return true;
 		else return false;
