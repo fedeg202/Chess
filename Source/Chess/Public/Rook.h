@@ -14,9 +14,10 @@ class CHESS_API ARook : public APiece
 {
 	GENERATED_BODY()
 public:
-	const EPieceName Name = EPieceName::ROOK;
+	ARook();
 	TArray<FVector2D> Moves() override;
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor);
+
 
 };
 
@@ -25,10 +26,8 @@ class CHESS_API AWhiteRook : public ARook
 {
 	GENERATED_BODY()
 public:
+	AWhiteRook();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-
-protected:
-	EPieceColor Color = EPieceColor::WHITE;
 };
 
 UCLASS()
@@ -36,8 +35,6 @@ class CHESS_API ABlackRook : public ARook
 {
 	GENERATED_BODY()
 public:
+	ABlackRook();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-
-protected:
-	EPieceColor Color = EPieceColor::BLACK;
 };

@@ -14,7 +14,7 @@ class CHESS_API AKing : public APiece
 {
 	GENERATED_BODY()
 public:
-	const EPieceName Name = EPieceName::KING;
+	AKing();
 	TArray<FVector2D> Moves() override;
 	TArray<ATile*> AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner OpponentColor);
 
@@ -25,10 +25,8 @@ class CHESS_API AWhiteKing : public AKing
 {
 	GENERATED_BODY()
 public:
+	AWhiteKing();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-
-protected:
-	EPieceColor Color = EPieceColor::WHITE;
 };
 
 UCLASS()
@@ -36,9 +34,7 @@ class CHESS_API ABlackKing : public AKing
 {
 	GENERATED_BODY()
 public:
+	ABlackKing();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-
-protected:
-	EPieceColor Color = EPieceColor::BLACK;
 };
 

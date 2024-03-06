@@ -14,10 +14,9 @@ class CHESS_API ABishop : public APiece
 {
 	GENERATED_BODY()
 public:
+	ABishop();
 	TArray<FVector2D> Moves() override;
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor);
-protected:
-	EPieceName Name = EPieceName::BISHOP;
 };
 
 UCLASS()
@@ -25,9 +24,9 @@ class CHESS_API AWhiteBishop : public ABishop
 {
 	GENERATED_BODY()
 public:
+	AWhiteBishop();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-protected:
-	EPieceColor Color = EPieceColor::WHITE;
+
 };
 
 UCLASS()
@@ -35,7 +34,6 @@ class CHESS_API ABlackBishop : public ABishop
 {
 	GENERATED_BODY()
 public:
+	ABlackBishop();
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
-protected:
-	EPieceColor Color = EPieceColor::BLACK;
 };

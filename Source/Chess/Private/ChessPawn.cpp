@@ -4,6 +4,11 @@
 #include "ChessPawn.h"
 #include "ChessBoard.h"
 
+AChessPawn::AChessPawn():APiece()
+{
+	Name = EPieceName::PAWN;
+}
+
 TArray<FVector2D> AChessPawn::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -83,6 +88,11 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	return AvaibleMoves;
 }
 
+AWhitePawn::AWhitePawn() : AChessPawn()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -90,6 +100,11 @@ TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
+}
+
+ABlackPawn::ABlackPawn() : AChessPawn()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackPawn::AvaibleMoves(AChessBoard* ChessBoard)

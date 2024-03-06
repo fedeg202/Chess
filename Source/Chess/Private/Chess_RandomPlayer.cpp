@@ -53,7 +53,7 @@ void AChess_RandomPlayer::OnTurn()
 	FCoupleTile Tiles;
 	APiece* tmp_Piece;
 
-	do { randTime = FMath::Rand() % 10; } while (randTime < 2);
+	do { randTime = FMath::Rand() % 5; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
 		do {

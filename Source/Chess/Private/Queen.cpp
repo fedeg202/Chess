@@ -4,6 +4,11 @@
 #include "Queen.h"
 #include "ChessBoard.h"
 
+AQueen::AQueen() : APiece()
+{
+	Name = EPieceName::QUEEN;
+}
+
 TArray<FVector2D> AQueen::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -30,6 +35,11 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	return AvaibleMoves;
 }
 
+AWhiteQueen::AWhiteQueen() : AQueen()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhiteQueen::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -37,6 +47,11 @@ TArray<ATile*> AWhiteQueen::AvaibleMoves(AChessBoard* ChessBoard)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+}
+
+ABlackQueen::ABlackQueen() : AQueen()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackQueen::AvaibleMoves(AChessBoard* ChessBoard)

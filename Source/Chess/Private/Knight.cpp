@@ -5,7 +5,12 @@
 #include "ChessBoard.h"
 
 
-TArray<FVector2D> AKnight::Moves() 
+AKnight::AKnight() : APiece()
+{
+	Name = EPieceName::KNIGHT;
+}
+
+TArray<FVector2D> AKnight::Moves()
 {
 	TArray<FVector2D> Moves;
 
@@ -50,6 +55,11 @@ TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 }
 
 
+AWhiteKnight::AWhiteKnight():AKnight()
+{
+	Color = EPieceColor::WHITE;
+}
+
 TArray<ATile*> AWhiteKnight::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -57,6 +67,11 @@ TArray<ATile*> AWhiteKnight::AvaibleMoves(AChessBoard* ChessBoard)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+}
+
+ABlackKnight::ABlackKnight() : AKnight()
+{
+	Color = EPieceColor::BLACK;
 }
 
 TArray<ATile*> ABlackKnight::AvaibleMoves(AChessBoard* ChessBoard)
