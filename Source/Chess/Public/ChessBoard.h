@@ -71,6 +71,7 @@ public:
 	void AddBlackEatenPiece(APiece* EatenPiece);
 
 	bool CheckOnCheck(ETileOwner SameColor);
+	bool CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves);
 	bool CheckOnCheckmate(ETileOwner SameColor);
 	bool CheckOnStalemate(ETileOwner SameColor);
 
@@ -78,6 +79,10 @@ public:
 	void VirtualUnMove(FCoupleTile Tiles, APiece* OlOnPiece);
 
 	void UpdateAllMoveBYColor(ETileOwner Color);
+	
+	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor);
+
+	TArray<FCoupleTile> GetAllMovesByColor(ETileOwner SameColor);
 
 
 protected:

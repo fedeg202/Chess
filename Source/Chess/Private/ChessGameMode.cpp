@@ -59,10 +59,11 @@ void AChessGameMode::BeginPlay()
 void AChessGameMode::TurnNextPlayer()
 {
 	Player = !Player;
-	
+	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+
 	if (Player) 
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 		CheckOnCheck(Players[0]);
 		CheckOnStalemate(Players[0]);
 		CheckOnCkeckmate(Players[0]);
@@ -73,7 +74,6 @@ void AChessGameMode::TurnNextPlayer()
 	}
 	else
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 		CheckOnCheck(Players[1]);
 		CheckOnStalemate(Players[1]);
 		CheckOnCkeckmate(Players[1]);
@@ -87,6 +87,8 @@ void AChessGameMode::TurnNextPlayer()
 void AChessGameMode::StartGame()
 {
 	Player = true;
+	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 	Players[0]->OnTurn();
 }
 
@@ -94,12 +96,10 @@ void AChessGameMode::CheckOnCheck(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::WHITE);
 	}
 	else
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::BLACK);
 	}
 }
@@ -113,13 +113,11 @@ void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
-		P->B_OnStalemate = ChessBoard->CheckOnCheckmate(ETileOwner::WHITE);
+		P->B_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::WHITE);
 	}
 
 	else
 	{
-		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
-		P->B_OnStalemate = ChessBoard->CheckOnCheckmate(ETileOwner::BLACK);
+		P->B_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
 	}
 }

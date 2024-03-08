@@ -51,12 +51,12 @@ void AChess_RandomPlayer::OnTurn()
 	FTimerHandle TimerHandle;
 	int32 randTime;
 	FCoupleTile Tiles;
-	APiece* tmp_Piece;
 
 	do { randTime = FMath::Rand() % 5; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
 		do {
+			TArray<ATile*> TilesToRemove;
 			int32 ranPiece = FMath::Rand() % ChessBoard->GetBlackPieces().Num();
 
 			SelectedPiece = ChessBoard->GetBlackPieces()[ranPiece];
@@ -65,19 +65,22 @@ void AChess_RandomPlayer::OnTurn()
 				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
 			else Piece_SelectableMoves.Empty();
 
-			if (B_OnCheck && SelectedPiece != nullptr)
+			Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
+
+			for (int32 i = 0; i < Piece_SelectableMoves.Num(); i++)
 			{
-				Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
-				for (int32 i = 0; i < Piece_SelectableMoves.Num(); i++)
-				{
-					Tiles.Tile2 = Piece_SelectableMoves[i];
-					tmp_Piece = ChessBoard->VirtualMove(Tiles);
-					ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
-					if (ChessBoard->CheckOnCheck(ETileOwner::BLACK))
-						Piece_SelectableMoves.RemoveAt(i);
-					ChessBoard->VirtualUnMove(Tiles, tmp_Piece);
-				}
+				Tiles.Tile2 = Piece_SelectableMoves[i];
+				if (!ChessBoard->GetAllSelectableMovesByColor(ETileOwner::BLACK).Contains(Tiles))
+					TilesToRemove.Add(Piece_SelectableMoves[i]);
 			}
+
+			for (int32 i = 0; i < TilesToRemove.Num(); i++)
+			{
+				Piece_SelectableMoves.Remove(TilesToRemove[i]);
+			}
+
+			if (TilesToRemove.Num()>0)
+				TilesToRemove.Empty();
 
 		} while (Piece_SelectableMoves.IsEmpty());
 

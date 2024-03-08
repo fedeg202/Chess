@@ -213,7 +213,7 @@ void AChessBoard::SpawnBlackPieces()
 
 	y = 3;
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
-	Obj = GetWorld()->SpawnActor<ABlackKing>(BlackKingClass, Location, FRotator::ZeroRotator);
+	Obj = GetWorld()->SpawnActor<ABlackQueen>(BlackQueenClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
 	GameField->GetTileBYXYPosition(x, y)->SetTileStatus(ETileStatus::OCCUPIED);
 	GameField->GetTileBYXYPosition(x, y)->SetTileOwner(ETileOwner::BLACK);
@@ -221,7 +221,7 @@ void AChessBoard::SpawnBlackPieces()
 	BlackPieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
-	Obj = GetWorld()->SpawnActor<ABlackQueen>(BlackQueenClass, Location, FRotator::ZeroRotator);
+	Obj = GetWorld()->SpawnActor<ABlackKing>(BlackKingClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
 	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
 	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
@@ -305,13 +305,24 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 		AllOpponentSelectableMoves = AllBlackSelectableMoves;
 	}
 
-	for (int32 i = 0; i < AllBlackSelectableMoves.Num(); i++)
+	for (int32 i = 0; i < AllOpponentSelectableMoves.Num(); i++)
 	{
 		if (AllOpponentSelectableMoves[i].Tile2->GetOnPiece() != nullptr 
 			&& AllOpponentSelectableMoves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
 			return true;
 	}
 
+	return false;
+}
+
+bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves)
+{
+	for (int32 i = 0; i < Moves.Num(); i++)
+	{
+		if (Moves[i].Tile2->GetOnPiece() != nullptr
+			&& Moves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
+			return true;
+	}
 	return false;
 }
 
@@ -373,20 +384,46 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 {
 	TArray<APiece*> ColorPieces;
 	TArray<FCoupleTile> AllColorSelectableMoves;
+	TArray<FCoupleTile> AllColorMoves;
 	TArray<ATile*> APieceSelectableMoves;
-	ATile* Tile1_tmp;
 	FCoupleTile CoupleTile_tmp;
+	APiece* tmp_piece;
+	TArray<ATile*> TilesToRemove;
+	ETileOwner OppositeColor;
 
-	if (Color == ETileOwner::BLACK)
+	if (Color == ETileOwner::BLACK) 
+	{
 		ColorPieces = GetBlackPieces();
+		OppositeColor = ETileOwner::WHITE;
+	}	
 	else
+	{
 		ColorPieces = GetWhitePieces();
+		OppositeColor = ETileOwner::BLACK;
+	}
+		
 
 	for (int32 i = 0; i < ColorPieces.Num(); i++) 
 	{
-		Tile1_tmp = GetGameField()->GetTileBYXYPosition(ColorPieces[i]->GetGridPosition().X, ColorPieces[i]->GetGridPosition().Y);
-		CoupleTile_tmp.Tile1 = Tile1_tmp;
+		CoupleTile_tmp.Tile1 = GetGameField()->GetTileBYXYPosition(ColorPieces[i]->GetGridPosition().X, ColorPieces[i]->GetGridPosition().Y);
 		APieceSelectableMoves = ColorPieces[i]->AvaibleMoves(this);
+		for (int32 j = 0; j < APieceSelectableMoves.Num(); j++)
+		{
+			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
+			tmp_piece = VirtualMove(CoupleTile_tmp);
+			AllColorMoves = GetAllMovesByColor(OppositeColor);
+			if (CheckOnCheck(Color,AllColorMoves))
+				TilesToRemove.Add(APieceSelectableMoves[j]);
+			VirtualUnMove(CoupleTile_tmp, tmp_piece);
+		}
+
+		for (int32 j = 0; j < TilesToRemove.Num(); j++)
+		{
+			APieceSelectableMoves.Remove(TilesToRemove[j]);
+		}
+
+		TilesToRemove.Empty();
+
 		for (int32 j = 0; j < APieceSelectableMoves.Num(); j++) 
 		{
 			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
@@ -398,6 +435,47 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 		AllBlackSelectableMoves = AllColorSelectableMoves;
 	else
 		AllWhiteSelectableMoves = AllColorSelectableMoves;
+
+
+}
+
+TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor)
+{
+	if (SameColor == ETileOwner::BLACK)
+		return AllBlackSelectableMoves;
+	else return AllWhiteSelectableMoves;
+}
+
+TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
+{
+	TArray<APiece*> ColorPieces;
+	TArray<FCoupleTile> AllColorMoves;
+	TArray<ATile*> APieceSelectableMoves;
+	FCoupleTile CoupleTile_tmp;
+
+	if (SameColor == ETileOwner::BLACK)
+	{
+		ColorPieces = GetBlackPieces();
+	}
+	else
+	{
+		ColorPieces = GetWhitePieces();
+	}
+
+
+	for (int32 i = 0; i < ColorPieces.Num(); i++)
+	{
+		CoupleTile_tmp.Tile1 = GetGameField()->GetTileBYXYPosition(ColorPieces[i]->GetGridPosition().X, ColorPieces[i]->GetGridPosition().Y);
+		APieceSelectableMoves = ColorPieces[i]->AvaibleMoves(this);
+		
+		for (int32 j = 0; j < APieceSelectableMoves.Num(); j++)
+		{
+			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
+			AllColorMoves.Add(CoupleTile_tmp);
+		}
+	}
+	
+	return AllColorMoves;
 }
 
 // Called when the game starts or when spawned

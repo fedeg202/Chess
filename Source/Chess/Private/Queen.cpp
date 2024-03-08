@@ -32,6 +32,14 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	AvaibleMoves.Append(Bishop->AvaibleMovesByColor(GameField, SameColor));
 	AvaibleMoves.Append(Rook->AvaibleMovesByColor(GameField, SameColor));
 
+	if (Bishop != nullptr) {
+		Bishop->Destroy();
+	}
+
+	if (Rook != nullptr) {
+		Rook->Destroy();
+	}
+
 	return AvaibleMoves;
 }
 
