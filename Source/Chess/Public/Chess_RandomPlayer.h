@@ -30,11 +30,6 @@ public:
 	TArray<ATile*> All_SelectableMoves;
 
 
-	bool OnCheckMate;
-
-	bool OnStalemate;
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,5 +48,9 @@ public:
 	virtual void OnTurn() override;
 	virtual void OnWin() override;
 	virtual void OnLose() override;
+
+	virtual void OnCheck() override;
+	virtual void OnStalemate() override;
+	virtual void OnCheckmate() override;
 
 };

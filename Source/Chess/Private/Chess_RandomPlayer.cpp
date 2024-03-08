@@ -108,12 +108,30 @@ void AChess_RandomPlayer::OnTurn()
 
 void AChess_RandomPlayer::OnWin()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RandomPlayer won!"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer won!"));
 	GameInstance->SetTurnMessage(TEXT("RandomPlayer Wins"));
 }
 
 void AChess_RandomPlayer::OnLose()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("RandomPlayer lose!"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer lose!"));
 	GameInstance->SetTurnMessage(TEXT("RandomPlayer Loses!"));
+}
+
+void AChess_RandomPlayer::OnCheck()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer is in check"));
+	GameInstance->SetTurnMessage(TEXT("RandomPlayer in check"));
+	OnTurn();
+}
+
+void AChess_RandomPlayer::OnStalemate()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer in stalemate"));
+	GameInstance->SetTurnMessage(TEXT("RandomPlayer in stalemate"));
+}
+
+void AChess_RandomPlayer::OnCheckmate()
+{
+	this->OnLose();
 }
