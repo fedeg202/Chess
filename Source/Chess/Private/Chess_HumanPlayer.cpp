@@ -3,6 +3,8 @@
 
 #include "Chess_HumanPlayer.h"
 #include "ChessGameMode.h"
+#include "Chess_PlayerController.h"
+#include "Blueprint/UserWidget.h"
 
 
 // Sets default values
@@ -35,6 +37,12 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 void AChess_HumanPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AChess_PlayerController* PC = GetController<AChess_PlayerController>();
+	check(PC);
+	ChessHUD = CreateWidget<UChessHUD>(PC, PC->ChessHUDClass);
+	check(ChessHUD); 
+	ChessHUD->AddToPlayerScreen();
 	
 }
 

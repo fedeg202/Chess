@@ -121,3 +121,9 @@ void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 		P->B_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
 	}
 }
+
+void AChessGameMode::ResetGame()
+{
+	ChessBoard->ResetChessBoard();
+	StartGame();
+}

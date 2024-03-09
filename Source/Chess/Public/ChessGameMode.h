@@ -45,4 +45,6 @@ public:
 	void CheckOnCkeckmate(IChess_PlayerInterface* Player);
 	void CheckOnStalemate(IChess_PlayerInterface* Player);
 	//void MovePiece();
+	UFUNCTION(BlueprintCallable)
+	void ResetGame();
 };

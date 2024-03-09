@@ -84,6 +84,8 @@ public:
 
 	TArray<FCoupleTile> GetAllMovesByColor(ETileOwner SameColor);
 
+	void ResetChessBoard();
+
 
 protected:
 	// Called when the game starts or when spawned

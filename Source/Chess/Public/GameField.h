@@ -39,6 +39,7 @@ public:
 	TSubclassOf<ATileWhite> TileWhiteClass;
 
 	void GenerateField();
+	void ResetField();
 
 	static FVector GetRelativeLocationByXYPosition(const int32 inX, const int32 inY);
 	ATile* GetTileBYXYPosition(const int32 x, const int32 y);

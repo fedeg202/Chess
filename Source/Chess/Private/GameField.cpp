@@ -49,6 +49,20 @@ void AGameField::GenerateField()
 	}
 }
 
+void AGameField::ResetField()
+{
+	if (!TileMatrix.IsEmpty())
+		for (int32 i = 0; i < Size; i++) 
+		{
+			for (int32 j = 0;j<Size;j++)
+			{
+				TileMatrix[i][j]->SetOnPiece(nullptr);
+				TileMatrix[i][j]->SetTileOwner(ETileOwner::NONE);
+				TileMatrix[i][j]->SetTileStatus(ETileStatus::EMPTY);
+			}
+		}
+}
+
 
 
 FVector AGameField::GetRelativeLocationByXYPosition(const int32 inX, const int32 inY)

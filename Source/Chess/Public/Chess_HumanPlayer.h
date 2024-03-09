@@ -7,6 +7,7 @@
 #include "Chess_PlayerInterface.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "ChessHUD.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -25,6 +26,11 @@ public:
 
 	UChess_GameInstance* GameInstance;
 
+	UPROPERTY()
+	UChessHUD* ChessHUD;
+
+	// reference to a ChessBoard object
+	UPROPERTY(VisibleAnywhere)
 	AChessBoard* ChessBoard;
 
 	TArray<ATile*> Piece_SelectableMoves;

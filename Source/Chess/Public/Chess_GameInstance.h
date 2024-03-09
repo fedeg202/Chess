@@ -15,6 +15,19 @@ class CHESS_API UChess_GameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere)
+	int32 ScoreHumanPlayer = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 ScoreAiPlayer = 0;
+
+	void IncrementScoreHumanPlayer();
+	void IncrementScoreAIPlayer();
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetScoreHumanPlayer();
+	UFUNCTION(BlueprintCallable)
+	int32 GetScoreAIPlayer();
 
 	// message to show every turn
 	UPROPERTY(EditAnywhere)

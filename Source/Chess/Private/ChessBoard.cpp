@@ -478,6 +478,39 @@ TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
 	return AllColorMoves;
 }
 
+void AChessBoard::ResetChessBoard()
+{
+	GameField->ResetField();
+
+	for (int32 i = 0; i < BlackPieces.Num(); i++)
+	{
+		BlackPieces[i]->Destroy();
+	}
+	BlackPieces.Empty();
+
+	for (int32 i = 0; i < EatenBlackPieces.Num(); i++)
+	{
+		EatenBlackPieces[i]->Destroy();
+	}
+	EatenBlackPieces.Empty();
+
+	for (int32 i = 0; i < WhitePieces.Num(); i++)
+	{
+		WhitePieces[i]->Destroy();
+	}
+	WhitePieces.Empty();
+
+	for (int32 i = 0; i < EatenWhitePieces.Num(); i++)
+	{
+		EatenWhitePieces[i]->Destroy();
+	}
+	EatenWhitePieces.Empty();
+
+	SpawnBlackPieces();
+	SpawnWhitePieces();
+
+}
+
 // Called when the game starts or when spawned
 void AChessBoard::BeginPlay()
 {

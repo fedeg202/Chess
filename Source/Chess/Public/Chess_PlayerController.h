@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreSharedPCH.h"
+#include "ChessHUD.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
@@ -30,6 +31,12 @@ public:
 	UInputAction* ClickAction;
 
 	void ClickOnGrid();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UChessHUD> ChessHUDClass;
+
+	UPROPERTY()
+	UChessHUD* ChessHUD;
 
 protected:
 	virtual void BeginPlay() override;
