@@ -43,6 +43,9 @@ void AChess_HumanPlayer::BeginPlay()
 	ChessHUD = CreateWidget<UChessHUD>(PC, PC->ChessHUDClass);
 	check(ChessHUD); 
 	ChessHUD->AddToPlayerScreen();
+
+	PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
+	check(PawnPromotionHUD);
 	
 }
 
@@ -121,13 +124,24 @@ void AChess_HumanPlayer::OnClick()
 			if (CurrTile->GetTileStatus() == ETileStatus::SELECTABLE && SelectedPiece != nullptr)
 			{
 				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
-				SelectedPiece = nullptr;
+				
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 				Piece_SelectableMoves.Empty();
 
-				AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
-				GameMode->TurnNextPlayer();
-				IsMyTurn = false;
+				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
+				{
+					SelectedPiece = nullptr;
+					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+					IsMyTurn = false;
+					GameMode->TurnNextPlayer();
+				}
+				else 
+				{
+					AChess_PlayerController* PC = GetController<AChess_PlayerController>();
+					check(PC);
+					IsMyTurn = false;
+					PawnPromotionHUD->AddToPlayerScreen();
+				}
 			}
 			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
 			{

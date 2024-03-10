@@ -2,6 +2,7 @@
 
 
 #include "ChessBoard.h"
+#include "Chess_PlayerController.h"
 
 // Sets default values
 AChessBoard::AChessBoard()
@@ -510,6 +511,13 @@ void AChessBoard::ResetChessBoard()
 	SpawnWhitePieces();
 
 }
+
+bool AChessBoard::CheckPawnPromotion(APiece* Piece)
+{
+	return Piece->GetName() == EPieceName::PAWN && ((Piece->GetColor() == EPieceColor::WHITE && Piece->GetGridPosition().X == GetGameField()->Size - 1) || (Piece->GetColor() == EPieceColor::BLACK && Piece->GetGridPosition().X == 0));
+}
+
+
 
 // Called when the game starts or when spawned
 void AChessBoard::BeginPlay()

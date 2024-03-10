@@ -4,6 +4,7 @@
 
 #include "CoreSharedPCH.h"
 #include "ChessHUD.h"
+#include "PawnPromotionHUD.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
@@ -35,8 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UChessHUD> ChessHUDClass;
 
-	UPROPERTY()
-	UChessHUD* ChessHUD;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UPawnPromotionHUD> PawnPromotionHUDClass;
+
 
 protected:
 	virtual void BeginPlay() override;

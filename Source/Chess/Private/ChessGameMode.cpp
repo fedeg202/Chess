@@ -122,6 +122,104 @@ void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 	}
 }
 
+void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
+{
+	APiece* OldPiece = nullptr;
+	FVector Location;
+	FVector2D GridPosition;
+	ATile* Tile = nullptr;
+	APiece* NewPiece = nullptr;
+	if (Color == EPieceColor::BLACK)
+	{
+		for (int32 i = 0; i < ChessBoard->GetGameField()->Size; i++)
+		{
+			Tile = ChessBoard->GetGameField()->GetTileBYXYPosition(0, i);
+			if (Tile->GetOnPiece()->GetName() == EPieceName::PAWN)
+			{
+				OldPiece = Tile->GetOnPiece();
+				break;
+			}
+				
+		}
+
+		if (OldPiece == nullptr) return;
+
+		ChessBoard->GetBlackPieces().Remove(OldPiece);
+		GridPosition = OldPiece->GetGridPosition();
+		Location = OldPiece->GetActorLocation();
+		OldPiece->Destroy();
+		switch (Name)
+		{
+		case EPieceName::ROOK:
+				NewPiece = GetWorld()->SpawnActor<ABlackRook>(ChessBoard->BlackRookClass, Location, FRotator::ZeroRotator);
+				break;
+			case EPieceName::KNIGHT:
+				NewPiece = GetWorld()->SpawnActor<ABlackKnight>(ChessBoard->BlackKnightClass, Location, FRotator::ZeroRotator);
+				break;
+			case EPieceName::BISHOP:
+				NewPiece = GetWorld()->SpawnActor<ABlackBishop>(ChessBoard->BlackBishopClass, Location, FRotator::ZeroRotator);
+				break;
+			case EPieceName::QUEEN:
+				NewPiece = GetWorld()->SpawnActor<ABlackQueen>(ChessBoard->BlackQueenClass, Location, FRotator::ZeroRotator);
+				break;
+			default:
+				NewPiece = GetWorld()->SpawnActor<ABlackQueen>(ChessBoard->BlackQueenClass, Location, FRotator::ZeroRotator);
+				break;
+		}
+		if (Tile!= nullptr && NewPiece != nullptr)
+		{
+			Tile->SetOnPiece(NewPiece);
+			NewPiece->SetGridPosition(GridPosition.X, GridPosition.Y);
+			ChessBoard->GetBlackPieces().Add(NewPiece);
+		}			
+	}
+	else
+	{
+		for (int32 i = 0; i < ChessBoard->GetGameField()->Size; i++)
+		{
+			Tile = ChessBoard->GetGameField()->GetTileBYXYPosition(ChessBoard->GetGameField()->Size-1, i);
+			if (Tile->GetOnPiece() != nullptr && Tile->GetOnPiece()->GetName() == EPieceName::PAWN)
+			{
+				OldPiece = Tile->GetOnPiece();
+				break;
+			}
+		}
+
+		if (OldPiece == nullptr) return;
+
+		ChessBoard->GetWhitePieces().Remove(OldPiece);
+		GridPosition = OldPiece->GetGridPosition();
+		Location = OldPiece->GetActorLocation();
+		OldPiece->Destroy();
+		switch (Name)
+		{
+		case EPieceName::ROOK:
+			NewPiece = GetWorld()->SpawnActor<AWhiteRook>(ChessBoard->WhiteRookClass, Location, FRotator::ZeroRotator);
+			break;
+		case EPieceName::KNIGHT:
+			NewPiece = GetWorld()->SpawnActor<AWhiteKnight>(ChessBoard->WhiteKnightClass, Location, FRotator::ZeroRotator);
+			break;
+		case EPieceName::BISHOP:
+			NewPiece = GetWorld()->SpawnActor<AWhiteBishop>(ChessBoard->WhiteBishopClass, Location, FRotator::ZeroRotator);
+			break;
+		case EPieceName::QUEEN:
+			NewPiece = GetWorld()->SpawnActor<AWhiteQueen>(ChessBoard->WhiteQueenClass, Location, FRotator::ZeroRotator);
+			break;
+		default:
+			NewPiece = GetWorld()->SpawnActor<AWhiteQueen>(ChessBoard->WhiteQueenClass, Location, FRotator::ZeroRotator);
+			break;
+		}
+
+		if (Tile != nullptr && NewPiece != nullptr) 
+		{
+			Tile->SetOnPiece(NewPiece);
+			NewPiece->SetGridPosition(GridPosition.X, GridPosition.Y);
+			ChessBoard->GetWhitePieces().Add(NewPiece);
+		}
+	}
+	TurnNextPlayer();
+}
+
 void AChessGameMode::ResetGame()
 {
 	ChessBoard->ResetChessBoard();

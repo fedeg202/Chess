@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "ChessHUD.h"
+#include "PawnPromotionHUD.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY()
 	UChessHUD* ChessHUD;
+
+	UPROPERTY()
+	UPawnPromotionHUD* PawnPromotionHUD;
 
 	// reference to a ChessBoard object
 	UPROPERTY(VisibleAnywhere)

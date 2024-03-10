@@ -86,6 +86,8 @@ public:
 
 	void ResetChessBoard();
 
+	bool CheckPawnPromotion(APiece* Piece);
+
 
 protected:
 	// Called when the game starts or when spawned
