@@ -38,16 +38,21 @@ public:
 
 	// called at the end of the game turn
 	void TurnNextPlayer();
-
+	// called at the start of the game
 	void StartGame();
 
+	//Called to update booleans OnCheck value of the player interface at the and of every turn
 	void CheckOnCheck(IChess_PlayerInterface* Player);
+	//Called to update booleans OnCheckmate value of the player interface at the and of every turn
 	void CheckOnCkeckmate(IChess_PlayerInterface* Player);
+	//Called to update booleans OnStalemate value of the player interface at the and of every turn
 	void CheckOnStalemate(IChess_PlayerInterface* Player);
 
+	//called to handle the "Special rule" pawn promotion
 	UFUNCTION(BlueprintCallable)
 	void HandlePawnPromotion(EPieceColor Color, EPieceName Name);
 	
+	//called to reset the game after the reset button pressed
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();
 };

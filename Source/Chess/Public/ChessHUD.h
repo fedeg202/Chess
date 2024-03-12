@@ -7,7 +7,7 @@
 #include "ChessHUD.generated.h"
 
 /**
- * 
+ * Class to implement the main HUD displayed during game
  */
 UCLASS()
 class CHESS_API UChessHUD : public UUserWidget

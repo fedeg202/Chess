@@ -67,9 +67,9 @@ void AChessGameMode::TurnNextPlayer()
 		CheckOnCheck(Players[0]);
 		CheckOnStalemate(Players[0]);
 		CheckOnCkeckmate(Players[0]);
-		if (Players[0]->B_OnCheckmate) Players[0]->OnLose();
-		else if (Players[0]->B_OnStalemate) Players[0]->OnStalemate();
-		else if (Players[0]->B_OnCheck) Players[0]->OnCheck();
+		if (Players[0]->b_OnCheckmate) Players[0]->OnLose();
+		else if (Players[0]->b_OnStalemate) Players[0]->OnStalemate();
+		else if (Players[0]->b_OnCheck) Players[0]->OnCheck();
 		else Players[0]->OnTurn();
 	}
 	else
@@ -77,9 +77,9 @@ void AChessGameMode::TurnNextPlayer()
 		CheckOnCheck(Players[1]);
 		CheckOnStalemate(Players[1]);
 		CheckOnCkeckmate(Players[1]);
-		if (Players[1]->B_OnCheckmate) Players[0]->OnWin();
-		else if (Players[1]->B_OnStalemate) Players[1]->OnStalemate();
-		else if (Players[1]->B_OnCheck) Players[1]->OnCheck();
+		if (Players[1]->b_OnCheckmate) Players[0]->OnWin();
+		else if (Players[1]->b_OnStalemate) Players[1]->OnStalemate();
+		else if (Players[1]->b_OnCheck) Players[1]->OnCheck();
 		else Players[1]->OnTurn();
 	}
 }
@@ -96,29 +96,29 @@ void AChessGameMode::CheckOnCheck(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
-		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::WHITE);
+		P->b_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::WHITE);
 	}
 	else
 	{
-		P->B_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::BLACK);
+		P->b_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::BLACK);
 	}
 }
 
 void AChessGameMode::CheckOnCkeckmate(IChess_PlayerInterface* P)
 {
-	P->B_OnCheckmate = P->B_OnCheck && P->B_OnStalemate;
+	P->b_OnCheckmate = P->b_OnCheck && P->b_OnStalemate;
 }
 
 void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
-		P->B_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::WHITE);
+		P->b_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::WHITE);
 	}
 
 	else
 	{
-		P->B_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
+		P->b_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
 	}
 }
 
@@ -134,7 +134,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
 		for (int32 i = 0; i < ChessBoard->GetGameField()->Size; i++)
 		{
 			Tile = ChessBoard->GetGameField()->GetTileBYXYPosition(0, i);
-			if (Tile->GetOnPiece()->GetName() == EPieceName::PAWN)
+			if (Tile->GetOnPiece() != nullptr && Tile->GetOnPiece()->GetName() == EPieceName::PAWN)
 			{
 				OldPiece = Tile->GetOnPiece();
 				break;

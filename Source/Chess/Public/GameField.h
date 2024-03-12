@@ -10,6 +10,10 @@
 #include "GameField.generated.h"
 
 
+/*
+* Class to implement the gamefield made of all the tiles
+*/
+
 UCLASS()
 class CHESS_API AGameField : public AActor
 {
@@ -23,12 +27,15 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Size of the tiles
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
 	int32 TileSize = 100;
 
+	//Number of tile for every side of the board
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Size;
 
+	//Tile class
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ATile> TileClass;
 
@@ -38,14 +45,22 @@ public:
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ATileWhite> TileWhiteClass;
 
+	//Method to spawn all the tiles of the board
 	void GenerateField();
+	//Method to bring all the tile to their starting status
 	void ResetField();
-
+	
+	//Static method to get the vector with the 3D location of the center of the tile from his coordinates(x,y)
 	static FVector GetRelativeLocationByXYPosition(const int32 inX, const int32 inY);
+	//Return a pointer to the tile that is in position (x,y) in the tile matrix
 	ATile* GetTileBYXYPosition(const int32 x, const int32 y);
 
-protected:
+	bool IsInRange(const int32 x, const int32 y);
+	bool IsInRange(FVector2D Position);
 
-	TArray<TArray<ATile*>> TileMapArrayInit(int32 Size);
+protected:
+	//Method to initialize the matrix of the tiles
+	TArray<TArray<ATile*>> TileMatrixInit(int32 Size);
+	//Tiles matrix
 	TArray<TArray<ATile*>> TileMatrix;
 };

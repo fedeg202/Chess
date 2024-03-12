@@ -13,39 +13,41 @@ TArray<FVector2D> AChessPawn::Moves()
 {
 	TArray<FVector2D> Moves;
 
-	// Definisci il vettore base per i movimenti del cavallo
+	// 
 	const FVector2D BaseMove(1, 0);
-	const FVector2D EatMove(1, 1);
+	const FVector2D EatMove1(1, 1);
+	const FVector2D EatMove2(1, -1);
 	
 	Moves.Add(BaseMove);
 	Moves.Add(2 * BaseMove);
-	Moves.Add(EatMove);
-	Moves.Add(EatMove.GetRotated(-90));
+	Moves.Add(EatMove1);
+	Moves.Add(EatMove2);
 
 	Moves.Add(-BaseMove);
 	Moves.Add(-2 * BaseMove);
-	Moves.Add(-EatMove);
-	Moves.Add(EatMove.GetRotated(+90));
+	Moves.Add(-EatMove1);
+	Moves.Add(-EatMove2);
 
 	return Moves;
 }
 
-TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner OpponentColor)
+TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	int32 Size = GameField->Size;
-
 	int32 startMove;
 	int32 startPos;
-	if (OpponentColor == ETileOwner::WHITE)
+	ETileOwner OpponentColor;
+	if (SameColor == ETileOwner::WHITE)
 	{
-		startMove = 4;
-		startPos = Size - 2;
-		
+		OpponentColor = ETileOwner::BLACK;
+		startMove = 0;
+		startPos = 1;
 	}
 	else
 	{
-		startMove = 0;
-		startPos = 1;
+		OpponentColor = ETileOwner::WHITE;
+		startMove = 4;
+		startPos = Size - 2;
 	}
 	TArray<ATile*> AvaibleMoves;
 	FVector2D CurrentLocation = GetGridPosition();
@@ -54,7 +56,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	
 
 	tmp_move = CurrentLocation + Move[startMove];
-	if (tmp_move.X < Size && tmp_move.X >= 0)
+	if (GameField->IsInRange(tmp_move))
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::EMPTY)
@@ -70,7 +72,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	}
 
 	tmp_move = CurrentLocation + Move[startMove + 2];
-	if (tmp_move.X < Size && tmp_move.X > 0 && tmp_move.Y < Size && tmp_move.Y > 0)
+	if (GameField->IsInRange(tmp_move))
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::OCCUPIED && tile->GetTileOwner() == OpponentColor)
@@ -78,7 +80,7 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	}
 
 	tmp_move = CurrentLocation + Move[startMove + 3];
-	if (tmp_move.X < Size && tmp_move.X > 0 && tmp_move.Y < Size && tmp_move.Y)
+	if (GameField->IsInRange(tmp_move))
 	{
 		ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 		if (tile->GetTileStatus() == ETileStatus::OCCUPIED && tile->GetTileOwner() == OpponentColor)
@@ -95,11 +97,11 @@ AWhitePawn::AWhitePawn() : AChessPawn()
 
 TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
+	//Useful when using virtual move (it implement a "virtual eaten")
 	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
 		return TArray<ATile*>();
 	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
 ABlackPawn::ABlackPawn() : AChessPawn()
@@ -109,9 +111,9 @@ ABlackPawn::ABlackPawn() : AChessPawn()
 
 TArray<ATile*> ABlackPawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
+	//Useful when using virtual move (it implement a "virtual eaten")
 	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
 		return TArray<ATile*>();
 	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

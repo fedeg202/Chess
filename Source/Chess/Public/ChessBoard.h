@@ -14,6 +14,11 @@
 #include "GameFramework/Actor.h"
 #include "ChessBoard.generated.h"
 
+
+/*
+* Class to implement the complete Chessboard, tiles + pieces
+*/
+
 UCLASS()
 class CHESS_API AChessBoard : public AActor
 {
@@ -52,40 +57,62 @@ public:
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<AGameField> GameFieldClass;
 
+	//Return the array of the white pieces
 	TArray<APiece*>& GetWhitePieces();
+	//Return the array of white eaten(or taken) pieces
 	TArray<APiece*>& GetEatenWhitePieces();
 
+	//Return the array of black pieces
 	TArray<APiece*>& GetBlackPieces();
+	//Return the array of black eaten(or taken) pieces
 	TArray<APiece*>& GetEatenBlackPieces();
 
+	//Return the pointer to the gamefield
 	AGameField* GetGameField();
 
+	//Method to spawn the Gamefield
 	void SpawnGameField();
+	//Method to spawn all the white pieces
 	void SpawnWhitePieces();
+	//Method to spawn all the black pieces
 	void SpawnBlackPieces();
 
+	//Method to display the selectable tiles by the player by changing their material and their status
 	void ShowSelectableTiles(TArray<ATile*>& SelectableTiles);
+	//Method to undisplay the selectable tiles by the player by changing their material to the default one and bring the tile back to their prevous status
 	void UnShowSelectableTiles(TArray<ATile*>& SelectableTiles);
 
+	//Method to add an eaten piece to the array and make sure that only the last one eaten is displayed
 	void AddWhiteEatenPiece(APiece* EatenPiece);
+	//Method to add an eaten piece to the array and make sure that only the last one eaten is displayed
 	void AddBlackEatenPiece(APiece* EatenPiece);
 
+	//Method to check if the player with the color coded in ETileOwner, is in check
 	bool CheckOnCheck(ETileOwner SameColor);
+	//Method to check if the player with the color coded in ETileOwner, and with the opponent that has the moves passed as an argument is in check;
 	bool CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves);
+	//Method to check if the player with the color coded in ETileOwner, is in checkmate
 	bool CheckOnCheckmate(ETileOwner SameColor);
+	//Method to check if the player with the color coded in ETileOwner, is in stalemate
 	bool CheckOnStalemate(ETileOwner SameColor);
 
+	//Method to simulate moves without moving the pieces
 	APiece* VirtualMove(FCoupleTile Tiles);
+	//Method to reverse the effect of VirtualMove method
 	void VirtualUnMove(FCoupleTile Tiles, APiece* OlOnPiece);
 
+	//Method to update all the avaible moves of the player with the color coded in ETileOwner
 	void UpdateAllMoveBYColor(ETileOwner Color);
 	
+	//Return all the Selectable moves of the player with the color coded in ETileOwner
 	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor);
-
+	//Return all the moves (not only the selectable) of the player with the color coded in ETileOwner
 	TArray<FCoupleTile> GetAllMovesByColor(ETileOwner SameColor);
 
+	//Method to reset the chessboard to the starting position
 	void ResetChessBoard();
 
+	//Method to check if the piece is a pawn and is elegible for a pawn promotion
 	bool CheckPawnPromotion(APiece* Piece);
 
 
@@ -94,15 +121,22 @@ protected:
 	virtual void BeginPlay() override;
 
 
-
+	//Reference to an array of pointer to pieces with all the white pieces
 	TArray<APiece*> WhitePieces;
+	//Reference to an array of pointer to pieces with all the eaten white pieces
 	TArray<APiece*> EatenWhitePieces;
+	//Reference to an array CoupleTile with all the selectable moves by the white player
 	TArray<FCoupleTile> AllWhiteSelectableMoves;
 
+
+	//Reference to an array of pointer to pieces with all the black pieces
 	TArray<APiece*> BlackPieces;
+	//Reference to an array of pointer to pieces with all the eaten black pieces
 	TArray<APiece*> EatenBlackPieces;
+	//Reference to an array CoupleTile with all the selectable moves by the black player
 	TArray<FCoupleTile> AllBlackSelectableMoves;
 
+	//Refernce to a Gamefield object
 	AGameField* GameField;
 
 

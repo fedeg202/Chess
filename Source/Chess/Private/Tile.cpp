@@ -72,6 +72,19 @@ void ATile::SetOnPiece(APiece* Piece)
 	OnPiece = Piece;
 }
 
+void ATile::SetStatusAndOwnerAndOnPiece(ETileStatus S, ETileOwner O, APiece* Piece)
+{
+	SetTileStatus(S);
+	SetTileOwner(O);
+	SetOnPiece(Piece);
+}
+
+void ATile::ResetTile()
+{
+	SetStatusAndOwnerAndOnPiece(ETileStatus::EMPTY, ETileOwner::NONE, nullptr);
+	SetTileMaterial(0);
+}
+
 // Called when the game starts or when spawned
 void ATile::BeginPlay()
 {

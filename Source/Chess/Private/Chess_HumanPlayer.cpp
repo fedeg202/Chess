@@ -21,15 +21,13 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 
 	GameInstance = Cast<UChess_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	PlayerNumber = -1;
 
 	Color = EColor::NONE;
 
 	SelectedPiece = nullptr;
 	Piece_SelectableMoves.SetNum(0);
-	All_SelectableMoves.SetNum(16);
 
-	B_OnCheck = B_OnCheckmate = B_OnStalemate = false;
+	b_OnCheck = b_OnCheckmate = b_OnStalemate = false;
 
 }
 
@@ -137,8 +135,6 @@ void AChess_HumanPlayer::OnClick()
 				}
 				else 
 				{
-					AChess_PlayerController* PC = GetController<AChess_PlayerController>();
-					check(PC);
 					IsMyTurn = false;
 					PawnPromotionHUD->AddToPlayerScreen();
 				}
@@ -173,12 +169,21 @@ void AChess_HumanPlayer::OnClick()
 			{
 				SelectedPiece->Eat(CurrTile,ChessBoard);
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+
+				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
+				{
+					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+					IsMyTurn = false;
+					GameMode->TurnNextPlayer();
+				}
+				else
+				{
+					IsMyTurn = false;
+					PawnPromotionHUD->AddToPlayerScreen();
+				}
+
 				Piece_SelectableMoves.Empty();
 				SelectedPiece = nullptr;
-
-				AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
-				GameMode->TurnNextPlayer();
-				IsMyTurn = false;
 
 			}
 		}

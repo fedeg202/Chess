@@ -39,9 +39,6 @@ public:
 
 	TArray<ATile*> Piece_SelectableMoves;
 
-	TArray<ATile*> All_SelectableMoves;
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

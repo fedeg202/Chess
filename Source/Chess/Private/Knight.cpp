@@ -42,7 +42,7 @@ TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	for (int32 i = 0; i < Move.Num(); i++)
 	{
 		tmp_move = CurrentLocation + Move[i];
-		if (tmp_move.X < GameField->Size && tmp_move.Y < GameField->Size && tmp_move.X >= 0 && tmp_move.Y >= 0)
+		if (GameField->IsInRange(tmp_move))
 		{
 			ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 			if (tile->GetTileOwner() != SameColor) {

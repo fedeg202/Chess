@@ -89,10 +89,6 @@ void APiece::Move(ATile* Tile,AGameField* GameField)
 
 }
 
-APiece* APiece::GetPiece()
-{
-	return this;
-}
 
 EPieceColor APiece::GetColor()
 {

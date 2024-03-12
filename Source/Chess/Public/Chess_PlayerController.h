@@ -15,22 +15,25 @@
 #include "Chess_PlayerController.generated.h"
 
 /**
- * 
+ * Class to implement the player controller
 */
 UCLASS()
 class CHESS_API AChess_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+	// Set the default value for this controller
 	AChess_PlayerController();
 
+	//Reference to a context
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* ChessContext;
 
-
+	//Reference to a input action
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* ClickAction;
 
+	//Function to get the click on the grid
 	void ClickOnGrid();
 
 	UPROPERTY(EditDefaultsOnly)
@@ -41,6 +44,8 @@ public:
 
 
 protected:
+	//Function called when starting game
 	virtual void BeginPlay() override;
+	//Function to setup the input component
 	virtual void SetupInputComponent() override;
 };
