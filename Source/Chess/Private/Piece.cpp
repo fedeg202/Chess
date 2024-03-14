@@ -89,10 +89,6 @@ void APiece::Move(ATile* Tile,AGameField* GameField)
 
 }
 
-APiece* APiece::GetPiece()
-{
-	return this;
-}
 
 EPieceColor APiece::GetColor()
 {
@@ -102,6 +98,11 @@ EPieceColor APiece::GetColor()
 EPieceName APiece::GetName()
 {
 	return Name;
+}
+
+FString APiece::ToString()
+{
+	return FString();
 }
 
 // Called when the game starts or when spawned

@@ -27,6 +27,10 @@ enum class EPieceColor : uint8
 	BLACK		UMETA(DisplayName = "Black"),
 };
 
+/*
+* Class for Generic Chess Piece, that is the father class of all the chess pieces
+*/
+
 UCLASS()
 class CHESS_API APiece : public AActor
 {
@@ -35,37 +39,44 @@ class CHESS_API APiece : public AActor
 public:
 	// Sets default values for this actor's properties
 	APiece();
-
+	// Set the grid position
 	void SetGridPosition(const double x, const double y);
-
+	//return a fvector with the grid position of the piece
 	FVector2D GetGridPosition();
-
+	//Virtual method to return all the moves as a 2D vector, that a generic queen can do freely
 	virtual TArray<FVector2D> Moves();
-
+	//Method to make the chess eat (or take) move
 	void Eat(ATile* EatTile, AChessBoard* ChessBoard);
-
+	//Virtual method to return a pointer to all the tiles where the white queen can go
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard);
-
+	//Method to move a piece to a Tile
 	void Move(ATile* Tile, AGameField* GameField);
 
-	APiece* GetPiece();
-	
+	//Return the color of the piece
 	EPieceColor GetColor();
+	//Return the name of the piece
 	EPieceName GetName();
+
+	//Rerurn the correct char to describe the moves with the Long Algebric Notation
+	virtual FString ToString();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Reference to a scene component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 	USceneComponent* Scene;
 
+	//Reference to Static Mesh component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 	UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
+	//Grid position of the piece
 	FVector2D PieceGridPosition;
 
+	//Color of the piece
 	EPieceColor Color;
+	//"Name" of the piece
 	EPieceName Name;
 };

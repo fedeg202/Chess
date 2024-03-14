@@ -24,7 +24,7 @@ class UChess_PlayerInterface : public UInterface
 };
 
 /**
- * 
+ *  Class to implement a custom chess player interface
  */
 class CHESS_API IChess_PlayerInterface
 {
@@ -32,18 +32,26 @@ class CHESS_API IChess_PlayerInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	int32 PlayerNumber;
+	//Player color
 	EColor Color;
-	bool B_OnCheck;
-	bool B_OnCheckmate;
-	bool B_OnStalemate;
+	//Bool value that indicates if the player is in check
+	bool b_OnCheck;
+	//Bool value that indicates if the player is in checkmate
+	bool b_OnCheckmate;
+	//Bool value that indicates if the player is in stalemate
+	bool b_OnStalemate;
 	
-
+	//virtual function to start the turn and show a custom message
 	virtual void OnTurn() {};
+	//virtual function to show a message when the player win
 	virtual void OnWin() {};
+	//virtual function to show a message when the player lose
 	virtual void OnLose() {};
+	//virtual fution to show a message when the player is in check
 	virtual void OnCheck() {};
+	//virtual funztion to show a message when the player is in checkmate
 	virtual void OnCheckmate() {};
+	//virtual function to show a message when the player is in stalemate
 	virtual void OnStalemate() {};
 
 

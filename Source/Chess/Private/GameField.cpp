@@ -12,7 +12,7 @@ AGameField::AGameField()
 	Size = 8;
 
 
-	TileMatrix = TileMapArrayInit(Size);
+	TileMatrix = TileMatrixInit(Size);
 
 }
 
@@ -56,9 +56,7 @@ void AGameField::ResetField()
 		{
 			for (int32 j = 0;j<Size;j++)
 			{
-				TileMatrix[i][j]->SetOnPiece(nullptr);
-				TileMatrix[i][j]->SetTileOwner(ETileOwner::NONE);
-				TileMatrix[i][j]->SetTileStatus(ETileStatus::EMPTY);
+				TileMatrix[i][j]->ResetTile();
 			}
 		}
 }
@@ -77,8 +75,18 @@ ATile* AGameField::GetTileBYXYPosition(const int32 x, const int32 y)
 	else return nullptr;
 }
 
+bool AGameField::IsInRange(const int32 x, const int32 y)
+{
+	return x < Size && x >= 0 && y < Size && y >= 0;
+}
 
-TArray<TArray<ATile*>> AGameField::TileMapArrayInit(int32 ArrSize)
+bool AGameField::IsInRange(FVector2D Position)
+{
+	return Position.X < Size && Position.X >= 0 && Position.Y < Size && Position.Y >= 0;
+}
+
+
+TArray<TArray<ATile*>> AGameField::TileMatrixInit(int32 ArrSize)
 {
 	TArray<TArray<ATile*>> TileArrOfArr;
 	TileArrOfArr.SetNum(ArrSize);

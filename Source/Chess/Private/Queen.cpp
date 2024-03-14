@@ -27,7 +27,7 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	
 	ABishop* Bishop = NewObject<ABishop>(this);  Bishop->SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
 	ARook* Rook = NewObject<ARook>(this);		 Rook->SetGridPosition(CurrentLocation.X, CurrentLocation.Y);
-			
+
 
 	AvaibleMoves.Append(Bishop->AvaibleMovesByColor(GameField, SameColor));
 	AvaibleMoves.Append(Rook->AvaibleMovesByColor(GameField, SameColor));
@@ -41,6 +41,11 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	}
 
 	return AvaibleMoves;
+}
+
+FString AQueen::ToString()
+{
+	return "Q";
 }
 
 AWhiteQueen::AWhiteQueen() : AQueen()

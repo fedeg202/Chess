@@ -2,6 +2,7 @@
 
 
 #include "ChessBoard.h"
+#include "Chess_PlayerController.h"
 
 // Sets default values
 AChessBoard::AChessBoard()
@@ -59,9 +60,7 @@ void AChessBoard::SpawnWhitePieces()
 		Location = GameField->GetRelativeLocationByXYPosition(x, y);
 		Obj = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
 		Obj->SetGridPosition(x, y);
-		GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-		GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::WHITE);
-		GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+		GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 		WhitePieces.Add(Obj);
 	}
 	x--;
@@ -71,17 +70,13 @@ void AChessBoard::SpawnWhitePieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<AWhiteRook>(WhiteRookClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<AWhiteRook>(WhiteRookClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 
@@ -89,54 +84,40 @@ void AChessBoard::SpawnWhitePieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<AWhiteKnight>(WhiteKnightClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<AWhiteKnight>(WhiteKnightClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	y = 2;
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<AWhiteBishop>(WhiteBishopClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<AWhiteBishop>(WhiteBishopClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	y = 3;
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<AWhiteQueen>(WhiteQueenClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x, y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x, y)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x, y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<AWhiteKing>(WhiteKingClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileOwner(ETileOwner::WHITE);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Obj);
 	WhitePieces.Add(Obj);
-
-
 }
 
 void AChessBoard::SpawnBlackPieces()
@@ -150,9 +131,7 @@ void AChessBoard::SpawnBlackPieces()
 		Location = GameField->GetRelativeLocationByXYPosition(x, y);
 		Obj = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
 		Obj->SetGridPosition(x, y);
-		GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-		GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::BLACK);
-		GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+		GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 		BlackPieces.Add(Obj);
 	}
 	x++;
@@ -161,17 +140,13 @@ void AChessBoard::SpawnBlackPieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<ABlackRook>(BlackRookClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size- y - 1);
 	Obj = GetWorld()->SpawnActor<ABlackRook>(BlackRookClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 
@@ -179,17 +154,13 @@ void AChessBoard::SpawnBlackPieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<ABlackKnight>(BlackKnightClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<ABlackKnight>(BlackKnightClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 	
@@ -197,17 +168,13 @@ void AChessBoard::SpawnBlackPieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<ABlackBishop>(BlackBishopClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x,y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,y)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<ABlackBishop>(BlackBishopClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x,GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 
@@ -215,17 +182,13 @@ void AChessBoard::SpawnBlackPieces()
 	Location = GameField->GetRelativeLocationByXYPosition(x, y);
 	Obj = GetWorld()->SpawnActor<ABlackQueen>(BlackQueenClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, y);
-	GameField->GetTileBYXYPosition(x, y)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x, y)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x, y)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 	Location = GameField->GetRelativeLocationByXYPosition(x, GameField->Size - y - 1);
 	Obj = GetWorld()->SpawnActor<ABlackKing>(BlackKingClass, Location, FRotator::ZeroRotator);
 	Obj->SetGridPosition(x, GameField->Size - y - 1);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileStatus(ETileStatus::OCCUPIED);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetTileOwner(ETileOwner::BLACK);
-	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetOnPiece(Obj);
+	GameField->GetTileBYXYPosition(x, GameField->Size - y - 1)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Obj);
 	BlackPieces.Add(Obj);
 
 }
@@ -267,7 +230,6 @@ void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 			Tile->SetTileStatus(ETileStatus::OCCUPIED);
 		}
 		Tile->SetTileMaterial(0);
-
 	}
 }
 
@@ -384,7 +346,7 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 {
 	TArray<APiece*> ColorPieces;
 	TArray<FCoupleTile> AllColorSelectableMoves;
-	TArray<FCoupleTile> AllColorMoves;
+	TArray<FCoupleTile> AllOppositeColorMoves;
 	TArray<ATile*> APieceSelectableMoves;
 	FCoupleTile CoupleTile_tmp;
 	APiece* tmp_piece;
@@ -411,8 +373,8 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 		{
 			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
 			tmp_piece = VirtualMove(CoupleTile_tmp);
-			AllColorMoves = GetAllMovesByColor(OppositeColor);
-			if (CheckOnCheck(Color,AllColorMoves))
+			AllOppositeColorMoves = GetAllMovesByColor(OppositeColor);
+			if (CheckOnCheck(Color, AllOppositeColorMoves))
 				TilesToRemove.Add(APieceSelectableMoves[j]);
 			VirtualUnMove(CoupleTile_tmp, tmp_piece);
 		}
@@ -510,6 +472,42 @@ void AChessBoard::ResetChessBoard()
 	SpawnWhitePieces();
 
 }
+
+bool AChessBoard::CheckPawnPromotion(APiece* Piece)
+{
+	return Piece->GetName() == EPieceName::PAWN && ((Piece->GetColor() == EPieceColor::WHITE && Piece->GetGridPosition().X == GetGameField()->Size - 1) || (Piece->GetColor() == EPieceColor::BLACK && Piece->GetGridPosition().X == 0));
+}
+
+FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_eatFlag, bool b_promotionFlag,bool b_checkFlag,bool b_checkmateFlag)
+{
+	FString Result;
+	FString Eat;
+	FString Promotion;
+	FString Check;
+	if (b_eatFlag)
+		Eat = "x";
+	else
+		Eat = "-";
+
+	if (b_promotionFlag)
+		Promotion = "=";
+	else
+		Promotion = "";
+
+	if (b_checkFlag)
+		Check = "+";
+	else
+		Check = "";
+
+	if (b_checkmateFlag)
+		Check = "#";
+
+	Result = Piece->ToString() + Tiles.Tile1->ToString() + Eat + Tiles.Tile2->ToString() + Promotion;
+
+	return Result;
+}
+
+
 
 // Called when the game starts or when spawned
 void AChessBoard::BeginPlay()

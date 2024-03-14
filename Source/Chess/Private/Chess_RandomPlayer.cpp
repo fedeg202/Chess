@@ -12,13 +12,10 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 
 	GameInstance = Cast<UChess_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	PlayerNumber = -1;
-
 	Color = EColor::NONE;
 
 	SelectedPiece = nullptr;
 	Piece_SelectableMoves.SetNum(0);
-	All_SelectableMoves.SetNum(16);
 }
 
 // Called when the game starts or when spawned
@@ -93,13 +90,37 @@ void AChess_RandomPlayer::OnTurn()
 
 		else SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
 
-		SelectedPiece = nullptr;
+		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+
+		IsMyTurn = false;
 		Piece_SelectableMoves.Empty();
 
-		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
-		GameMode->TurnNextPlayer();
-		IsMyTurn = false;
-
+		if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
+		{
+			SelectedPiece = nullptr;
+			GameMode->TurnNextPlayer();	
+		}
+		else
+		{
+			
+			SelectedPiece = nullptr;
+			int32 randPromotion = FMath::Rand() % 4;
+			switch (randPromotion)
+			{
+			case 0:
+				GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::ROOK);
+				break;
+			case 1:
+				GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::KNIGHT);
+				break;
+			case 2:
+				GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::BISHOP);
+				break;
+			case 3:
+				GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::QUEEN);
+				break;
+			}
+		}
 
 	}, randTime, false);
 

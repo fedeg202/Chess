@@ -55,7 +55,7 @@ TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner Same
 		if (num_move > 4) num_move = 1;
 
 		tmp_move = CurrentLocation + Move[i];
-		if (tmp_move.X < GameField->Size && tmp_move.Y < GameField->Size && tmp_move.X >= 0 && tmp_move.Y >= 0)
+		if (GameField->IsInRange(tmp_move))
 		{
 			ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 			if (num_move % leftNum == 0)
@@ -136,6 +136,11 @@ TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner Same
 		num_move++;
 	}
 	return AvaibleMoves;
+}
+
+FString ARook::ToString()
+{
+	return "R";
 }
 
 AWhiteRook::AWhiteRook() : ARook()

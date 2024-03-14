@@ -72,6 +72,27 @@ void ATile::SetOnPiece(APiece* Piece)
 	OnPiece = Piece;
 }
 
+void ATile::SetStatusAndOwnerAndOnPiece(ETileStatus S, ETileOwner O, APiece* Piece)
+{
+	SetTileStatus(S);
+	SetTileOwner(O);
+	SetOnPiece(Piece);
+}
+
+void ATile::ResetTile()
+{
+	SetStatusAndOwnerAndOnPiece(ETileStatus::EMPTY, ETileOwner::NONE, nullptr);
+	SetTileMaterial(0);
+}
+
+FString ATile::ToString()
+{
+	char Letter;
+	Letter = static_cast<char>(97 + TileGridPosition.Y);
+	FString Result = FString::Printf(TEXT("%c%s"), Letter, *FString::FromInt(TileGridPosition.X));
+	return Result;
+}
+
 // Called when the game starts or when spawned
 void ATile::BeginPlay()
 {
