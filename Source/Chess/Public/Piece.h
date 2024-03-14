@@ -57,6 +57,9 @@ public:
 	//Return the name of the piece
 	EPieceName GetName();
 
+	//Rerurn the correct char to describe the moves with the Long Algebric Notation
+	virtual FString ToString();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -21,6 +21,7 @@ public:
 	//Return a pointer to all the tiles where the rook can go, based on the color coded in the ETileOwner
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor);
 
+	FString ToString() override;
 
 };
 

@@ -137,6 +137,11 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
+FString ABishop::ToString()
+{
+	return "B";
+}
+
 AWhiteBishop::AWhiteBishop() : ABishop()
 {
 	Color = EPieceColor::WHITE;

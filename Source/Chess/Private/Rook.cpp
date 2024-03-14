@@ -138,6 +138,11 @@ TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner Same
 	return AvaibleMoves;
 }
 
+FString ARook::ToString()
+{
+	return "R";
+}
+
 AWhiteRook::AWhiteRook() : ARook()
 {
 	Color = EPieceColor::WHITE;

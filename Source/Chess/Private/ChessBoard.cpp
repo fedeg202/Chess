@@ -478,6 +478,35 @@ bool AChessBoard::CheckPawnPromotion(APiece* Piece)
 	return Piece->GetName() == EPieceName::PAWN && ((Piece->GetColor() == EPieceColor::WHITE && Piece->GetGridPosition().X == GetGameField()->Size - 1) || (Piece->GetColor() == EPieceColor::BLACK && Piece->GetGridPosition().X == 0));
 }
 
+FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_eatFlag, bool b_promotionFlag,bool b_checkFlag,bool b_checkmateFlag)
+{
+	FString Result;
+	FString Eat;
+	FString Promotion;
+	FString Check;
+	if (b_eatFlag)
+		Eat = "x";
+	else
+		Eat = "-";
+
+	if (b_promotionFlag)
+		Promotion = "=";
+	else
+		Promotion = "";
+
+	if (b_checkFlag)
+		Check = "+";
+	else
+		Check = "";
+
+	if (b_checkmateFlag)
+		Check = "#";
+
+	Result = Piece->ToString() + Tiles.Tile1->ToString() + Eat + Tiles.Tile2->ToString() + Promotion;
+
+	return Result;
+}
+
 
 
 // Called when the game starts or when spawned

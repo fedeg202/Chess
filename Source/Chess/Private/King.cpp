@@ -65,6 +65,11 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 	return AvaibleMoves;
 }
 
+FString AKing::ToString()
+{
+	return "K";
+}
+
 AWhiteKing::AWhiteKing() : AKing()
 {
 	Color = EPieceColor::WHITE;

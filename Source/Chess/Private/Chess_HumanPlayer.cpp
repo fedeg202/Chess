@@ -118,16 +118,21 @@ void AChess_HumanPlayer::OnClick()
 		}
 
 
-		if (CurrTile != nullptr) {
+		if (CurrTile != nullptr) 
+		{
 			if (CurrTile->GetTileStatus() == ETileStatus::SELECTABLE && SelectedPiece != nullptr)
 			{
+				Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
+				Tiles.Tile2 = CurrTile;
+
 				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
-				
+				 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 				Piece_SelectableMoves.Empty();
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 				{
+					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece,Tiles), Color);
 					SelectedPiece = nullptr;
 					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 					IsMyTurn = false;
@@ -167,17 +172,23 @@ void AChess_HumanPlayer::OnClick()
 			}
 			else if (CurrTile->GetTileStatus() == ETileStatus::EATABLE && SelectedPiece != nullptr)
 			{
+				Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
+				Tiles.Tile2 = CurrTile;
+
 				SelectedPiece->Eat(CurrTile,ChessBoard);
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 				{
+					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles), Color);
+					SelectedPiece = nullptr;
 					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 					IsMyTurn = false;
 					GameMode->TurnNextPlayer();
 				}
 				else
 				{
+					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, true, true), Color);
 					IsMyTurn = false;
 					PawnPromotionHUD->AddToPlayerScreen();
 				}

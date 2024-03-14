@@ -21,6 +21,8 @@ public:
 	//Return a pointer to all the tiles where the king can go, based on the color coded in the ETileOwner
 	TArray<ATile*> AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner OpponentColor);
 
+	FString ToString() override;
+
 };
 
 UCLASS()

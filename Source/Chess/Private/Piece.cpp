@@ -100,6 +100,11 @@ EPieceName APiece::GetName()
 	return Name;
 }
 
+FString APiece::ToString()
+{
+	return FString();
+}
+
 // Called when the game starts or when spawned
 void APiece::BeginPlay()
 {

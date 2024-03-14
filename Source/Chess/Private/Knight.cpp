@@ -54,6 +54,11 @@ TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
+FString AKnight::ToString()
+{
+	return "N";
+}
+
 
 AWhiteKnight::AWhiteKnight():AKnight()
 {

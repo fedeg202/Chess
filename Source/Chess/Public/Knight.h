@@ -20,6 +20,8 @@ public:
 	TArray<FVector2D> Moves() override;
 	//Return a pointer to all the tiles where the knight can go, based on the color coded in the ETileOwner
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner OpponentColor);
+
+	FString ToString() override;
 };
 
 UCLASS()

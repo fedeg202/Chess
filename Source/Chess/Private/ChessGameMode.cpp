@@ -217,6 +217,9 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
 			ChessBoard->GetWhitePieces().Add(NewPiece);
 		}
 	}
+
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
+	HumanPlayer->ChessHUD->GetTopHistoryButtons()->SetTextOnButton(HumanPlayer->ChessHUD->GetTopHistoryButtons()->GetTextOnButton() + NewPiece->ToString());
 	TurnNextPlayer();
 }
 

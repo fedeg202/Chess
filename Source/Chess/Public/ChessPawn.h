@@ -32,6 +32,8 @@ public:
 	AWhitePawn();
 	//Return a pointer to all the tiles where the white pawn can go
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
+
+	FString ToString() override;
 };
 
 UCLASS()

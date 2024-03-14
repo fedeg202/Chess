@@ -115,6 +115,8 @@ public:
 	//Method to check if the piece is a pawn and is elegible for a pawn promotion
 	bool CheckPawnPromotion(APiece* Piece);
 
+	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);
+
 
 protected:
 	// Called when the game starts or when spawned

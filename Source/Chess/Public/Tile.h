@@ -84,6 +84,8 @@ public:
 	//Methot to restore the tile to is starting state
 	void ResetTile();
 
+	FString ToString();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

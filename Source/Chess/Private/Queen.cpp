@@ -43,6 +43,11 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	return AvaibleMoves;
 }
 
+FString AQueen::ToString()
+{
+	return "Q";
+}
+
 AWhiteQueen::AWhiteQueen() : AQueen()
 {
 	Color = EPieceColor::WHITE;
