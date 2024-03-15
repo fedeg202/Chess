@@ -14,6 +14,7 @@
 #include "GameFramework/Pawn.h"
 #include "Chess_HumanPlayer.generated.h"
 
+
 UCLASS()
 class CHESS_API AChess_HumanPlayer : public APawn, public IChess_PlayerInterface
 {

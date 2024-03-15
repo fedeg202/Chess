@@ -7,6 +7,7 @@
 #include "ChessBoard.h"
 #include "Chess_PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "ChessHUD.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -33,6 +34,9 @@ public:
 
 	//Reference to the selectable moves of the turn selected piece
 	TArray<ATile*> Piece_SelectableMoves;
+
+	UPROPERTY()
+	UChessHUD* ChessHUD;
 
 protected:
 	// Called when the game starts or when spawned

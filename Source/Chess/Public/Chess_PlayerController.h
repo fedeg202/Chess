@@ -42,6 +42,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPawnPromotionHUD> PawnPromotionHUDClass;
 
+	UPROPERTY()
+	UChessHUD* ChessHUD;
+
+	UPROPERTY()
+	UPawnPromotionHUD* PawnPromotionHUD;
 
 protected:
 	//Function called when starting game

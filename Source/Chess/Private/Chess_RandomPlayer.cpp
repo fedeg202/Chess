@@ -3,6 +3,7 @@
 
 #include "Chess_RandomPlayer.h"
 #include "ChessGameMode.h"
+#include "Chess_PlayerController.h"
 
 // Sets default values
 AChess_RandomPlayer::AChess_RandomPlayer()
@@ -22,7 +23,6 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 void AChess_RandomPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -41,17 +41,27 @@ void AChess_RandomPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AChess_RandomPlayer::OnTurn()
 {
+	if (ChessHUD == nullptr)
+	{
+		AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+		ChessHUD = PC->ChessHUD;
+	}
+		
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer Turn"));
 	GameInstance->SetTurnMessage(TEXT("RandomPlayer Turn"));
 
 	FTimerHandle TimerHandle;
 	int32 randTime;
-	FCoupleTile Tiles;
+
+
 
 	do { randTime = FMath::Rand() % 5; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
+		FCoupleTile Tiles;
+		bool b_eatFlag = false;
+
 		do {
 			TArray<ATile*> TilesToRemove;
 			int32 ranPiece = FMath::Rand() % ChessBoard->GetBlackPieces().Num();
@@ -84,10 +94,16 @@ void AChess_RandomPlayer::OnTurn()
 		int32 ranTile = FMath::Rand() % Piece_SelectableMoves.Num();
 
 		ATile* SelectedTile = Piece_SelectableMoves[ranTile];
+		
+		Tiles.Tile1 = ChessBoard->GetGameField()->GetTileBYXYPosition(SelectedPiece->GetGridPosition().X, SelectedPiece->GetGridPosition().Y);
+		Tiles.Tile2 = SelectedTile;
 
 		if (SelectedTile->GetTileStatus() == ETileStatus::OCCUPIED)
+		{
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
-
+			b_eatFlag = true;
+		}
+		
 		else SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
@@ -97,12 +113,13 @@ void AChess_RandomPlayer::OnTurn()
 
 		if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 		{
+			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, false), Color);
 			SelectedPiece = nullptr;
-			GameMode->TurnNextPlayer();	
+			GameMode->TurnNextPlayer();
 		}
 		else
 		{
-			
+			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, true), Color);
 			SelectedPiece = nullptr;
 			int32 randPromotion = FMath::Rand() % 4;
 			switch (randPromotion)

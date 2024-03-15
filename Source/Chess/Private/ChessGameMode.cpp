@@ -12,7 +12,7 @@
 
 AChessGameMode::AChessGameMode()
 {
-	//PlayerControllerClass = AChess_PlayerController::StaticClass();
+	PlayerControllerClass = AChess_PlayerController::StaticClass();
 	DefaultPawnClass = AChess_HumanPlayer::StaticClass();
 }
 

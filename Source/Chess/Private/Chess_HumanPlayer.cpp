@@ -38,13 +38,13 @@ void AChess_HumanPlayer::BeginPlay()
 
 	AChess_PlayerController* PC = GetController<AChess_PlayerController>();
 	check(PC);
-	ChessHUD = CreateWidget<UChessHUD>(PC, PC->ChessHUDClass);
-	check(ChessHUD); 
+	PC->ChessHUD = CreateWidget<UChessHUD>(PC, PC->ChessHUDClass);
+	check(PC->ChessHUD);
+	ChessHUD = PC->ChessHUD;
 	ChessHUD->AddToPlayerScreen();
-
-	PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
-	check(PawnPromotionHUD);
-	
+	PC->PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
+	check(PC->PawnPromotionHUD);
+	PawnPromotionHUD = PC->PawnPromotionHUD;
 }
 
 // Called every frame
@@ -140,6 +140,7 @@ void AChess_HumanPlayer::OnClick()
 				}
 				else 
 				{
+					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, false, true), Color);
 					IsMyTurn = false;
 					PawnPromotionHUD->AddToPlayerScreen();
 				}

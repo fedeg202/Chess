@@ -5,20 +5,36 @@
 #include "Components/ScrollBox.h"
 #include "Chess_PlayerController.h"
 
+
 void UChessHUD::AddMoveButtonToTheHistoryScrollBox(FString MoveCode, EColor Color)
 {
     UMoveHistoryButton* MoveButton;
+    UHorizontalHistoryBox* HorizontalBox;
     if (Color == EColor::BLACK)
+    {
+        HorizontalBox = GetTopHorizontalHistoryBoxes();
         MoveButton = CreateWidget<UBlackMoveHistoryButton>(this, BlackMoveHistoryButtonClass);
-    else
+    }
+    else 
+    {
+        HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);
         MoveButton = CreateWidget<UWhiteMoveHistoryButton>(this, WhiteMoveHistoryButtonClass);
+    }
+        
 
-    if (MoveButton != nullptr)
+    if (MoveButton != nullptr && HorizontalBox != nullptr)
     {
         MoveButton->SetMoveNumber(HistoryButtons.Num());
         MoveButton->SetTextOnButton(MoveCode);
         HistoryButtons.Add(MoveButton);
-        MoveHistoryScrollBox->AddChild(MoveButton);
+        HorizontalBox->Box->AddChild(MoveButton);
+
+        if (Color == EColor::WHITE)
+        {
+            HorizontalBox->SetNumber(HorizontalHistoryBoxes.Num() + 1);
+            HorizontalHistoryBoxes.Add(HorizontalBox);
+            MoveHistoryScrollBox->AddChild(HorizontalBox);
+        }      
     }
     else
     {
@@ -39,4 +55,9 @@ void UChessHUD::ResetHistoryScrollBox()
 UMoveHistoryButton* UChessHUD::GetTopHistoryButtons()
 {
 	return HistoryButtons.Top();
+}
+
+UHorizontalHistoryBox* UChessHUD::GetTopHorizontalHistoryBoxes()
+{
+    return HorizontalHistoryBoxes.Top();
 }

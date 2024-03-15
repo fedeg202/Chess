@@ -43,4 +43,5 @@ public:
 	// set the turn message
 	UFUNCTION(BlueprintCallable)
 	void SetTurnMessage(FString Message);
+
 };
