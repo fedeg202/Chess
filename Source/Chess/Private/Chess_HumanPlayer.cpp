@@ -41,7 +41,6 @@ void AChess_HumanPlayer::BeginPlay()
 	PC->ChessHUD = CreateWidget<UChessHUD>(PC, PC->ChessHUDClass);
 	check(PC->ChessHUD);
 	ChessHUD = PC->ChessHUD;
-	ChessHUD->AddToPlayerScreen();
 	PC->PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
 	check(PC->PawnPromotionHUD);
 	PawnPromotionHUD = PC->PawnPromotionHUD;
@@ -181,7 +180,7 @@ void AChess_HumanPlayer::OnClick()
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 				{
-					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles), Color);
+					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles,true), Color);
 					SelectedPiece = nullptr;
 					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 					IsMyTurn = false;

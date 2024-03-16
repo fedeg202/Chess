@@ -5,6 +5,7 @@
 #include "ChessBoard.h"
 #include "Chess_PlayerInterface.h"
 #include "Chess_HumanPlayer.h"
+#include "MainMenu.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
@@ -29,6 +30,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AChessBoard> ChessBoardClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMainMenu>	MainMenuClass;
+
 	// reference to a ChessBoard object
 	UPROPERTY(VisibleAnywhere)
 	AChessBoard* ChessBoard;
@@ -39,7 +43,10 @@ public:
 	// called at the end of the game turn
 	void TurnNextPlayer();
 	// called at the start of the game
-	void StartGame();
+	UFUNCTION(BlueprintCallable)
+	void StartGame(int32 Diff);
+
+	int32 Difficulty = 0;
 
 	//Called to update booleans OnCheck value of the player interface at the and of every turn
 	void CheckOnCheck(IChess_PlayerInterface* Player);

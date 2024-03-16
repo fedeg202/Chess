@@ -10,6 +10,11 @@ AChess_PlayerController::AChess_PlayerController()
 	bEnableClickEvents = true;
 }
 
+void AChess_PlayerController::ShowHUD()
+{
+	ChessHUD->AddToPlayerScreen();
+}
+
 void AChess_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();

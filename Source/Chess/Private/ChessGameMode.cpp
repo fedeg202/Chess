@@ -34,8 +34,8 @@ void AChessGameMode::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Game Field is null"));
 	}
 
-	float CameraPosX = ((ChessBoard->GetGameField()->TileSize * ChessBoard->GetGameField()->Size)/2);
-	FVector CameraPos(CameraPosX, CameraPosX, 1000.0f);
+	float CameraPosX = ((ChessBoard->GetGameField()->TileSize - 2) * ChessBoard->GetGameField()->Size)/2;
+	FVector CameraPos(CameraPosX, CameraPosX, 1050.0f);
 	HumanPlayer->SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
 
 	HumanPlayer->ChessBoard = ChessBoard;
@@ -43,17 +43,10 @@ void AChessGameMode::BeginPlay()
 
 	// Human player = 0
 	Players.Add(HumanPlayer);
-	// Random Player
-	auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
-	AI->ChessBoard = ChessBoard;
-	AI->Color = EColor::BLACK;
-	// MiniMax Player
-	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
-
-	// AI player = 1
-	Players.Add(AI);
-
-	StartGame();
+	
+	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	UMainMenu* MainMenu = CreateWidget<UMainMenu>(PC, MainMenuClass);
+	MainMenu->AddToPlayerScreen();
 }
 
 void AChessGameMode::TurnNextPlayer()
@@ -84,8 +77,20 @@ void AChessGameMode::TurnNextPlayer()
 	}
 }
 
-void AChessGameMode::StartGame()
+void AChessGameMode::StartGame(int32 Diff)
 {
+	if (Diff!=Difficulty)
+		Difficulty = Diff;
+	// Random Player
+	auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
+	AI->ChessBoard = ChessBoard;
+	AI->Color = EColor::BLACK;
+	// MiniMax Player
+	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
+
+	// AI player = 1
+	Players.Add(AI);
+
 	Player = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
@@ -226,5 +231,5 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
 void AChessGameMode::ResetGame()
 {
 	ChessBoard->ResetChessBoard();
-	StartGame();
+	StartGame(Difficulty);
 }

@@ -48,6 +48,9 @@ public:
 	UPROPERTY()
 	UPawnPromotionHUD* PawnPromotionHUD;
 
+	UFUNCTION(BlueprintCallable)
+	void ShowHUD();
+
 protected:
 	//Function called when starting game
 	virtual void BeginPlay() override;

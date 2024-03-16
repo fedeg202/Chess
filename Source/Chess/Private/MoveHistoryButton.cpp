@@ -21,7 +21,7 @@ EColor UMoveHistoryButton::GetPlayerInTurn()
 
 void UMoveHistoryButton::SetTextOnButton(FString String)
 {
-	Text->SetText(FText::FromString(FString::FromInt(MoveNumber + 1) + ". " + String));
+	Text->SetText(FText::FromString(String));
 }
 
 FString UMoveHistoryButton::GetTextOnButton()
