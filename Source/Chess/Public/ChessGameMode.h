@@ -62,4 +62,6 @@ public:
 	//called to reset the game after the reset button pressed
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();
+
+	int32 CurrentReplayMoveIndex = 0;
 };

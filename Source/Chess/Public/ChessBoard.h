@@ -15,6 +15,26 @@
 #include "ChessBoard.generated.h"
 
 
+
+USTRUCT()
+struct FMove
+{
+	GENERATED_BODY()
+
+public:
+	FMove(FCoupleTile CTiles,EColor PlayerColor, bool bEat = false,bool bPawnPromotionFlag = false) 
+	{
+		Tiles = CTiles;
+		Player = PlayerColor;
+		bEatFlag = bEat;
+	}
+	FCoupleTile Tiles;
+	EColor Player;
+	bool bEatFlag;
+	bool bPawnPromotion;
+};
+
+
 /*
 * Class to implement the complete Chessboard, tiles + pieces
 */
@@ -117,6 +137,11 @@ public:
 
 	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);
 
+	void AddMove(FMove Move);
+
+	TArray<FMove>& GetMoves();
+
+	void RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -140,6 +165,9 @@ protected:
 
 	//Refernce to a Gamefield object
 	AGameField* GameField;
+
+	//Reference to an array with all the moves
+	TArray<FMove> Moves;
 
 
 };

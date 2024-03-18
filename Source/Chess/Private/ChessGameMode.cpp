@@ -51,6 +51,7 @@ void AChessGameMode::BeginPlay()
 
 void AChessGameMode::TurnNextPlayer()
 {
+	CurrentReplayMoveIndex++;
 	Player = !Player;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
@@ -168,7 +169,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
 				NewPiece = GetWorld()->SpawnActor<ABlackQueen>(ChessBoard->BlackQueenClass, Location, FRotator::ZeroRotator);
 				break;
 			default:
-				NewPiece = GetWorld()->SpawnActor<ABlackQueen>(ChessBoard->BlackQueenClass, Location, FRotator::ZeroRotator);
+				NewPiece = GetWorld()->SpawnActor<ABlackPawn>(ChessBoard->BlackPawnClass, Location, FRotator::ZeroRotator);
 				break;
 		}
 		if (Tile!= nullptr && NewPiece != nullptr)

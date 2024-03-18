@@ -236,22 +236,22 @@ void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 void AChessBoard::AddWhiteEatenPiece(APiece* EatenPiece)
 {
 	if (EatenWhitePieces.IsEmpty())
-		EatenWhitePieces.Add(EatenPiece);
+		EatenWhitePieces.Push(EatenPiece);
 	else 
 	{
 		EatenWhitePieces.Top()->SetActorHiddenInGame(true);
-		EatenWhitePieces.Add(EatenPiece);
+		EatenWhitePieces.Push(EatenPiece);
 	}
 }
 
 void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 {
 	if (EatenBlackPieces.IsEmpty())
-		EatenBlackPieces.Add(EatenPiece);
+		EatenBlackPieces.Push(EatenPiece);
 	else
 	{
 		EatenBlackPieces.Top()->SetActorHiddenInGame(true);
-		EatenBlackPieces.Add(EatenPiece);
+		EatenBlackPieces.Push(EatenPiece);
 	}
 }
 
@@ -505,6 +505,101 @@ FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_e
 	Result = Piece->ToString() + Tiles.Tile1->ToString() + Eat + Tiles.Tile2->ToString() + Promotion;
 
 	return Result;
+}
+
+void AChessBoard::AddMove(FMove Move)
+{
+	Moves.Push(Move);
+}
+
+TArray<FMove>& AChessBoard::GetMoves()
+{
+	return Moves;
+}
+
+void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex)
+{
+	for (int32 i = CurrentMoveIndex; i > TargetMoveindex; i--)
+	{
+		if (!Moves[i].bEatFlag && !Moves[i].bPawnPromotion)
+		{
+			APiece* Piece = Moves[i].Tiles.Tile2->GetOnPiece();
+			Piece->Move(Moves[i].Tiles.Tile1,this->GetGameField());
+		}
+		else if (Moves[i].bEatFlag && Moves[i].bPawnPromotion)
+		{
+			APiece* Piece = Moves[i].Tiles.Tile2->GetOnPiece();
+			FVector2D GridPosition = Piece->GetGridPosition();
+			FVector Location = AGameField::GetRelativeLocationByXYPosition(GridPosition.X, GridPosition.Y);
+			APiece* Pawn;
+			APiece* EatenPiece;
+			FVector EatenLocation;
+			
+			if (Moves[i].Player == EColor::BLACK)
+			{
+				EatenPiece = GetEatenWhitePieces().Pop(true);
+				WhitePieces.Add(EatenPiece);
+				
+				BlackPieces.Remove(Piece);
+				Piece->Destroy();
+				APiece* Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X,GridPosition.Y);
+				Moves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK,Pawn);
+				BlackPieces.Add(Pawn);
+
+				Pawn->Move(Moves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, EatenPiece);
+			}
+			else
+			{
+				EatenPiece = GetEatenBlackPieces().Pop(true);
+				BlackPieces.Add(EatenPiece);
+
+				WhitePieces.Remove(Piece);
+				Piece->Destroy();
+				APiece* Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				Moves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Pawn);
+				WhitePieces.Add(Pawn);
+
+				Pawn->Move(Moves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, EatenPiece);
+			}
+
+			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
+			EatenPiece->SetActorLocation(EatenLocation);
+		}
+		else if (Moves[i].bEatFlag && !Moves[i].bPawnPromotion)
+		{
+			APiece* Piece = Moves[i].Tiles.Tile2->GetOnPiece();
+			APiece* EatenPiece;
+			FVector EatenLocation;
+
+			if (Moves[i].Player == EColor::BLACK)
+			{
+				EatenPiece = GetEatenWhitePieces().Pop(true);
+				WhitePieces.Add(EatenPiece);
+
+				Piece->Move(Moves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, EatenPiece);
+			}
+			else
+			{
+				EatenPiece = GetEatenBlackPieces().Pop(true);
+				BlackPieces.Add(EatenPiece);
+
+				Piece->Move(Moves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, EatenPiece);
+			}
+
+			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
+			EatenPiece->SetActorLocation(EatenLocation);
+		}
+	}
 }
 
 
