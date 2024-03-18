@@ -20,15 +20,18 @@ class CHESS_API UMoveHistoryButton : public UUserWidget
 public:
 	
 	void SetMoveNumber(int32 Num);
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetMoveNumber();
 
-	virtual EColor GetPlayerInTurn();
+	EColor GetPlayerInTurn();
 
 	void SetTextOnButton(FString String);
 	FString GetTextOnButton();
 
 protected:
 	int32 MoveNumber;
+
 	EColor ColorOfPlayerInTurn;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))

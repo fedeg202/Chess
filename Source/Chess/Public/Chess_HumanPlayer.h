@@ -40,11 +40,11 @@ public:
 
 	TArray<ATile*> Piece_SelectableMoves;
 
+	bool IsMyTurn = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	bool IsMyTurn = false;
 
 	APiece* SelectedPiece;
 

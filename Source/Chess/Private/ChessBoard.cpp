@@ -3,6 +3,7 @@
 
 #include "ChessBoard.h"
 #include "Chess_PlayerController.h"
+#include "ChessGameMode.h"
 
 // Sets default values
 AChessBoard::AChessBoard()
@@ -277,12 +278,12 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 	return false;
 }
 
-bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves)
+bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Tmp_Moves)
 {
 	for (int32 i = 0; i < Moves.Num(); i++)
 	{
-		if (Moves[i].Tile2->GetOnPiece() != nullptr
-			&& Moves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
+		if (Tmp_Moves[i].Tile2->GetOnPiece() != nullptr
+			&& Tmp_Moves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
 			return true;
 	}
 	return false;
@@ -542,7 +543,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 				
 				BlackPieces.Remove(Piece);
 				Piece->Destroy();
-				APiece* Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
+				Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
 				Pawn->SetGridPosition(GridPosition.X,GridPosition.Y);
 				Moves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK,Pawn);
 				BlackPieces.Add(Pawn);
@@ -558,7 +559,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 
 				WhitePieces.Remove(Piece);
 				Piece->Destroy();
-				APiece* Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
+				Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
 				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
 				Moves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Pawn);
 				WhitePieces.Add(Pawn);
@@ -599,6 +600,40 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
 			EatenPiece->SetActorLocation(EatenLocation);
 		}
+	}
+}
+
+void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex)
+{
+	for (int32 i = 0; i <= TargetMoveIndex; i++)
+	{
+		if (Moves[i].bEatFlag)
+			Moves[i].Tiles.Tile1->GetOnPiece()->Eat(Moves[i].Tiles.Tile1, this);
+		else
+			Moves[i].Tiles.Tile1->GetOnPiece()->Move(Moves[i].Tiles.Tile1, this->GetGameField());
+		if (Moves[i].bPawnPromotion)
+		{
+			EPieceColor Color;
+			if (Moves[i].Player == EColor::WHITE) Color = EPieceColor::WHITE;
+			else Color = EPieceColor::WHITE;
+			AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+			GameMode->HandlePawnPromotion(Color, Moves[i].PawnPromotedTo,false);
+		}
+			
+	}
+}
+
+FMove& AChessBoard::GetTopMove()
+{
+	return Moves.Top();
+}
+
+void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
+{
+	int32 i = Moves.Num()-1;
+	for (; i > StartingIndex; i = Moves.Num() - 1)
+	{
+		Moves.Pop();
 	}
 }
 

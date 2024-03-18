@@ -57,11 +57,14 @@ public:
 
 	//called to handle the "Special rule" pawn promotion
 	UFUNCTION(BlueprintCallable)
-	void HandlePawnPromotion(EPieceColor Color, EPieceName Name);
+	void HandlePawnPromotion(EPieceColor Color, EPieceName Name,bool bIngame = true);
 	
 	//called to reset the game after the reset button pressed
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();
 
 	int32 CurrentReplayMoveIndex = 0;
+
+	UFUNCTION(BlueprintCallable)
+	void HandleReplay(int32 MoveIndex);
 };

@@ -29,6 +29,7 @@ FString UMoveHistoryButton::GetTextOnButton()
 	return Text->GetText().ToString();
 }
 
+
 UWhiteMoveHistoryButton::UWhiteMoveHistoryButton() : UMoveHistoryButton()
 {
 	ColorOfPlayerInTurn = EColor::WHITE;

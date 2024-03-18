@@ -35,7 +35,7 @@ public:
 
 	void ResetHistoryScrollBox();
 
-	//void RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex);
+	void RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex);
 
 	UMoveHistoryButton* GetTopHistoryButtons();
 

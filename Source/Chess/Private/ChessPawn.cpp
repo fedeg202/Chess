@@ -90,6 +90,11 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	return AvaibleMoves;
 }
 
+FString AChessPawn::ToString()
+{
+	return "P";
+}
+
 AWhitePawn::AWhitePawn() : AChessPawn()
 {
 	Color = EPieceColor::WHITE;
@@ -102,11 +107,6 @@ TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
-}
-
-FString AWhitePawn::ToString()
-{
-	return "P";
 }
 
 ABlackPawn::ABlackPawn() : AChessPawn()

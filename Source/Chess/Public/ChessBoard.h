@@ -9,6 +9,7 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "King.h"
+#include "Chess_PlayerInterface.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -22,16 +23,20 @@ struct FMove
 	GENERATED_BODY()
 
 public:
+	FMove() = default;
 	FMove(FCoupleTile CTiles,EColor PlayerColor, bool bEat = false,bool bPawnPromotionFlag = false) 
 	{
 		Tiles = CTiles;
 		Player = PlayerColor;
 		bEatFlag = bEat;
+		bPawnPromotion = bPawnPromotionFlag;
+		PawnPromotedTo = EPieceName::PAWN;
 	}
 	FCoupleTile Tiles;
 	EColor Player;
 	bool bEatFlag;
 	bool bPawnPromotion;
+	EPieceName PawnPromotedTo;
 };
 
 
@@ -142,6 +147,12 @@ public:
 	TArray<FMove>& GetMoves();
 
 	void RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex);
+
+	void RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex);
+
+	FMove& GetTopMove();
+
+	void RemoveMovesFromStartingIndex(int32 StartingIndex);
 
 protected:
 	// Called when the game starts or when spawned

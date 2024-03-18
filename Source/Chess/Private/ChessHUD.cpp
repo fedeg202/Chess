@@ -50,6 +50,32 @@ void UChessHUD::ResetHistoryScrollBox()
 		MoveHistoryScrollBox->RemoveChild(HistoryButtons[i]);
 	}
 	HistoryButtons.Empty();
+
+    for (int32 i = 0; i < HorizontalHistoryBoxes.Num(); i++)
+    {
+        MoveHistoryScrollBox->RemoveChild(HorizontalHistoryBoxes[i]);
+    }
+    HorizontalHistoryBoxes.Empty();
+}
+
+void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
+{
+    int32 HorizontalBoxIndex = FMath::Floor((StartingIndex + 1) / 2);
+    TArray<UHorizontalBox> HorizontalBoxToRemove;
+    TArray<UMoveHistoryButton> ButtonsToRemove;
+    int32 i = HistoryButtons.Num()-1;
+    for (; i > StartingIndex; i = HistoryButtons.Num()-1)
+    {
+        HistoryButtons[i]->RemoveFromParent();
+        HistoryButtons.Pop(true);
+    }
+
+    int32 j = HorizontalHistoryBoxes.Num()-1;
+    for (; j > HorizontalBoxIndex; j = HorizontalHistoryBoxes.Num()-1)
+    {
+        HorizontalHistoryBoxes[j]->RemoveFromParent();
+        HorizontalHistoryBoxes.Pop(true);
+    }
 }
 
 UMoveHistoryButton* UChessHUD::GetTopHistoryButtons()

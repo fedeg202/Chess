@@ -128,7 +128,7 @@ void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 	}
 }
 
-void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
+void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool bInGame)
 {
 	APiece* OldPiece = nullptr;
 	FVector Location;
@@ -225,12 +225,46 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name)
 	}
 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
-	HumanPlayer->ChessHUD->GetTopHistoryButtons()->SetTextOnButton(HumanPlayer->ChessHUD->GetTopHistoryButtons()->GetTextOnButton() + NewPiece->ToString());
-	TurnNextPlayer();
+	if (bInGame)
+	{
+		HumanPlayer->ChessHUD->GetTopHistoryButtons()->SetTextOnButton(HumanPlayer->ChessHUD->GetTopHistoryButtons()->GetTextOnButton() + NewPiece->ToString());
+		ChessBoard->GetTopMove().PawnPromotedTo = Name;
+		TurnNextPlayer();
+	}
+		
+	
 }
 
 void AChessGameMode::ResetGame()
 {
 	ChessBoard->ResetChessBoard();
 	StartGame(Difficulty);
+}
+
+void AChessGameMode::HandleReplay(int32 MoveIndex)
+{
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
+	if (HumanPlayer->IsMyTurn == true) 
+	{
+		HumanPlayer->IsMyTurn = false;
+		if (MoveIndex > CurrentReplayMoveIndex-1)
+		{
+			ChessBoard->RestoreChessboardToMoveForward(CurrentReplayMoveIndex - 1, MoveIndex);
+		}
+		else if (MoveIndex < CurrentReplayMoveIndex-1)
+		{
+			ChessBoard->RestoreChessboardToMoveBackward(CurrentReplayMoveIndex - 1, MoveIndex);
+		}
+		else if (CurrentReplayMoveIndex - 1 == MoveIndex) 
+		{
+			ChessBoard->RemoveMovesFromStartingIndex(MoveIndex);
+			AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
+			if (ChessBoard->GetTopMove().Player == EColor::WHITE)
+				Players[1]->OnTurn();
+			else
+				Players[0]->OnTurn();
+		}
+		CurrentReplayMoveIndex = MoveIndex;
+	}
 }
