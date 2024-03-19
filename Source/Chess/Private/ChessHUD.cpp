@@ -60,9 +60,7 @@ void UChessHUD::ResetHistoryScrollBox()
 
 void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
 {
-    int32 HorizontalBoxIndex = FMath::Floor((StartingIndex + 1) / 2);
-    TArray<UHorizontalBox> HorizontalBoxToRemove;
-    TArray<UMoveHistoryButton> ButtonsToRemove;
+    int32 HorizontalBoxIndex = FMath::Floor(StartingIndex / 2);
     int32 i = HistoryButtons.Num()-1;
     for (; i > StartingIndex; i = HistoryButtons.Num()-1)
     {

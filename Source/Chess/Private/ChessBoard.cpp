@@ -605,7 +605,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 
 void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex)
 {
-	for (int32 i = 0; i <= TargetMoveIndex; i++)
+	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
 	{
 		if (Moves[i].bEatFlag)
 			Moves[i].Tiles.Tile1->GetOnPiece()->Eat(Moves[i].Tiles.Tile1, this);
@@ -646,7 +646,6 @@ void AChessBoard::BeginPlay()
 	SpawnGameField();
 	SpawnWhitePieces();
 	SpawnBlackPieces();
-
 }
 
 

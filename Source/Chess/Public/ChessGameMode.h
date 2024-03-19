@@ -67,4 +67,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleReplay(int32 MoveIndex);
+
+	bool bIsInReplay = false;
 };
