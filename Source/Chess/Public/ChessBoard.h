@@ -144,7 +144,7 @@ public:
 
 	void AddMove(FMove Move);
 
-	TArray<FMove>& GetMoves();
+	TArray<FMove>& GetAllMoves();
 
 	void RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex);
 
@@ -178,7 +178,7 @@ protected:
 	AGameField* GameField;
 
 	//Reference to an array with all the moves
-	TArray<FMove> Moves;
+	TArray<FMove> AllMoves;
 
 
 };

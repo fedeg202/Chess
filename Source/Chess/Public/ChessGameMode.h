@@ -25,7 +25,7 @@ public:
 	bool IsGameOver;
 	// array of player interfaces
 	TArray<IChess_PlayerInterface*> Players;
-	bool Player;
+	bool b_turnHumanPlayer;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AChessBoard> ChessBoardClass;

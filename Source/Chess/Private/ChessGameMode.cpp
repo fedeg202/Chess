@@ -52,11 +52,11 @@ void AChessGameMode::BeginPlay()
 void AChessGameMode::TurnNextPlayer()
 {
 	CurrentReplayMoveIndex++;
-	Player = !Player;
+	b_turnHumanPlayer = !b_turnHumanPlayer;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 
-	if (Player) 
+	if (b_turnHumanPlayer) 
 	{
 		CheckOnCheck(Players[0]);
 		CheckOnStalemate(Players[0]);
@@ -92,7 +92,7 @@ void AChessGameMode::StartGame(int32 Diff)
 	// AI player = 1
 	Players.Add(AI);
 
-	Player = true;
+	b_turnHumanPlayer = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 	Players[0]->OnTurn();
@@ -252,7 +252,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		HumanPlayer->IsMyTurn = false;
 		if (MoveIndex > CurrentReplayMoveIndex-1)
 		{
-			ChessBoard->RestoreChessboardToMoveForward(CurrentReplayMoveIndex - 1, MoveIndex);
+			ChessBoard->RestoreChessboardToMoveForward(CurrentReplayMoveIndex, MoveIndex);
 		}
 		else if (MoveIndex < CurrentReplayMoveIndex-1)
 		{
@@ -265,10 +265,14 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
 			bIsInReplay = false;
 			if (ChessBoard->GetTopMove().Player == EColor::WHITE)
-				Players[1]->OnTurn();
+			{
+				b_turnHumanPlayer = true; //i want to use the TurnNextPlayer in order to update all the avaible moves, so i here i put true and with turn next player will be set to true
+			}	
 			else
-				Players[0]->OnTurn();
-
+			{
+				b_turnHumanPlayer = false;
+			}
+			TurnNextPlayer();
 		}
 		CurrentReplayMoveIndex = MoveIndex+1;
 	}
