@@ -49,7 +49,7 @@ void AChess_RandomPlayer::OnTurn()
 		
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer Turn"));
-	GameInstance->SetTurnMessage(TEXT("RandomPlayer Turn"));
+	GameInstance->SetTurnMessage("RandomPlayer in Turn");
 
 	FTimerHandle TimerHandle;
 	int32 randTime;

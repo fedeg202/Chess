@@ -38,10 +38,10 @@ public:
 	//Tile class
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ATile> TileClass;
-
+	//Black tile class
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ATileBlack> TileBlackClass;
-
+	//White tile class
 	UPROPERTY(EditDefaultsOnly);
 	TSubclassOf<ATileWhite> TileWhiteClass;
 
@@ -55,7 +55,9 @@ public:
 	//Return a pointer to the tile that is in position (x,y) in the tile matrix
 	ATile* GetTileBYXYPosition(const int32 x, const int32 y);
 
+	//Return true if x and y are in the size of the gamefield else return false
 	bool IsInRange(const int32 x, const int32 y);
+	//Return true the position is in the size of the gamefield else return false
 	bool IsInRange(FVector2D Position);
 
 protected:

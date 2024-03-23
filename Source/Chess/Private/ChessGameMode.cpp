@@ -51,6 +51,7 @@ void AChessGameMode::BeginPlay()
 
 void AChessGameMode::TurnNextPlayer()
 {
+	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CurrentReplayMoveIndex++;
 	b_turnHumanPlayer = !b_turnHumanPlayer;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
@@ -61,9 +62,23 @@ void AChessGameMode::TurnNextPlayer()
 		CheckOnCheck(Players[0]);
 		CheckOnStalemate(Players[0]);
 		CheckOnCkeckmate(Players[0]);
-		if (Players[0]->b_OnCheckmate) Players[0]->OnLose();
-		else if (Players[0]->b_OnStalemate) Players[0]->OnStalemate();
-		else if (Players[0]->b_OnCheck) Players[0]->OnCheck();
+		if (Players[0]->b_OnCheckmate) 
+		{
+			b_gameEnded = true;
+			PC->ChessHUD->OnCheckmate(Players[0]->Color);
+			Players[0]->OnLose();
+		}
+		else if (Players[0]->b_OnStalemate)
+		{
+			PC->ChessHUD->OnStalmate();
+			b_gameEnded = true;
+			Players[0]->OnStalemate();
+		}
+		else if (Players[0]->b_OnCheck)
+		{
+			PC->ChessHUD->OnCheck();
+			Players[0]->OnCheck();
+		}
 		else Players[0]->OnTurn();
 	}
 	else
@@ -71,9 +86,23 @@ void AChessGameMode::TurnNextPlayer()
 		CheckOnCheck(Players[1]);
 		CheckOnStalemate(Players[1]);
 		CheckOnCkeckmate(Players[1]);
-		if (Players[1]->b_OnCheckmate) Players[0]->OnWin();
-		else if (Players[1]->b_OnStalemate) Players[1]->OnStalemate();
-		else if (Players[1]->b_OnCheck) Players[1]->OnCheck();
+		if (Players[1]->b_OnCheckmate)
+		{
+			b_gameEnded = true;
+			PC->ChessHUD->OnCheckmate(Players[1]->Color);
+			Players[0]->OnWin();
+		}
+		else if (Players[1]->b_OnStalemate)
+		{
+			PC->ChessHUD->OnStalmate();
+			b_gameEnded = true;
+			Players[1]->OnStalemate();
+		}
+		else if (Players[1]->b_OnCheck)
+		{
+			PC->ChessHUD->OnCheck();
+			Players[1]->OnCheck();
+		}
 		else Players[1]->OnTurn();
 	}
 }
@@ -238,7 +267,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 void AChessGameMode::ResetGame()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
-	if (HumanPlayer->IsMyTurn == true)
+	if (HumanPlayer->IsMyTurn == true || b_gameEnded)
 	{
 		AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		PC->ChessHUD->ResetHistoryScrollBox();
@@ -252,7 +281,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 	ChessBoard->UnShowSelectableTiles(HumanPlayer->Piece_SelectableMoves);
-	if (HumanPlayer->IsMyTurn == true || bIsInReplay) 
+	if (HumanPlayer->IsMyTurn == true || bIsInReplay || b_gameEnded) 
 	{
 		bIsInReplay = true;
 		HumanPlayer->IsMyTurn = false;
@@ -270,6 +299,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 			AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
 			bIsInReplay = false;
+			b_gameEnded = false;
 			if (ChessBoard->GetTopMove().Player == EColor::WHITE)
 			{
 				b_turnHumanPlayer = true; //i want to use the TurnNextPlayer in order to update all the avaible moves, so i here i put true and with turn next player will be set to true

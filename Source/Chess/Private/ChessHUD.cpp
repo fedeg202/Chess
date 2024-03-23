@@ -85,3 +85,30 @@ UHorizontalHistoryBox* UChessHUD::GetTopHorizontalHistoryBoxes()
 {
     return HorizontalHistoryBoxes.Top();
 }
+
+void UChessHUD::OnCheck()
+{
+    UMoveHistoryButton* TopButton = HistoryButtons.Top();
+    TopButton->SetTextOnButton(TopButton->GetTextOnButton() + "+");
+}
+
+void UChessHUD::OnCheckmate(EColor PlayerColor)
+{
+    UMoveHistoryButton* TopButton = HistoryButtons.Top();
+    TopButton->SetTextOnButton(TopButton->GetTextOnButton() + "#");
+    UHorizontalHistoryBox* HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);
+    if (PlayerColor == EColor::WHITE)
+        HorizontalBox->SetText("0-1");
+    else
+        HorizontalBox->SetText("1-0");
+    MoveHistoryScrollBox->AddChild(HorizontalBox);
+    HorizontalHistoryBoxes.Add(HorizontalBox);
+}
+
+void UChessHUD::OnStalmate()
+{
+    UHorizontalHistoryBox* HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);
+    HorizontalBox->SetText("1/2-1/2");
+    MoveHistoryScrollBox->AddChild(HorizontalBox);
+    HorizontalHistoryBoxes.Add(HorizontalBox);
+}

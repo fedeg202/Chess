@@ -63,10 +63,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();
 
+	//Number of the current move displayed
 	int32 CurrentReplayMoveIndex = 0;
 
+	//Method to handle the replay functionality, takes the desired move index as a parameter
 	UFUNCTION(BlueprintCallable)
 	void HandleReplay(int32 MoveIndex);
 
+	//Boolean value to handle replay functionality
 	bool bIsInReplay = false;
+	//Booelean value to handle the end of the game
+	bool b_gameEnded = false;
 };

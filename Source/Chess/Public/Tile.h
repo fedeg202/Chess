@@ -84,6 +84,7 @@ public:
 	//Methot to restore the tile to is starting state
 	void ResetTile();
 
+	//Method to obtain the string that rapresent this tile in the move notation
 	FString ToString();
 
 protected:

@@ -7,7 +7,7 @@
 #include "MainMenu.generated.h"
 
 /**
- * 
+ * Class to manage the main menu
  */
 UCLASS()
 class CHESS_API UMainMenu : public UUserWidget

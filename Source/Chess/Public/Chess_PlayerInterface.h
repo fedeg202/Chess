@@ -47,7 +47,7 @@ public:
 	virtual void OnWin() {};
 	//virtual function to show a message when the player lose
 	virtual void OnLose() {};
-	//virtual fution to show a message when the player is in check
+	//virtual function to show a message when the player is in check
 	virtual void OnCheck() {};
 	//virtual funztion to show a message when the player is in checkmate
 	virtual void OnCheckmate() {};
