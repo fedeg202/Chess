@@ -112,6 +112,9 @@ public:
 	//Method to add an eaten piece to the array and make sure that only the last one eaten is displayed
 	void AddBlackEatenPiece(APiece* EatenPiece);
 
+	APiece* PopWhiteEatenPiece();
+	APiece* PopBlackEatenPiece();
+
 	//Method to check if the player with the color coded in ETileOwner, is in check
 	bool CheckOnCheck(ETileOwner SameColor);
 	//Method to check if the player with the color coded in ETileOwner, and with the opponent that has the moves passed as an argument is in check;

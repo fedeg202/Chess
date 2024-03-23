@@ -256,6 +256,32 @@ void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 	}
 }
 
+APiece* AChessBoard::PopWhiteEatenPiece()
+{
+	if (EatenWhitePieces.Num() > 1)
+	{
+		
+		APiece* Piece = EatenWhitePieces.Pop(true);
+		EatenWhitePieces.Top()->SetActorHiddenInGame(false);
+		return Piece;
+	}
+	else
+		return EatenWhitePieces.Pop(true);
+		
+}
+
+APiece* AChessBoard::PopBlackEatenPiece()
+{
+	if (EatenBlackPieces.Num() > 1)
+	{
+		APiece* Piece = EatenBlackPieces.Pop(true);
+		EatenBlackPieces.Top()->SetActorHiddenInGame(false);
+		return Piece;
+	}
+	else
+		return EatenBlackPieces.Pop(true);
+}
+
 bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 {
 	TArray<FCoupleTile> AllOpponentSelectableMoves;
@@ -538,7 +564,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 			
 			if (AllMoves[i].Player == EColor::BLACK)
 			{
-				EatenPiece = GetEatenWhitePieces().Pop(true);
+				EatenPiece = PopWhiteEatenPiece();
 				WhitePieces.Add(EatenPiece);
 				
 				BlackPieces.Remove(Piece);
@@ -554,7 +580,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 			}
 			else
 			{
-				EatenPiece = GetEatenBlackPieces().Pop(true);
+				EatenPiece = PopBlackEatenPiece();
 				BlackPieces.Add(EatenPiece);
 
 				WhitePieces.Remove(Piece);
@@ -580,7 +606,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 
 			if (AllMoves[i].Player == EColor::BLACK)
 			{
-				EatenPiece = GetEatenWhitePieces().Pop(true);
+				EatenPiece = PopWhiteEatenPiece();
 				WhitePieces.Add(EatenPiece);
 
 				Piece->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
@@ -589,7 +615,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 			}
 			else
 			{
-				EatenPiece = GetEatenBlackPieces().Pop(true);
+				EatenPiece = PopBlackEatenPiece();
 				BlackPieces.Add(EatenPiece);
 
 				Piece->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
@@ -608,9 +634,9 @@ void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 T
 	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
 	{
 		if (AllMoves[i].bEatFlag)
-			AllMoves[i].Tiles.Tile1->GetOnPiece()->Eat(AllMoves[i].Tiles.Tile1, this);
+			AllMoves[i].Tiles.Tile1->GetOnPiece()->Eat(AllMoves[i].Tiles.Tile2, this);
 		else
-			AllMoves[i].Tiles.Tile1->GetOnPiece()->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+			AllMoves[i].Tiles.Tile1->GetOnPiece()->Move(AllMoves[i].Tiles.Tile2, this->GetGameField());
 		if (AllMoves[i].bPawnPromotion)
 		{
 			EPieceColor Color;

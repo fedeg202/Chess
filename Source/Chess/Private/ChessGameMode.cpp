@@ -237,15 +237,21 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 
 void AChessGameMode::ResetGame()
 {
-	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->ChessHUD->ResetHistoryScrollBox();
-	ChessBoard->ResetChessBoard();
-	StartGame(Difficulty);
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
+	if (HumanPlayer->IsMyTurn == true)
+	{
+		AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		PC->ChessHUD->ResetHistoryScrollBox();
+		ChessBoard->ResetChessBoard();
+		StartGame(Difficulty);
+	}
+	
 }
 
 void AChessGameMode::HandleReplay(int32 MoveIndex)
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
+	ChessBoard->UnShowSelectableTiles(HumanPlayer->Piece_SelectableMoves);
 	if (HumanPlayer->IsMyTurn == true || bIsInReplay) 
 	{
 		bIsInReplay = true;

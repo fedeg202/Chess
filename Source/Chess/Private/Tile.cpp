@@ -89,7 +89,7 @@ FString ATile::ToString()
 {
 	char Letter;
 	Letter = static_cast<char>(97 + TileGridPosition.Y);
-	FString Result = FString::Printf(TEXT("%c%s"), Letter, *FString::FromInt(TileGridPosition.X));
+	FString Result = FString::Printf(TEXT("%c%s"), Letter, *FString::FromInt(TileGridPosition.X+1));
 	return Result;
 }
 
