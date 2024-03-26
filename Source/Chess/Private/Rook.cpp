@@ -7,21 +7,22 @@
 ARook::ARook() : APiece()
 {
 	Name = EPieceName::ROOK;
+	Value = 50;
 }
 
 TArray<FVector2D> ARook::Moves()
 {
 	TArray<FVector2D> Moves;
 
-	// Definisci il vettore base per i movimenti del cavallo
+	
 	const int32 Size = 8;
 	const FVector2D BaseMove1(1, 0);
 	const FVector2D BaseMove2(0, 1);
 
-	// Genera i movimenti applicando la trasformazione del vettore base
+	
 	for (int32 i = 1; i < Size; ++i)
 	{
-		// Rotazione del vettore base per ottenere tutti i possibili movimenti
+		
 		Moves.Add(i * BaseMove1);
 		Moves.Add(i * BaseMove2);
 		Moves.Add(-i * BaseMove1);

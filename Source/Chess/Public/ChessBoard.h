@@ -92,6 +92,8 @@ public:
 	//Return the array of black eaten(or taken) pieces
 	TArray<APiece*>& GetEatenBlackPieces();
 
+	TArray<APiece*>& GetPiecesByColor(ETileOwner SameColor);
+
 	//Return the pointer to the gamefield
 	AGameField* GetGameField();
 
@@ -144,6 +146,8 @@ public:
 
 	//Method to check if the piece is a pawn and is elegible for a pawn promotion
 	bool CheckPawnPromotion(APiece* Piece);
+	//Method to check if there is a pawn elegible for a pawn promotion of the given color player
+	bool CheckPawnPromotion(ETileOwner Color);
 
 	//Method to create the string that encode the move
 	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);

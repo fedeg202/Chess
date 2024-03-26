@@ -41,6 +41,7 @@ public:
 	APiece();
 	// Set the grid position
 	void SetGridPosition(const double x, const double y);
+	void SetGridPosition(FVector2D GridPosition);
 	//return a fvector with the grid position of the piece
 	FVector2D GetGridPosition();
 	//Virtual method to return all the moves as a 2D vector, that a generic queen can do freely
@@ -57,8 +58,10 @@ public:
 	//Return the name of the piece
 	EPieceName GetName();
 
-	//Rerurn the correct char to describe the moves with the Long Algebric Notation
+	//Return the correct char to describe the moves with the Long Algebric Notation
 	virtual FString ToString();
+
+	int32 GetValue();
 
 protected:
 	// Called when the game starts or when spawned
@@ -79,4 +82,6 @@ protected:
 	EPieceColor Color;
 	//"Name" of the piece
 	EPieceName Name;
+
+	int32 Value;
 };

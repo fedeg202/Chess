@@ -24,6 +24,11 @@ void APiece::SetGridPosition(const double x, const double y)
 	PieceGridPosition.Set(x, y);
 }
 
+void APiece::SetGridPosition(FVector2D GridPosition)
+{
+	PieceGridPosition = GridPosition;
+}
+
 FVector2D APiece::GetGridPosition()
 {
 	return PieceGridPosition;
@@ -103,6 +108,11 @@ EPieceName APiece::GetName()
 FString APiece::ToString()
 {
 	return FString();
+}
+
+int32 APiece::GetValue()
+{
+	return Value;
 }
 
 // Called when the game starts or when spawned

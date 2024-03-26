@@ -8,7 +8,7 @@
 #include "Chess_PlayerController.h"
 #include "Chess_HumanPlayer.h"
 #include "Chess_RandomPlayer.h"
-//#include "TTT_MinimaxPlayer.h"
+#include "Chess_MinimaxPlayer.h"
 
 AChessGameMode::AChessGameMode()
 {
@@ -111,16 +111,24 @@ void AChessGameMode::StartGame(int32 Diff)
 {
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
-	// Random Player
-	auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
-	AI->ChessBoard = ChessBoard;
-	AI->Color = EColor::BLACK;
-	// MiniMax Player
-	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
 
+	if (Difficulty < 2)
+	{
+		//Random player
+		auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
+		AI->ChessBoard = ChessBoard;
+		AI->Color = EColor::BLACK;
+		Players.Add(AI);
+	}
+	else 
+	{
+		//Minimax player
+		auto* AI = GetWorld()->SpawnActor<AChess_MinimaxPlayer>(FVector(), FRotator());
+		AI->ChessBoard = ChessBoard;
+		AI->Color = EColor::BLACK;
+		Players.Add(AI);
+	}
 	// AI player -> Players[1]
-	Players.Add(AI);
-
 	CurrentReplayMoveIndex = 0;
 	b_turnHumanPlayer = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
