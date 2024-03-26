@@ -257,7 +257,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 			{
 				ChessBoard->GetPiecesByColor(OppositeColor).Remove(Queen);
 				ChessBoard->GetPiecesByColor(OppositeColor).Add(EventualPromotedPawn);
-				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
+				Moves[i].Tile1->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
 
