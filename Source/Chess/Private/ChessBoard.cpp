@@ -340,10 +340,12 @@ APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 {
 	APiece* OldOnPiece = Tiles.Tile2->GetOnPiece();
 	Tiles.Tile2->SetStatusAndOwnerAndOnPiece(Tiles.Tile1->GetTileStatus(), Tiles.Tile1->GetTileOwner(), Tiles.Tile1->GetOnPiece());
+
 	if (Tiles.Tile1->GetOnPiece() == nullptr)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
 	}
+
 	Tiles.Tile1->GetOnPiece()->SetGridPosition(Tiles.Tile2->GetGridPosition());
 
 	Tiles.Tile1->SetStatusAndOwnerAndOnPiece(ETileStatus::EMPTY, ETileOwner::NONE, nullptr);
@@ -445,11 +447,29 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 }
 
-TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor)
+TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy)
 {
-	if (SameColor == ETileOwner::BLACK)
-		return AllBlackSelectableMoves;
-	else return AllWhiteSelectableMoves;
+	//if (bCopy)
+	//{
+		if (SameColor == ETileOwner::BLACK)
+			return AllBlackSelectableMoves;
+		else return AllWhiteSelectableMoves;
+	//}
+	//else
+	//{
+		/*TArray<FCoupleTile> Moves;
+		if (SameColor == ETileOwner::BLACK)
+			Moves = AllBlackSelectableMoves;
+		else Moves = AllWhiteSelectableMoves;
+		TArray<FCoupleTile> CopyMoves;
+		for (int32 i = 0; i < Moves.Num(); i++)
+		{
+			CopyMoves.Add(Moves[i]);
+		}
+		return CopyMoves;
+		*/
+	//}
+	
 }
 
 TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
@@ -538,7 +558,7 @@ bool AChessBoard::CheckPawnPromotion(ETileOwner Color)
 	{
 		for (int32 i = 0; i < GetGameField()->Size - 1; i++)
 		{
-			if (GetGameField()->GetTileBYXYPosition(GetGameField()->Size - 1, i)->GetOnPiece()->GetName() == EPieceName::PAWN) return true;
+			if (GetGameField()->GetTileBYXYPosition(GetGameField()->Size - 1, i)->GetOnPiece() != nullptr && GetGameField()->GetTileBYXYPosition(GetGameField()->Size - 1, i)->GetOnPiece()->GetName() == EPieceName::PAWN) return true;
 		}
 		return false;
 	}

@@ -132,6 +132,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 
 		if (WhiteCheck && WhiteStale) return 1000;
 		else if (BlackCheck && BlackStale) return -1000;
+		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
 		if (BlackCheck) Value += -5;
 		if (WhiteCheck) Value += +5;
@@ -143,6 +144,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 
 		if (BlackCheck && BlackStale) return 1000;
 		else if (WhiteCheck && WhiteStale) return -1000;
+		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
 		if (WhiteCheck) Value += -5;
 		if (BlackCheck) Value += +5;
@@ -151,24 +153,24 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 
 	Value += ChessBoard->GetAllSelectableMovesByColor(SameColor).Num() - (ChessBoard->GetAllSelectableMovesByColor(OppositeColor).Num());
 
-	int32 tmp_sumWhite = 0;
+	int32 sumEatenWhite = 0;
 	for (int32 i = 0; i < ChessBoard->GetWhitePieces().Num(); i++)
 	{
-		if (ChessBoard->GetWhitePieces()[i]->AvaibleMoves(ChessBoard).Num() == 0)
-			tmp_sumWhite += ChessBoard->GetWhitePieces()[i]->GetValue();
+		if (ChessBoard->GetGameField()->GetTileBYXYPosition(ChessBoard->GetWhitePieces()[i]->GetGridPosition().X, ChessBoard->GetWhitePieces()[i]->GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
+			sumEatenWhite += ChessBoard->GetWhitePieces()[i]->GetValue();
 	}
 
-	int32 tmp_sumBlack = 0;
+	int32 sumEatenBlack = 0;
 	for (int32 i = 0; i < ChessBoard->GetBlackPieces().Num(); i++)
 	{
-		if (ChessBoard->GetBlackPieces()[i]->AvaibleMoves(ChessBoard).Num() == 0)
-			tmp_sumBlack += ChessBoard->GetBlackPieces()[i]->GetValue();
+		if (ChessBoard->GetGameField()->GetTileBYXYPosition(ChessBoard->GetBlackPieces()[i]->GetGridPosition().X, ChessBoard->GetBlackPieces()[i]->GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
+			sumEatenBlack += ChessBoard->GetBlackPieces()[i]->GetValue();
 	}
 
 	if (Color == EColor::BLACK)
-		Value += tmp_sumBlack - tmp_sumWhite;
-	else 
-		Value += tmp_sumWhite - tmp_sumBlack;
+		Value += sumEatenWhite - sumEatenBlack;
+	else
+		Value += sumEatenBlack - sumEatenWhite;
 
 	return Value;
 
@@ -190,7 +192,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	{
 		int32 Value = -MaxValue;
 		ChessBoard->UpdateAllMoveBYColor(SameColor);
-		TArray <FCoupleTile> Moves = ChessBoard->GetAllMovesByColor(SameColor);
+		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor);
 
 		if (Moves.Num() == 0) return EvaluateBoard();
 
@@ -219,29 +221,32 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 				Queen->Destroy();
 			}
 
-			//if (Value >= beta) return Value;
-			//alpha = FMath::Max(alpha, Value);
+			if (Value >= beta) return Value;
+			alpha = FMath::Max(alpha, Value);
 		}
+
+		UE_LOG(LogTemp, Display, TEXT("Max is playing, value = %d"),Value);
+
 		return Value;
 	}
 	else
 	{
 		int32 Value = MaxValue;
 		ChessBoard->UpdateAllMoveBYColor(OppositeColor);
-		TArray <FCoupleTile> Moves = ChessBoard->GetAllMovesByColor(OppositeColor);
+		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor);
 		
 		if (Moves.Num() == 0) return EvaluateBoard();
 
 		for (int32 i = 0; i < Moves.Num(); i++)
 		{
 			tmp_Piece = ChessBoard->VirtualMove(Moves[i]);
-			b_PawnPromotion = ChessBoard->CheckPawnPromotion(SameColor);
+			b_PawnPromotion = ChessBoard->CheckPawnPromotion(OppositeColor);
 			if (b_PawnPromotion)
 			{
 				EventualPromotedPawn = Moves[i].Tile2->GetOnPiece();
 				Queen = NewObject<AQueen>(this);		 Queen->SetGridPosition(Moves[i].Tile2->GetGridPosition());
-				ChessBoard->GetPiecesByColor(SameColor).Remove(EventualPromotedPawn);
-				ChessBoard->GetPiecesByColor(SameColor).Add(Queen);
+				ChessBoard->GetPiecesByColor(OppositeColor).Remove(EventualPromotedPawn);
+				ChessBoard->GetPiecesByColor(OppositeColor).Add(Queen);
 				Moves[i].Tile2->SetOnPiece(Queen);
 			}
 
@@ -250,16 +255,19 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 
 			if (b_PawnPromotion)
 			{
-				ChessBoard->GetPiecesByColor(SameColor).Remove(Queen);
-				ChessBoard->GetPiecesByColor(SameColor).Add(EventualPromotedPawn);
+				ChessBoard->GetPiecesByColor(OppositeColor).Remove(Queen);
+				ChessBoard->GetPiecesByColor(OppositeColor).Add(EventualPromotedPawn);
 				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
 
-			//if (Value <= alpha) return Value;
-			//beta = FMath::Min(alpha, Value);
+			if (Value <= alpha) return Value;
+			beta = FMath::Min(alpha, Value);
 			
 		}
+
+		UE_LOG(LogTemp, Display, TEXT("Min is playing, value = %d"), Value);
+
 		return Value;
 	}
 
@@ -274,7 +282,7 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 	APiece* EventualPromotedPawn;
 	AQueen* Queen = nullptr;
 	bool b_PawnPromotion = false;
-	TArray <FCoupleTile> Moves = ChessBoard->GetAllMovesByColor(SameColor);
+	TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor);
 
 	for (int32 i = 0; i < Moves.Num(); i++)
 	{
@@ -302,6 +310,8 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 		{
 			BestMove = Moves[i];
 			BestVal = MoveVal;
+
+			UE_LOG(LogTemp, Display, TEXT("NewBest value = %d"), MoveVal);
 		}
 	}
 
