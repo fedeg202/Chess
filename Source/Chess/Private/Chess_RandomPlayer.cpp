@@ -49,7 +49,7 @@ void AChess_RandomPlayer::OnTurn()
 		
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer Turn"));
-	GameInstance->SetTurnMessage(TEXT("RandomPlayer Turn"));
+	GameInstance->SetTurnMessage("RandomPlayer in Turn");
 
 	FTimerHandle TimerHandle;
 	int32 randTime;
@@ -114,12 +114,14 @@ void AChess_RandomPlayer::OnTurn()
 		if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 		{
 			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, false), Color);
+			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag,false));
 			SelectedPiece = nullptr;
 			GameMode->TurnNextPlayer();
 		}
 		else
 		{
 			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, true), Color);
+			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag, false));
 			SelectedPiece = nullptr;
 			int32 randPromotion = FMath::Rand() % 4;
 			switch (randPromotion)

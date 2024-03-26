@@ -35,6 +35,7 @@ public:
 	//Reference to the selectable moves of the turn selected piece
 	TArray<ATile*> Piece_SelectableMoves;
 
+	//Reference to the HUD
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 

@@ -9,10 +9,35 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "King.h"
+#include "Chess_PlayerInterface.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ChessBoard.generated.h"
+
+
+
+USTRUCT()
+struct FMove
+{
+	GENERATED_BODY()
+
+public:
+	FMove() = default;
+	FMove(FCoupleTile CTiles,EColor PlayerColor, bool bEat = false,bool bPawnPromotionFlag = false) 
+	{
+		Tiles = CTiles;
+		Player = PlayerColor;
+		bEatFlag = bEat;
+		bPawnPromotion = bPawnPromotionFlag;
+		PawnPromotedTo = EPieceName::PAWN;
+	}
+	FCoupleTile Tiles;
+	EColor Player;
+	bool bEatFlag;
+	bool bPawnPromotion;
+	EPieceName PawnPromotedTo;
+};
 
 
 /*
@@ -82,10 +107,15 @@ public:
 	//Method to undisplay the selectable tiles by the player by changing their material to the default one and bring the tile back to their prevous status
 	void UnShowSelectableTiles(TArray<ATile*>& SelectableTiles);
 
-	//Method to add an eaten piece to the array and make sure that only the last one eaten is displayed
+	//Method to add an eaten piece to the array and make sure that only the last one eaten is visible
 	void AddWhiteEatenPiece(APiece* EatenPiece);
-	//Method to add an eaten piece to the array and make sure that only the last one eaten is displayed
+	//Method to add an eaten piece to the array and make sure that only the last one eaten is visible
 	void AddBlackEatenPiece(APiece* EatenPiece);
+
+	//Method to remove an eaten piece from the array and make sure that the next one return visible
+	APiece* PopWhiteEatenPiece();
+	//Method to remove an eaten piece and make sure that the next one return visible
+	APiece* PopBlackEatenPiece();
 
 	//Method to check if the player with the color coded in ETileOwner, is in check
 	bool CheckOnCheck(ETileOwner SameColor);
@@ -115,8 +145,25 @@ public:
 	//Method to check if the piece is a pawn and is elegible for a pawn promotion
 	bool CheckPawnPromotion(APiece* Piece);
 
+	//Method to create the string that encode the move
 	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);
 
+	//Method to add the move to the AllMoves array
+	void AddMove(FMove Move);
+
+	//Return the AllMoves array
+	TArray<FMove>& GetAllMoves();
+
+	//Method to restore the chessboard to a target index starting from a current index going forward (called only if the current index is more than the target one)
+	void RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex);
+	//Method to restore the chessboard to a target index starting from a current index going backward (Called only if the currrent index is less than the tagret one)
+	void RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex);
+
+	//Method to obtain the last move added
+	FMove& GetTopMove();
+
+	//Method to remove all the move starting from a starting index
+	void RemoveMovesFromStartingIndex(int32 StartingIndex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -140,6 +187,9 @@ protected:
 
 	//Refernce to a Gamefield object
 	AGameField* GameField;
+
+	//Reference to an array with all the moves
+	TArray<FMove> AllMoves;
 
 
 };

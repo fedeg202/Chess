@@ -14,10 +14,6 @@ int32 UMoveHistoryButton::GetMoveNumber()
 	return MoveNumber;
 }
 
-EColor UMoveHistoryButton::GetPlayerInTurn()
-{
-	return ColorOfPlayerInTurn;
-}
 
 void UMoveHistoryButton::SetTextOnButton(FString String)
 {
@@ -28,6 +24,7 @@ FString UMoveHistoryButton::GetTextOnButton()
 {
 	return Text->GetText().ToString();
 }
+
 
 UWhiteMoveHistoryButton::UWhiteMoveHistoryButton() : UMoveHistoryButton()
 {

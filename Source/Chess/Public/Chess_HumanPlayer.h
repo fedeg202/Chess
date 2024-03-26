@@ -23,14 +23,16 @@ class CHESS_API AChess_HumanPlayer : public APawn, public IChess_PlayerInterface
 public:
 	// Sets default values for this pawn's properties
 	AChess_HumanPlayer();
-
+	//Reference to a camera component
 	UCameraComponent* Camera;
-
+	//Reference to the GameInstance
 	UChess_GameInstance* GameInstance;
 
+	//Reference to the HUD
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 
+	//Reference to the PawnPromotion widget
 	UPROPERTY()
 	UPawnPromotionHUD* PawnPromotionHUD;
 
@@ -38,14 +40,16 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	AChessBoard* ChessBoard;
 
+	//Array of tile that are selectable by the selected piece
 	TArray<ATile*> Piece_SelectableMoves;
+
+	//Boolen value to manage the turn
+	bool IsMyTurn = false;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	bool IsMyTurn = false;
-
+	//Reference to the selected piece of the turn
 	APiece* SelectedPiece;
 
 public:	
@@ -55,15 +59,21 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Overrride of the PlayerInterface method called when the player is in turn
 	virtual void OnTurn() override;
+	//Overrride of the PlayerInterface method called when the player win
 	virtual void OnWin() override;
+	//Overrride of the PlayerInterface method called when the player lose
 	virtual void OnLose() override;
 
+	//Overrride of the PlayerInterface method called when the player is in on Check
 	virtual void OnCheck() override;
+	//Overrride of the PlayerInterface method called when the player is in Stalemate
 	virtual void OnStalemate() override;
+	//Overrride of the PlayerInterface method called when the player is in Checkmate
 	virtual void OnCheckmate() override;
 
-
+	//Methot to handle the player click
 	UFUNCTION()
 	void OnClick();
 };

@@ -30,21 +30,38 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UHorizontalHistoryBox> HorizontalBoxClass;
 
+	//Method to add a button to the scroll box displaying all the moves
 	UFUNCTION()
 	void AddMoveButtonToTheHistoryScrollBox(FString MoveCode, EColor Color);
 
+	//Method to reset the scroll box displaying all the moves
 	void ResetHistoryScrollBox();
 
-	//void RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex);
+	//Methot to remove all the buttons from the scroll box displaying all the moves, that have an index bigger tha the starting index passed as a parameter
+	void RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex);
 
+	//Method to obtain the top history button in the scroll box displaying all the moves
 	UMoveHistoryButton* GetTopHistoryButtons();
 
+	//Method to obtain the top horizontal box in the scroll box displaying all the moves
 	UHorizontalHistoryBox* GetTopHorizontalHistoryBoxes();
 
+	//Method to show in the moves of the HUD that a player has checked the other
+	void OnCheck();
+
+	//Method to show in the moves of the HUD that a player has checkmated the other
+	void OnCheckmate(EColor PlayerColor);
+
+	//Method to show a draw on the HUD
+	void OnStalmate();
+
 protected:
+	//Reference to the array containing all the Buttons with the moves
 	TArray<UMoveHistoryButton*> HistoryButtons;
+	//Reference to the array containing all the horizontal boxes of the scroll box
 	TArray<UHorizontalHistoryBox*> HorizontalHistoryBoxes;
 
+	//Reference to the scroll box
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UScrollBox* MoveHistoryScrollBox;
 };

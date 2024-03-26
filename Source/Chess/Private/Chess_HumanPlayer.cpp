@@ -132,6 +132,7 @@ void AChess_HumanPlayer::OnClick()
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 				{
 					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece,Tiles), Color);
+					ChessBoard->AddMove(FMove(Tiles, Color));
 					SelectedPiece = nullptr;
 					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 					IsMyTurn = false;
@@ -140,6 +141,7 @@ void AChess_HumanPlayer::OnClick()
 				else 
 				{
 					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, false, true), Color);
+					ChessBoard->AddMove(FMove(Tiles, Color,false,true));
 					IsMyTurn = false;
 					PawnPromotionHUD->AddToPlayerScreen();
 				}
@@ -181,6 +183,7 @@ void AChess_HumanPlayer::OnClick()
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 				{
 					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles,true), Color);
+					ChessBoard->AddMove(FMove(Tiles, Color,true));
 					SelectedPiece = nullptr;
 					AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 					IsMyTurn = false;
@@ -189,6 +192,7 @@ void AChess_HumanPlayer::OnClick()
 				else
 				{
 					ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, true, true), Color);
+					ChessBoard->AddMove(FMove(Tiles, Color, true,true));
 					IsMyTurn = false;
 					PawnPromotionHUD->AddToPlayerScreen();
 				}

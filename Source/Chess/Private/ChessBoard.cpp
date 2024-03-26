@@ -3,6 +3,7 @@
 
 #include "ChessBoard.h"
 #include "Chess_PlayerController.h"
+#include "ChessGameMode.h"
 
 // Sets default values
 AChessBoard::AChessBoard()
@@ -236,23 +237,49 @@ void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 void AChessBoard::AddWhiteEatenPiece(APiece* EatenPiece)
 {
 	if (EatenWhitePieces.IsEmpty())
-		EatenWhitePieces.Add(EatenPiece);
+		EatenWhitePieces.Push(EatenPiece);
 	else 
 	{
 		EatenWhitePieces.Top()->SetActorHiddenInGame(true);
-		EatenWhitePieces.Add(EatenPiece);
+		EatenWhitePieces.Push(EatenPiece);
 	}
 }
 
 void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 {
 	if (EatenBlackPieces.IsEmpty())
-		EatenBlackPieces.Add(EatenPiece);
+		EatenBlackPieces.Push(EatenPiece);
 	else
 	{
 		EatenBlackPieces.Top()->SetActorHiddenInGame(true);
-		EatenBlackPieces.Add(EatenPiece);
+		EatenBlackPieces.Push(EatenPiece);
 	}
+}
+
+APiece* AChessBoard::PopWhiteEatenPiece()
+{
+	if (EatenWhitePieces.Num() > 1)
+	{
+		
+		APiece* Piece = EatenWhitePieces.Pop(true);
+		EatenWhitePieces.Top()->SetActorHiddenInGame(false);
+		return Piece;
+	}
+	else
+		return EatenWhitePieces.Pop(true);
+		
+}
+
+APiece* AChessBoard::PopBlackEatenPiece()
+{
+	if (EatenBlackPieces.Num() > 1)
+	{
+		APiece* Piece = EatenBlackPieces.Pop(true);
+		EatenBlackPieces.Top()->SetActorHiddenInGame(false);
+		return Piece;
+	}
+	else
+		return EatenBlackPieces.Pop(true);
 }
 
 bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
@@ -277,12 +304,12 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 	return false;
 }
 
-bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves)
+bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Tmp_Moves)
 {
-	for (int32 i = 0; i < Moves.Num(); i++)
+	for (int32 i = 0; i < Tmp_Moves.Num(); i++)
 	{
-		if (Moves[i].Tile2->GetOnPiece() != nullptr
-			&& Moves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
+		if (Tmp_Moves[i].Tile2->GetOnPiece() != nullptr
+			&& Tmp_Moves[i].Tile2->GetOnPiece()->GetName() == EPieceName::KING)
 			return true;
 	}
 	return false;
@@ -468,6 +495,8 @@ void AChessBoard::ResetChessBoard()
 	}
 	EatenWhitePieces.Empty();
 
+	AllMoves.Empty();
+
 	SpawnBlackPieces();
 	SpawnWhitePieces();
 
@@ -507,6 +536,165 @@ FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_e
 	return Result;
 }
 
+void AChessBoard::AddMove(FMove Move)
+{
+	AllMoves.Push(Move);
+}
+
+TArray<FMove>& AChessBoard::GetAllMoves()
+{
+	return AllMoves;
+}
+
+void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex)
+{
+	for (int32 i = CurrentMoveIndex; i > TargetMoveindex; i--)
+	{
+		if (!AllMoves[i].bEatFlag && !AllMoves[i].bPawnPromotion)
+		{
+			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
+			Piece->Move(AllMoves[i].Tiles.Tile1,this->GetGameField());
+		}
+		else if (AllMoves[i].bEatFlag && AllMoves[i].bPawnPromotion)
+		{
+			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
+			FVector2D GridPosition = Piece->GetGridPosition();
+			FVector Location = AGameField::GetRelativeLocationByXYPosition(GridPosition.X, GridPosition.Y);
+			APiece* Pawn;
+			APiece* EatenPiece;
+			FVector EatenLocation;
+			
+			if (AllMoves[i].Player == EColor::BLACK)
+			{
+				EatenPiece = PopWhiteEatenPiece();
+				WhitePieces.Add(EatenPiece);
+				
+				BlackPieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X,GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK,Pawn);
+				BlackPieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, EatenPiece);
+			}
+			else
+			{
+				EatenPiece = PopBlackEatenPiece();
+				BlackPieces.Add(EatenPiece);
+
+				WhitePieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Pawn);
+				WhitePieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, EatenPiece);
+			}
+
+			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
+			EatenPiece->SetActorLocation(EatenLocation);
+		}
+		else if (AllMoves[i].bEatFlag && !AllMoves[i].bPawnPromotion)
+		{
+			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
+			APiece* EatenPiece;
+			FVector EatenLocation;
+
+			if (AllMoves[i].Player == EColor::BLACK)
+			{
+				EatenPiece = PopWhiteEatenPiece();
+				WhitePieces.Add(EatenPiece);
+
+				Piece->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, EatenPiece);
+			}
+			else
+			{
+				EatenPiece = PopBlackEatenPiece();
+				BlackPieces.Add(EatenPiece);
+
+				Piece->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+
+				this->GetGameField()->GetTileBYXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y)->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, EatenPiece);
+			}
+
+			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
+			EatenPiece->SetActorLocation(EatenLocation);
+		}
+		else if (!AllMoves[i].bEatFlag && AllMoves[i].bPawnPromotion)
+		{
+			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
+			FVector2D GridPosition = Piece->GetGridPosition();
+			FVector Location = AGameField::GetRelativeLocationByXYPosition(GridPosition.X, GridPosition.Y);
+			APiece* Pawn;
+
+			if (AllMoves[i].Player == EColor::BLACK)
+			{
+				BlackPieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Pawn);
+				BlackPieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+			}
+			else
+			{
+				WhitePieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Pawn);
+				WhitePieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+			}
+		}
+	}
+}
+
+void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex)
+{
+	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
+	{
+		if (AllMoves[i].bEatFlag)
+			AllMoves[i].Tiles.Tile1->GetOnPiece()->Eat(AllMoves[i].Tiles.Tile2, this);
+		else
+			AllMoves[i].Tiles.Tile1->GetOnPiece()->Move(AllMoves[i].Tiles.Tile2, this->GetGameField());
+		if (AllMoves[i].bPawnPromotion)
+		{
+			EPieceColor Color;
+			if (AllMoves[i].Player == EColor::WHITE) Color = EPieceColor::WHITE;
+			else Color = EPieceColor::BLACK;
+			AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
+			GameMode->HandlePawnPromotion(Color, AllMoves[i].PawnPromotedTo,false);
+		}
+			
+	}
+}
+
+FMove& AChessBoard::GetTopMove()
+{
+	return AllMoves.Top();
+}
+
+void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
+{
+	int32 i = AllMoves.Num()-1;
+	for (; i > StartingIndex; i = AllMoves.Num() - 1)
+	{
+		AllMoves.Pop();
+	}
+}
+
 
 
 // Called when the game starts or when spawned
@@ -516,7 +704,6 @@ void AChessBoard::BeginPlay()
 	SpawnGameField();
 	SpawnWhitePieces();
 	SpawnBlackPieces();
-
 }
 
 

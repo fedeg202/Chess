@@ -36,18 +36,23 @@ public:
 	//Function to get the click on the grid
 	void ClickOnGrid();
 
+	//ChessHUD class
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UChessHUD> ChessHUDClass;
 
+	//PawnPromotionHUD class
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPawnPromotionHUD> PawnPromotionHUDClass;
 
+	//Reference to the HUD
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 
+	//Reference to the PawnPromotion widget
 	UPROPERTY()
 	UPawnPromotionHUD* PawnPromotionHUD;
 
+	//Function to show the HUD
 	UFUNCTION(BlueprintCallable)
 	void ShowHUD();
 

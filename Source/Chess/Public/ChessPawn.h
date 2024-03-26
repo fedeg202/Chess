@@ -21,6 +21,8 @@ public:
 	TArray<FVector2D> Moves() override;
 	//Return a pointer to all the tiles where the pawn can go, based on the color coded in the ETileOwner
 	TArray<ATile*> AvaibleMovesByColor(AGameField* GameField, ETileOwner OpponentColor);
+	//Override of the method to obtain a piece code for the move notation
+	FString ToString() override;
 };
 
 UCLASS()
@@ -33,7 +35,7 @@ public:
 	//Return a pointer to all the tiles where the white pawn can go
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
 
-	FString ToString() override;
+	
 };
 
 UCLASS()
