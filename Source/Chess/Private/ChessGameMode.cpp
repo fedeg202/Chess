@@ -118,9 +118,10 @@ void AChessGameMode::StartGame(int32 Diff)
 	// MiniMax Player
 	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
 
-	// AI player = 1
+	// AI player -> Players[1]
 	Players.Add(AI);
 
+	CurrentReplayMoveIndex = 0;
 	b_turnHumanPlayer = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);

@@ -495,6 +495,8 @@ void AChessBoard::ResetChessBoard()
 	}
 	EatenWhitePieces.Empty();
 
+	AllMoves.Empty();
+
 	SpawnBlackPieces();
 	SpawnWhitePieces();
 
@@ -625,6 +627,36 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 
 			EatenLocation = AGameField::GetRelativeLocationByXYPosition(EatenPiece->GetGridPosition().X, EatenPiece->GetGridPosition().Y);
 			EatenPiece->SetActorLocation(EatenLocation);
+		}
+		else if (!AllMoves[i].bEatFlag && AllMoves[i].bPawnPromotion)
+		{
+			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
+			FVector2D GridPosition = Piece->GetGridPosition();
+			FVector Location = AGameField::GetRelativeLocationByXYPosition(GridPosition.X, GridPosition.Y);
+			APiece* Pawn;
+
+			if (AllMoves[i].Player == EColor::BLACK)
+			{
+				BlackPieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<ABlackPawn>(BlackPawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::BLACK, Pawn);
+				BlackPieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+			}
+			else
+			{
+				WhitePieces.Remove(Piece);
+				Piece->Destroy();
+				Pawn = GetWorld()->SpawnActor<AWhitePawn>(WhitePawnClass, Location, FRotator::ZeroRotator);
+				Pawn->SetGridPosition(GridPosition.X, GridPosition.Y);
+				AllMoves[i].Tiles.Tile2->SetStatusAndOwnerAndOnPiece(ETileStatus::OCCUPIED, ETileOwner::WHITE, Pawn);
+				WhitePieces.Add(Pawn);
+
+				Pawn->Move(AllMoves[i].Tiles.Tile1, this->GetGameField());
+			}
 		}
 	}
 }
