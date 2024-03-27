@@ -43,7 +43,7 @@ protected:
 
 	int32 MaxValue = 1000;
 
-	int32 MiniMaxDepth = 4;
+	int32 MiniMaxDepth = 3;
 
 public:
 	// Called every frame
