@@ -213,7 +213,6 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 			}
 
 			Value = FMath::Max(Value, AlfaBetaMiniMax(Depth - 1, alpha, beta, false));
-			ChessBoard->VirtualUnMove(Moves[i],tmp_Piece);
 
 			if (b_PawnPromotion)
 			{
@@ -222,6 +221,10 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
+
+			ChessBoard->VirtualUnMove(Moves[i],tmp_Piece);
+
+			
 
 			if (Value >= beta) return Value;
 			alpha = FMath::Max(alpha, Value);
@@ -253,15 +256,16 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 			}
 
 			Value = FMath::Min(Value, AlfaBetaMiniMax(Depth - 1, alpha, beta, true));
-			ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
 
 			if (b_PawnPromotion)
 			{
 				ChessBoard->GetPiecesByColor(OppositeColor).Remove(Queen);
 				ChessBoard->GetPiecesByColor(OppositeColor).Add(EventualPromotedPawn);
-				Moves[i].Tile1->SetOnPiece(EventualPromotedPawn);
+				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
+
+			ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
 
 			if (Value <= alpha) return Value;
 			beta = FMath::Min(alpha, Value);
@@ -300,7 +304,7 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 		}
 		
 		int32 MoveVal = AlfaBetaMiniMax(MiniMaxDepth,-MaxValue,+MaxValue, false);
-		ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
+
 		if (b_PawnPromotion)
 		{
 			ChessBoard->GetPiecesByColor(SameColor).Remove(Queen);
@@ -308,6 +312,9 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 			Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 			Queen->Destroy();
 		}
+
+		ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
+		
 		if (MoveVal > BestVal)
 		{
 			BestMove = Moves[i];
