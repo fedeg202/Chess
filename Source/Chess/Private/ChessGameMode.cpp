@@ -59,59 +59,61 @@ void AChessGameMode::TurnNextPlayer()
 		b_gameEnded = true;
 		Players[0]->OnStalemate();
 	}
-
-	CurrentReplayMoveIndex++;
-	b_turnHumanPlayer = !b_turnHumanPlayer;
-	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
-	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
-
-	if (b_turnHumanPlayer) 
-	{
-		CheckOnCheck(Players[0]);
-		CheckOnStalemate(Players[0]);
-		CheckOnCkeckmate(Players[0]);
-		if (Players[0]->b_OnCheckmate) 
-		{
-			b_gameEnded = true;
-			PC->ChessHUD->OnCheckmate(Players[0]->Color);
-			Players[0]->OnLose();
-		}
-		else if (Players[0]->b_OnStalemate)
-		{
-			PC->ChessHUD->OnStalmate();
-			b_gameEnded = true;
-			Players[0]->OnStalemate();
-		}
-		else if (Players[0]->b_OnCheck)
-		{
-			PC->ChessHUD->OnCheck();
-			Players[0]->OnCheck();
-		}
-		else Players[0]->OnTurn();
-	}
 	else
 	{
-		CheckOnCheck(Players[1]);
-		CheckOnStalemate(Players[1]);
-		CheckOnCkeckmate(Players[1]);
-		if (Players[1]->b_OnCheckmate)
+		CurrentReplayMoveIndex++;
+		b_turnHumanPlayer = !b_turnHumanPlayer;
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+
+		if (b_turnHumanPlayer)
 		{
-			b_gameEnded = true;
-			PC->ChessHUD->OnCheckmate(Players[1]->Color);
-			Players[0]->OnWin();
+			CheckOnCheck(Players[0]);
+			CheckOnStalemate(Players[0]);
+			CheckOnCkeckmate(Players[0]);
+			if (Players[0]->b_OnCheckmate)
+			{
+				b_gameEnded = true;
+				PC->ChessHUD->OnCheckmate(Players[0]->Color);
+				Players[0]->OnLose();
+			}
+			else if (Players[0]->b_OnStalemate)
+			{
+				PC->ChessHUD->OnStalmate();
+				b_gameEnded = true;
+				Players[0]->OnStalemate();
+			}
+			else if (Players[0]->b_OnCheck)
+			{
+				PC->ChessHUD->OnCheck();
+				Players[0]->OnCheck();
+			}
+			else Players[0]->OnTurn();
 		}
-		else if (Players[1]->b_OnStalemate)
+		else
 		{
-			PC->ChessHUD->OnStalmate();
-			b_gameEnded = true;
-			Players[1]->OnStalemate();
+			CheckOnCheck(Players[1]);
+			CheckOnStalemate(Players[1]);
+			CheckOnCkeckmate(Players[1]);
+			if (Players[1]->b_OnCheckmate)
+			{
+				b_gameEnded = true;
+				PC->ChessHUD->OnCheckmate(Players[1]->Color);
+				Players[0]->OnWin();
+			}
+			else if (Players[1]->b_OnStalemate)
+			{
+				PC->ChessHUD->OnStalmate();
+				b_gameEnded = true;
+				Players[1]->OnStalemate();
+			}
+			else if (Players[1]->b_OnCheck)
+			{
+				PC->ChessHUD->OnCheck();
+				Players[1]->OnCheck();
+			}
+			else Players[1]->OnTurn();
 		}
-		else if (Players[1]->b_OnCheck)
-		{
-			PC->ChessHUD->OnCheck();
-			Players[1]->OnCheck();
-		}
-		else Players[1]->OnTurn();
 	}
 }
 

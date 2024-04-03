@@ -147,9 +147,6 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		if (WhiteCheck && WhiteStale) return MaxValue;
 		else if (BlackCheck && BlackStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
-
-		if (BlackCheck) Value += -10;
-		if (WhiteCheck) Value += +10;
 	}
 	else
 	{
@@ -159,9 +156,6 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		if (BlackCheck && BlackStale) return MaxValue;
 		else if (WhiteCheck && WhiteStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
-
-		if (WhiteCheck) Value += -10;
-		if (BlackCheck) Value += +10;
 	}
 		
 
