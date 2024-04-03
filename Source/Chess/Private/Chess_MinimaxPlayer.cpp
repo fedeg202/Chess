@@ -42,6 +42,11 @@ void AChess_MinimaxPlayer::OnTurn()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer Turn"));
 	GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
+	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetBlackPieces().Num();
+	if (NumPieces > 20) MiniMaxDepth = 2;
+	else if (NumPieces >= 10 && NumPieces <= 20) MiniMaxDepth = 3;
+	else if (NumPieces < 10) MiniMaxDepth = 4;
+
 	FTimerHandle TimerHandle;
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
@@ -122,7 +127,16 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 	bool WhiteStale = ChessBoard->CheckOnStalemate(ETileOwner::WHITE);
 	bool BlackStale = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
 
+	
+	FString State = ChessBoard->GetChessboardStateString();
 
+	if (ChessBoard->StateOccurrences.Contains(State))
+	{
+		if (ChessBoard->StateOccurrences[State] == 2) 
+		{
+			return 0;
+		}
+	}
 
 
 	if (Color == EColor::BLACK)
@@ -130,8 +144,8 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		SameColor = ETileOwner::BLACK;
 		OppositeColor = ETileOwner::WHITE;
 
-		if (WhiteCheck && WhiteStale) return 1000;
-		else if (BlackCheck && BlackStale) return -1000;
+		if (WhiteCheck && WhiteStale) return MaxValue;
+		else if (BlackCheck && BlackStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
 		if (BlackCheck) Value += -2;
@@ -142,8 +156,8 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		SameColor = ETileOwner::WHITE;
 		OppositeColor = ETileOwner::BLACK;
 
-		if (BlackCheck && BlackStale) return 1000;
-		else if (WhiteCheck && WhiteStale) return -1000;
+		if (BlackCheck && BlackStale) return MaxValue;
+		else if (WhiteCheck && WhiteStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
 		if (WhiteCheck) Value += -2;
@@ -238,7 +252,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	{
 		int32 Value = MaxValue;
 		ChessBoard->UpdateAllMoveBYColor(OppositeColor);
-		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor, true);
+		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor,true);
 		
 		if (Moves.Num() == 0) return EvaluateBoard();
 
@@ -288,7 +302,7 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 	APiece* EventualPromotedPawn;
 	AQueen* Queen = nullptr;
 	bool b_PawnPromotion = false;
-	TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor, true);
+	TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor,true);
 
 	for (int32 i = 0; i < Moves.Num(); i++)
 	{
@@ -303,7 +317,7 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 			Moves[i].Tile2->SetOnPiece(Queen);
 		}
 		
-		int32 MoveVal = AlfaBetaMiniMax(MiniMaxDepth,-MaxValue,+MaxValue, false);
+		int32 MoveVal = AlfaBetaMiniMax(MiniMaxDepth,-(MaxValue+1),MaxValue+1, false);
 
 		if (b_PawnPromotion)
 		{

@@ -449,7 +449,7 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy)
 {
-	if (bCopy)
+	if (!bCopy)
 	{
 		if (SameColor == ETileOwner::BLACK)
 			return AllBlackSelectableMoves;
@@ -749,6 +749,27 @@ void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
 		AllMoves.Pop();
 	}
 }
+
+FString AChessBoard::GetChessboardStateString()
+{
+	FString State = "";
+	for (int32 i = 0; i < GetGameField()->Size; i++) {
+		for (int32 j = 0; j < GetGameField()->Size; j++)
+		{
+			if (GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece() != nullptr)
+			{
+				State = State + GetGameField()->GetTileBYXYPosition(i, j)->ToString();
+				if (GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece()->GetColor() == EPieceColor::BLACK)
+					State = State + "b";
+				else State = State + "w";
+				State = State + GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece()->ToString();
+			}
+			else State = State + "-";
+		}
+	}
+	return State;
+}
+
 
 
 

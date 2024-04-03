@@ -52,6 +52,14 @@ void AChessGameMode::BeginPlay()
 void AChessGameMode::TurnNextPlayer()
 {
 	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (CheckFor3StateRepetitionDraw())
+	{
+		PC->ChessHUD->OnStalmate();
+		b_gameEnded = true;
+		Players[0]->OnStalemate();
+	}
+
 	CurrentReplayMoveIndex++;
 	b_turnHumanPlayer = !b_turnHumanPlayer;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
@@ -321,4 +329,19 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		}
 		CurrentReplayMoveIndex = MoveIndex+1;
 	}
+}
+
+bool AChessGameMode::CheckFor3StateRepetitionDraw()
+{
+	FString State = ChessBoard->GetChessboardStateString();
+
+	if (ChessBoard->StateOccurrences.Contains(State))
+	{
+		ChessBoard->StateOccurrences[State]++;
+		if (ChessBoard->StateOccurrences[State] == 3) return true;
+	}
+		
+	else ChessBoard->StateOccurrences.Add(State,1);
+	
+	return false;
 }

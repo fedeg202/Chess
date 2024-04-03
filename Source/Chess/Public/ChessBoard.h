@@ -169,6 +169,10 @@ public:
 	//Method to remove all the move starting from a starting index
 	void RemoveMovesFromStartingIndex(int32 StartingIndex);
 
+	FString GetChessboardStateString();
+
+	//Map to keep track of all the states and to implement the draw in case of three occurences of the same state
+	TMap<FString, int32> StateOccurrences;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -195,5 +199,5 @@ protected:
 	//Reference to an array with all the moves
 	TArray<FMove> AllMoves;
 
-
+	
 };

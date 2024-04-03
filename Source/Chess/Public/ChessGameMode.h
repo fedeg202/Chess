@@ -74,4 +74,6 @@ public:
 	bool bIsInReplay = false;
 	//Booelean value to handle the end of the game
 	bool b_gameEnded = false;
+
+	bool CheckFor3StateRepetitionDraw();
 };
