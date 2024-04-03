@@ -7,7 +7,7 @@
 ABishop::ABishop() : APiece()
 {
 	Name = EPieceName::BISHOP;
-	Value = 30;
+	Value = 300;
 }
 
 TArray<FVector2D> ABishop::Moves()

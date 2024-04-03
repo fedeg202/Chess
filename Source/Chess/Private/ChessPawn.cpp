@@ -7,7 +7,7 @@
 AChessPawn::AChessPawn():APiece()
 {
 	Name = EPieceName::PAWN;
-	Value = 10;
+	Value = 100;
 }
 
 TArray<FVector2D> AChessPawn::Moves()

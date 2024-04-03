@@ -8,7 +8,7 @@
 AKnight::AKnight() : APiece()
 {
 	Name = EPieceName::KNIGHT;
-	Value = 30;
+	Value = 300;
 }
 
 TArray<FVector2D> AKnight::Moves()

@@ -7,7 +7,7 @@
 ARook::ARook() : APiece()
 {
 	Name = EPieceName::ROOK;
-	Value = 50;
+	Value = 500;
 }
 
 TArray<FVector2D> ARook::Moves()

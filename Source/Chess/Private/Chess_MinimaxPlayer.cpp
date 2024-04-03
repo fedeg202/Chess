@@ -43,9 +43,9 @@ void AChess_MinimaxPlayer::OnTurn()
 	GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetBlackPieces().Num();
-	if (NumPieces > 20) MiniMaxDepth = 2;
-	else if (NumPieces >= 10 && NumPieces <= 20) MiniMaxDepth = 3;
-	else if (NumPieces < 10) MiniMaxDepth = 4;
+	if (NumPieces > 25) MiniMaxDepth = 2;
+	else if (NumPieces >= 15 && NumPieces <= 25) MiniMaxDepth = 3;
+	else if (NumPieces < 15) MiniMaxDepth = 4;
 
 	FTimerHandle TimerHandle;
 
@@ -148,8 +148,8 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		else if (BlackCheck && BlackStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
-		if (BlackCheck) Value += -2;
-		if (WhiteCheck) Value += +2;
+		if (BlackCheck) Value += -10;
+		if (WhiteCheck) Value += +10;
 	}
 	else
 	{
@@ -160,8 +160,8 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		else if (WhiteCheck && WhiteStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 
-		if (WhiteCheck) Value += -2;
-		if (BlackCheck) Value += +2;
+		if (WhiteCheck) Value += -10;
+		if (BlackCheck) Value += +10;
 	}
 		
 
