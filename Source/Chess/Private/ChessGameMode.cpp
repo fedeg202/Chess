@@ -314,6 +314,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		}
 		else if (CurrentReplayMoveIndex - 1 == MoveIndex) 
 		{
+			ChessBoard->StateOccurrences[ChessBoard->GetChessboardStateString()]--;
 			ChessBoard->RemoveMovesFromStartingIndex(MoveIndex);
 			AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);

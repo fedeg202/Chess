@@ -532,6 +532,8 @@ void AChessBoard::ResetChessBoard()
 
 	AllMoves.Empty();
 
+	StateOccurrences.Empty();
+
 	SpawnBlackPieces();
 	SpawnWhitePieces();
 
@@ -605,6 +607,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 {
 	for (int32 i = CurrentMoveIndex; i > TargetMoveindex; i--)
 	{
+		StateOccurrences[GetChessboardStateString()]--;
 		if (!AllMoves[i].bEatFlag && !AllMoves[i].bPawnPromotion)
 		{
 			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
@@ -720,6 +723,7 @@ void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 T
 {
 	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
 	{
+		StateOccurrences[GetChessboardStateString()]++;
 		if (AllMoves[i].bEatFlag)
 			AllMoves[i].Tiles.Tile1->GetOnPiece()->Eat(AllMoves[i].Tiles.Tile2, this);
 		else
