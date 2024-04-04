@@ -40,6 +40,7 @@ public:
 	bool b_OnCheckmate;
 	//Bool value that indicates if the player is in stalemate
 	bool b_OnStalemate;
+
 	
 	//virtual function to start the turn and show a custom message
 	virtual void OnTurn() {};
@@ -53,7 +54,5 @@ public:
 	virtual void OnCheckmate() {};
 	//virtual function to show a message when the player is in stalemate
 	virtual void OnStalemate() {};
-
-
 
 };

@@ -9,6 +9,8 @@
 #include "Chess_HumanPlayer.h"
 #include "Chess_RandomPlayer.h"
 #include "Chess_MinimaxPlayer.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundWave.h"
 
 AChessGameMode::AChessGameMode()
 {
@@ -34,7 +36,7 @@ void AChessGameMode::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Game Field is null"));
 	}
 
-	float CameraPosX = ((ChessBoard->GetGameField()->TileSize - 2) * ChessBoard->GetGameField()->Size)/2;
+	float CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size-1))/2;
 	FVector CameraPos(CameraPosX, CameraPosX, 1050.0f);
 	HumanPlayer->SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
 
@@ -119,8 +121,11 @@ void AChessGameMode::TurnNextPlayer()
 
 void AChessGameMode::StartGame(int32 Diff)
 {
+
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
+
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
 
 	if (Difficulty < 2)
 	{
@@ -128,6 +133,8 @@ void AChessGameMode::StartGame(int32 Diff)
 		auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
 		AI->ChessBoard = ChessBoard;
 		AI->Color = EColor::BLACK;
+		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
+		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
 		Players.Add(AI);
 	}
 	else 
@@ -136,6 +143,8 @@ void AChessGameMode::StartGame(int32 Diff)
 		auto* AI = GetWorld()->SpawnActor<AChess_MinimaxPlayer>(FVector(), FRotator());
 		AI->ChessBoard = ChessBoard;
 		AI->Color = EColor::BLACK;
+		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
+		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
 		Players.Add(AI);
 	}
 	// AI player -> Players[1]

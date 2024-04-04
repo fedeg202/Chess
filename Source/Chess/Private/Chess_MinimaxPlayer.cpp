@@ -4,6 +4,7 @@
 #include "Chess_MinimaxPlayer.h"
 #include "ChessGameMode.h"
 #include "Chess_PlayerController.h"
+#include "Components/AudioComponent.h"
 
 
 AChess_MinimaxPlayer::AChess_MinimaxPlayer()
@@ -58,10 +59,17 @@ void AChess_MinimaxPlayer::OnTurn()
 		if (Tiles.Tile2->GetTileStatus() == ETileStatus::OCCUPIED)
 		{
 			Piece->Eat(Tiles.Tile2, ChessBoard);
+
+			EatAudioComponent->Play();
+
 			b_eatFlag = true;
 		}
 
-		else Piece->Move(Tiles.Tile2, ChessBoard->GetGameField());
+		else 
+		{
+			Piece->Move(Tiles.Tile2, ChessBoard->GetGameField());
+			MoveAudioComponent->Play();
+		}
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 

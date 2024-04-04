@@ -7,7 +7,7 @@
 AQueen::AQueen() : APiece()
 {
 	Name = EPieceName::QUEEN;
-	Value = 900;
+	Value = 1000;
 }
 
 TArray<FVector2D> AQueen::Moves()
