@@ -42,7 +42,7 @@ void AChess_MinimaxPlayer::OnTurn()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer Turn"));
 	GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
-	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetBlackPieces().Num();
+	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
 	if (NumPieces > 25) MiniMaxDepth = 2;
 	else if (NumPieces >= 15 && NumPieces <= 25) MiniMaxDepth = 3;
 	else if (NumPieces < 15) MiniMaxDepth = 4;
