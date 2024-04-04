@@ -8,7 +8,9 @@
 #include "Chess_PlayerController.h"
 #include "Chess_HumanPlayer.h"
 #include "Chess_RandomPlayer.h"
-//#include "TTT_MinimaxPlayer.h"
+#include "Chess_MinimaxPlayer.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundWave.h"
 
 AChessGameMode::AChessGameMode()
 {
@@ -34,7 +36,7 @@ void AChessGameMode::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Game Field is null"));
 	}
 
-	float CameraPosX = ((ChessBoard->GetGameField()->TileSize - 2) * ChessBoard->GetGameField()->Size)/2;
+	float CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size-1))/2;
 	FVector CameraPos(CameraPosX, CameraPosX, 1050.0f);
 	HumanPlayer->SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
 
@@ -52,75 +54,100 @@ void AChessGameMode::BeginPlay()
 void AChessGameMode::TurnNextPlayer()
 {
 	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	CurrentReplayMoveIndex++;
-	b_turnHumanPlayer = !b_turnHumanPlayer;
-	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
-	ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
 
-	if (b_turnHumanPlayer) 
+	if (CheckFor3StateRepetitionDraw())
 	{
-		CheckOnCheck(Players[0]);
-		CheckOnStalemate(Players[0]);
-		CheckOnCkeckmate(Players[0]);
-		if (Players[0]->b_OnCheckmate) 
-		{
-			b_gameEnded = true;
-			PC->ChessHUD->OnCheckmate(Players[0]->Color);
-			Players[0]->OnLose();
-		}
-		else if (Players[0]->b_OnStalemate)
-		{
-			PC->ChessHUD->OnStalmate();
-			b_gameEnded = true;
-			Players[0]->OnStalemate();
-		}
-		else if (Players[0]->b_OnCheck)
-		{
-			PC->ChessHUD->OnCheck();
-			Players[0]->OnCheck();
-		}
-		else Players[0]->OnTurn();
+		PC->ChessHUD->OnStalmate();
+		b_gameEnded = true;
+		Players[0]->OnStalemate();
 	}
 	else
 	{
-		CheckOnCheck(Players[1]);
-		CheckOnStalemate(Players[1]);
-		CheckOnCkeckmate(Players[1]);
-		if (Players[1]->b_OnCheckmate)
+		CurrentReplayMoveIndex++;
+		b_turnHumanPlayer = !b_turnHumanPlayer;
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
+		ChessBoard->UpdateAllMoveBYColor(ETileOwner::BLACK);
+
+		if (b_turnHumanPlayer)
 		{
-			b_gameEnded = true;
-			PC->ChessHUD->OnCheckmate(Players[1]->Color);
-			Players[0]->OnWin();
+			CheckOnCheck(Players[0]);
+			CheckOnStalemate(Players[0]);
+			CheckOnCkeckmate(Players[0]);
+			if (Players[0]->b_OnCheckmate)
+			{
+				b_gameEnded = true;
+				PC->ChessHUD->OnCheckmate(Players[0]->Color);
+				Players[0]->OnLose();
+			}
+			else if (Players[0]->b_OnStalemate)
+			{
+				PC->ChessHUD->OnStalmate();
+				b_gameEnded = true;
+				Players[0]->OnStalemate();
+			}
+			else if (Players[0]->b_OnCheck)
+			{
+				PC->ChessHUD->OnCheck();
+				Players[0]->OnCheck();
+			}
+			else Players[0]->OnTurn();
 		}
-		else if (Players[1]->b_OnStalemate)
+		else
 		{
-			PC->ChessHUD->OnStalmate();
-			b_gameEnded = true;
-			Players[1]->OnStalemate();
+			CheckOnCheck(Players[1]);
+			CheckOnStalemate(Players[1]);
+			CheckOnCkeckmate(Players[1]);
+			if (Players[1]->b_OnCheckmate)
+			{
+				b_gameEnded = true;
+				PC->ChessHUD->OnCheckmate(Players[1]->Color);
+				Players[0]->OnWin();
+			}
+			else if (Players[1]->b_OnStalemate)
+			{
+				PC->ChessHUD->OnStalmate();
+				b_gameEnded = true;
+				Players[1]->OnStalemate();
+			}
+			else if (Players[1]->b_OnCheck)
+			{
+				PC->ChessHUD->OnCheck();
+				Players[1]->OnCheck();
+			}
+			else Players[1]->OnTurn();
 		}
-		else if (Players[1]->b_OnCheck)
-		{
-			PC->ChessHUD->OnCheck();
-			Players[1]->OnCheck();
-		}
-		else Players[1]->OnTurn();
 	}
 }
 
 void AChessGameMode::StartGame(int32 Diff)
 {
+
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
-	// Random Player
-	auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
-	AI->ChessBoard = ChessBoard;
-	AI->Color = EColor::BLACK;
-	// MiniMax Player
-	//auto* AI = GetWorld()->SpawnActor<ATTT_MinimaxPlayer>(FVector(), FRotator());
 
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
+
+	if (Difficulty < 2)
+	{
+		//Random player
+		auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
+		AI->ChessBoard = ChessBoard;
+		AI->Color = EColor::BLACK;
+		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
+		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
+		Players.Add(AI);
+	}
+	else 
+	{
+		//Minimax player
+		auto* AI = GetWorld()->SpawnActor<AChess_MinimaxPlayer>(FVector(), FRotator());
+		AI->ChessBoard = ChessBoard;
+		AI->Color = EColor::BLACK;
+		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
+		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
+		Players.Add(AI);
+	}
 	// AI player -> Players[1]
-	Players.Add(AI);
-
 	CurrentReplayMoveIndex = 0;
 	b_turnHumanPlayer = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);
@@ -296,6 +323,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		}
 		else if (CurrentReplayMoveIndex - 1 == MoveIndex) 
 		{
+			ChessBoard->StateOccurrences[ChessBoard->GetChessboardStateString()]--;
 			ChessBoard->RemoveMovesFromStartingIndex(MoveIndex);
 			AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
@@ -313,4 +341,19 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		}
 		CurrentReplayMoveIndex = MoveIndex+1;
 	}
+}
+
+bool AChessGameMode::CheckFor3StateRepetitionDraw()
+{
+	FString State = ChessBoard->GetChessboardStateString();
+
+	if (ChessBoard->StateOccurrences.Contains(State))
+	{
+		ChessBoard->StateOccurrences[State]++;
+		if (ChessBoard->StateOccurrences[State] == 3) return true;
+	}
+		
+	else ChessBoard->StateOccurrences.Add(State,1);
+	
+	return false;
 }

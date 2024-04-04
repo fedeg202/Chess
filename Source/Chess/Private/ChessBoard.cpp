@@ -39,6 +39,12 @@ TArray<APiece*>& AChessBoard::GetEatenBlackPieces()
 	return EatenBlackPieces;
 }
 
+TArray<APiece*>& AChessBoard::GetPiecesByColor(ETileOwner SameColor)
+{
+	if (SameColor == ETileOwner::BLACK) return GetBlackPieces();
+	else return GetWhitePieces();
+}
+
 AGameField* AChessBoard::GetGameField()
 {
 	return GameField;
@@ -333,14 +339,16 @@ bool AChessBoard::CheckOnStalemate(ETileOwner SameColor)
 APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 {
 	APiece* OldOnPiece = Tiles.Tile2->GetOnPiece();
-	Tiles.Tile2->SetTileStatus(Tiles.Tile1->GetTileStatus());
-	Tiles.Tile2->SetTileOwner(Tiles.Tile1->GetTileOwner());
-	Tiles.Tile2->SetOnPiece(Tiles.Tile1->GetOnPiece());
+	Tiles.Tile2->SetStatusAndOwnerAndOnPiece(Tiles.Tile1->GetTileStatus(), Tiles.Tile1->GetTileOwner(), Tiles.Tile1->GetOnPiece());
 
-	Tiles.Tile1->SetTileStatus(ETileStatus::EMPTY);
-	Tiles.Tile1->SetTileOwner(ETileOwner::NONE);
-	Tiles.Tile1->SetOnPiece(nullptr);
+	if (Tiles.Tile1->GetOnPiece() == nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
+	}
 
+	Tiles.Tile1->GetOnPiece()->SetGridPosition(Tiles.Tile2->GetGridPosition());
+
+	Tiles.Tile1->SetStatusAndOwnerAndOnPiece(ETileStatus::EMPTY, ETileOwner::NONE, nullptr);
 	return OldOnPiece;
 }
 
@@ -349,9 +357,15 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 	ETileStatus Status;
 	ETileOwner TileOwner;
 
-	Tiles.Tile1->SetTileStatus(Tiles.Tile2->GetTileStatus());
-	Tiles.Tile1->SetTileOwner(Tiles.Tile2->GetTileOwner());
-	Tiles.Tile1->SetOnPiece(Tiles.Tile2->GetOnPiece());
+	Tiles.Tile1->SetStatusAndOwnerAndOnPiece(Tiles.Tile2->GetTileStatus(), Tiles.Tile2->GetTileOwner(), Tiles.Tile2->GetOnPiece());
+
+	if (Tiles.Tile1->GetOnPiece() == nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
+	}
+	
+
+	Tiles.Tile2->GetOnPiece()->SetGridPosition(Tiles.Tile1->GetGridPosition());
 
 	if (OldOnPiece != nullptr)
 	{
@@ -359,14 +373,13 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 		if (OldOnPiece->GetColor() == EPieceColor::BLACK) TileOwner = ETileOwner::BLACK;
 		else TileOwner = ETileOwner::WHITE;
 	}
-	else {
+	else 
+	{
 		Status = ETileStatus::EMPTY;
 		TileOwner = ETileOwner::NONE;
 	}
 
-	Tiles.Tile2->SetTileStatus(Status);
-	Tiles.Tile2->SetTileOwner(TileOwner);
-	Tiles.Tile2->SetOnPiece(OldOnPiece);
+	Tiles.Tile2->SetStatusAndOwnerAndOnPiece(Status, TileOwner, OldOnPiece);
 }
 
 void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
@@ -399,6 +412,12 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 		for (int32 j = 0; j < APieceSelectableMoves.Num(); j++)
 		{
 			CoupleTile_tmp.Tile2 = APieceSelectableMoves[j];
+
+			if (CoupleTile_tmp.Tile1->GetOnPiece() == nullptr)
+			{
+				UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
+			}
+
 			tmp_piece = VirtualMove(CoupleTile_tmp);
 			AllOppositeColorMoves = GetAllMovesByColor(OppositeColor);
 			if (CheckOnCheck(Color, AllOppositeColorMoves))
@@ -428,11 +447,27 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 }
 
-TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor)
+TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy)
 {
-	if (SameColor == ETileOwner::BLACK)
-		return AllBlackSelectableMoves;
-	else return AllWhiteSelectableMoves;
+	if (!bCopy)
+	{
+		if (SameColor == ETileOwner::BLACK)
+			return AllBlackSelectableMoves;
+		else return AllWhiteSelectableMoves;
+	}
+	else
+	{
+		TArray<FCoupleTile> Moves;
+		if (SameColor == ETileOwner::BLACK)
+			Moves = AllBlackSelectableMoves;
+		else Moves = AllWhiteSelectableMoves;
+		TArray<FCoupleTile> CopyMoves;
+		for (int32 i = 0; i < Moves.Num(); i++)
+		{
+			CopyMoves.Add(FCoupleTile(Moves[i]));
+		}
+		return CopyMoves;
+	}
 }
 
 TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
@@ -497,6 +532,8 @@ void AChessBoard::ResetChessBoard()
 
 	AllMoves.Empty();
 
+	StateOccurrences.Empty();
+
 	SpawnBlackPieces();
 	SpawnWhitePieces();
 
@@ -505,6 +542,26 @@ void AChessBoard::ResetChessBoard()
 bool AChessBoard::CheckPawnPromotion(APiece* Piece)
 {
 	return Piece->GetName() == EPieceName::PAWN && ((Piece->GetColor() == EPieceColor::WHITE && Piece->GetGridPosition().X == GetGameField()->Size - 1) || (Piece->GetColor() == EPieceColor::BLACK && Piece->GetGridPosition().X == 0));
+}
+
+bool AChessBoard::CheckPawnPromotion(ETileOwner Color)
+{
+	if (Color == ETileOwner::BLACK)
+	{
+		for (int32 i = 0; i < GetGameField()->Size-1; i++)
+		{
+			if (GetGameField()->GetTileBYXYPosition(0, i)->GetOnPiece() != nullptr && GetGameField()->GetTileBYXYPosition(0, i)->GetOnPiece()->GetName() == EPieceName::PAWN) return true;
+		}
+		return false;
+	}
+	else
+	{
+		for (int32 i = 0; i < GetGameField()->Size - 1; i++)
+		{
+			if (GetGameField()->GetTileBYXYPosition(GetGameField()->Size - 1, i)->GetOnPiece() != nullptr && GetGameField()->GetTileBYXYPosition(GetGameField()->Size - 1, i)->GetOnPiece()->GetName() == EPieceName::PAWN) return true;
+		}
+		return false;
+	}
 }
 
 FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_eatFlag, bool b_promotionFlag,bool b_checkFlag,bool b_checkmateFlag)
@@ -550,6 +607,7 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 {
 	for (int32 i = CurrentMoveIndex; i > TargetMoveindex; i--)
 	{
+		StateOccurrences[GetChessboardStateString()]--;
 		if (!AllMoves[i].bEatFlag && !AllMoves[i].bPawnPromotion)
 		{
 			APiece* Piece = AllMoves[i].Tiles.Tile2->GetOnPiece();
@@ -665,6 +723,7 @@ void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 T
 {
 	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
 	{
+		StateOccurrences[GetChessboardStateString()]++;
 		if (AllMoves[i].bEatFlag)
 			AllMoves[i].Tiles.Tile1->GetOnPiece()->Eat(AllMoves[i].Tiles.Tile2, this);
 		else
@@ -694,6 +753,27 @@ void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
 		AllMoves.Pop();
 	}
 }
+
+FString AChessBoard::GetChessboardStateString()
+{
+	FString State = "";
+	for (int32 i = 0; i < GetGameField()->Size; i++) {
+		for (int32 j = 0; j < GetGameField()->Size; j++)
+		{
+			if (GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece() != nullptr)
+			{
+				State = State + GetGameField()->GetTileBYXYPosition(i, j)->ToString();
+				if (GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece()->GetColor() == EPieceColor::BLACK)
+					State = State + "b";
+				else State = State + "w";
+				State = State + GetGameField()->GetTileBYXYPosition(i, j)->GetOnPiece()->ToString();
+			}
+			else State = State + "-";
+		}
+	}
+	return State;
+}
+
 
 
 

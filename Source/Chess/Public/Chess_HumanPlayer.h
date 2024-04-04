@@ -46,6 +46,16 @@ public:
 	//Boolen value to manage the turn
 	bool IsMyTurn = false;
 
+	UPROPERTY(EditAnywhere)
+	class USoundBase* EatSoundToPlay;
+
+	UAudioComponent* EatAudioComponent;
+
+	UPROPERTY(EditAnywhere)
+	class USoundBase* MoveSoundToPlay;
+
+	UAudioComponent* MoveAudioComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -76,4 +86,5 @@ public:
 	//Methot to handle the player click
 	UFUNCTION()
 	void OnClick();
+
 };

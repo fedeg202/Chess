@@ -11,29 +11,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Chess_RandomPlayer.generated.h"
+#include "Chess_MinimaxPlayer.generated.h"
 
 /*
-* Class to implement the random player, inherit from Pawn and Chess_PlayerInterface
+* Class to implement the Minimax player, inherit from Pawn and Chess_PlayerInterface
 */
 
 UCLASS()
-class CHESS_API AChess_RandomPlayer : public APawn, public IChess_PlayerInterface
+class CHESS_API AChess_MinimaxPlayer : public APawn, public IChess_PlayerInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AChess_RandomPlayer();
+	AChess_MinimaxPlayer();
 
 	//Reference to a game instance object
 	UChess_GameInstance* GameInstance;
 
 	//Reference to a chessboard object
 	AChessBoard* ChessBoard;
-
-	//Reference to the selectable moves of the turn selected piece
-	TArray<ATile*> Piece_SelectableMoves;
 
 	//Reference to the HUD
 	UPROPERTY()
@@ -47,11 +44,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	bool IsMyTurn = false;
-	
-	//Reference to the turn SelectedPiece
-	APiece* SelectedPiece;
 
-public:	
+	int32 MaxValue = 10000;
+
+	int32 MiniMaxDepth = 4;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -72,4 +70,10 @@ public:
 	//Override of OnCheckmate Chess_PlayerInterface method to show a custom message for this player when is in checkmate
 	virtual void OnCheckmate() override;
 
+	int32 EvaluateBoard();
+	int32 AlfaBetaMiniMax(int32 Depth, int32 alpha, int32 beta, bool IsMax);
+	FCoupleTile FindBestMove();
+
+
 };
+

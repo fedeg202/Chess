@@ -92,6 +92,8 @@ public:
 	//Return the array of black eaten(or taken) pieces
 	TArray<APiece*>& GetEatenBlackPieces();
 
+	TArray<APiece*>& GetPiecesByColor(ETileOwner SameColor);
+
 	//Return the pointer to the gamefield
 	AGameField* GetGameField();
 
@@ -135,7 +137,7 @@ public:
 	void UpdateAllMoveBYColor(ETileOwner Color);
 	
 	//Return all the Selectable moves of the player with the color coded in ETileOwner
-	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor);
+	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor,bool bCopy = false);
 	//Return all the moves (not only the selectable) of the player with the color coded in ETileOwner
 	TArray<FCoupleTile> GetAllMovesByColor(ETileOwner SameColor);
 
@@ -144,6 +146,8 @@ public:
 
 	//Method to check if the piece is a pawn and is elegible for a pawn promotion
 	bool CheckPawnPromotion(APiece* Piece);
+	//Method to check if there is a pawn elegible for a pawn promotion of the given color player
+	bool CheckPawnPromotion(ETileOwner Color);
 
 	//Method to create the string that encode the move
 	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);
@@ -165,6 +169,10 @@ public:
 	//Method to remove all the move starting from a starting index
 	void RemoveMovesFromStartingIndex(int32 StartingIndex);
 
+	FString GetChessboardStateString();
+
+	//Map to keep track of all the states and to implement the draw in case of three occurences of the same state
+	TMap<FString, int32> StateOccurrences;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -191,5 +199,5 @@ protected:
 	//Reference to an array with all the moves
 	TArray<FMove> AllMoves;
 
-
+	
 };

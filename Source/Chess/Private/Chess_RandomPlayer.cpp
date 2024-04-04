@@ -4,6 +4,7 @@
 #include "Chess_RandomPlayer.h"
 #include "ChessGameMode.h"
 #include "Chess_PlayerController.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AChess_RandomPlayer::AChess_RandomPlayer()
@@ -17,12 +18,14 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 
 	SelectedPiece = nullptr;
 	Piece_SelectableMoves.SetNum(0);
+
 }
 
 // Called when the game starts or when spawned
 void AChess_RandomPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 // Called every frame
@@ -101,10 +104,17 @@ void AChess_RandomPlayer::OnTurn()
 		if (SelectedTile->GetTileStatus() == ETileStatus::OCCUPIED)
 		{
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
+
+			EatAudioComponent->Play();
+
 			b_eatFlag = true;
 		}
 		
-		else SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
+		else
+		{
+			SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
+			MoveAudioComponent->Play();
+		}
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
 

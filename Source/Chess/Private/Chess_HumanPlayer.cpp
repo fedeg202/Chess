@@ -5,6 +5,8 @@
 #include "ChessGameMode.h"
 #include "Chess_PlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
+
 
 
 // Sets default values
@@ -29,6 +31,12 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 
 	b_OnCheck = b_OnCheckmate = b_OnStalemate = false;
 
+	EatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EatAudioComponent"));
+	EatAudioComponent->SetupAttachment(RootComponent);
+
+	MoveAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MoveAudioComponent"));
+	MoveAudioComponent->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +52,16 @@ void AChess_HumanPlayer::BeginPlay()
 	PC->PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
 	check(PC->PawnPromotionHUD);
 	PawnPromotionHUD = PC->PawnPromotionHUD;
+
+	if (EatSoundToPlay)
+	{
+		EatAudioComponent->SetSound(EatSoundToPlay);
+	}
+
+	if (MoveSoundToPlay)
+	{
+		MoveAudioComponent->SetSound(MoveSoundToPlay);
+	}
 }
 
 // Called every frame
@@ -125,6 +143,8 @@ void AChess_HumanPlayer::OnClick()
 				Tiles.Tile2 = CurrTile;
 
 				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
+
+				MoveAudioComponent->Play();
 				 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 				Piece_SelectableMoves.Empty();
@@ -178,6 +198,9 @@ void AChess_HumanPlayer::OnClick()
 				Tiles.Tile2 = CurrTile;
 
 				SelectedPiece->Eat(CurrTile,ChessBoard);
+
+				EatAudioComponent->Play();
+
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
