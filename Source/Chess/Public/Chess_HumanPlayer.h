@@ -47,14 +47,9 @@ public:
 	bool IsMyTurn = false;
 
 	UPROPERTY(EditAnywhere)
-	class USoundBase* EatSoundToPlay;
+	TArray<USoundBase*> SoundsToPlay;
 
-	UAudioComponent* EatAudioComponent;
-
-	UPROPERTY(EditAnywhere)
-	class USoundBase* MoveSoundToPlay;
-
-	UAudioComponent* MoveAudioComponent;
+	UAudioComponent* AudioComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -86,5 +81,7 @@ public:
 	//Methot to handle the player click
 	UFUNCTION()
 	void OnClick();
+
+	void PlaySound(int32 SoundIndex);
 
 };

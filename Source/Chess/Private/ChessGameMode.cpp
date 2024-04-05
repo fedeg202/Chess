@@ -126,15 +126,14 @@ void AChessGameMode::StartGame(int32 Diff)
 		Difficulty = Diff;
 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
-
+	
 	if (Difficulty < 2)
 	{
 		//Random player
 		auto* AI = GetWorld()->SpawnActor<AChess_RandomPlayer>(FVector(), FRotator());
 		AI->ChessBoard = ChessBoard;
 		AI->Color = EColor::BLACK;
-		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
-		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
+		AI->SoundsToPlay = HumanPlayer->SoundsToPlay;
 		Players.Add(AI);
 	}
 	else 
@@ -143,11 +142,13 @@ void AChessGameMode::StartGame(int32 Diff)
 		auto* AI = GetWorld()->SpawnActor<AChess_MinimaxPlayer>(FVector(), FRotator());
 		AI->ChessBoard = ChessBoard;
 		AI->Color = EColor::BLACK;
-		AI->MoveAudioComponent = HumanPlayer->MoveAudioComponent;
-		AI->EatAudioComponent = HumanPlayer->EatAudioComponent;
+		AI->SoundsToPlay = HumanPlayer->SoundsToPlay;
 		Players.Add(AI);
 	}
 	// AI player -> Players[1]
+
+	
+
 	CurrentReplayMoveIndex = 0;
 	b_turnHumanPlayer = true;
 	ChessBoard->UpdateAllMoveBYColor(ETileOwner::WHITE);

@@ -349,6 +349,15 @@ APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 	Tiles.Tile1->GetOnPiece()->SetGridPosition(Tiles.Tile2->GetGridPosition());
 
 	Tiles.Tile1->SetStatusAndOwnerAndOnPiece(ETileStatus::EMPTY, ETileOwner::NONE, nullptr);
+
+	if (OldOnPiece != nullptr)
+	{
+		if (OldOnPiece->GetColor() == EPieceColor::BLACK)
+			GetBlackPieces().Remove(OldOnPiece);
+		else if (OldOnPiece->GetColor() == EPieceColor::WHITE)
+			GetWhitePieces().Remove(OldOnPiece);
+	}
+
 	return OldOnPiece;
 }
 
@@ -359,7 +368,7 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 
 	Tiles.Tile1->SetStatusAndOwnerAndOnPiece(Tiles.Tile2->GetTileStatus(), Tiles.Tile2->GetTileOwner(), Tiles.Tile2->GetOnPiece());
 
-	if (Tiles.Tile1->GetOnPiece() == nullptr)
+	if (Tiles.Tile2->GetOnPiece() == nullptr)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
 	}
@@ -370,8 +379,16 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 	if (OldOnPiece != nullptr)
 	{
 		Status = ETileStatus::OCCUPIED;
-		if (OldOnPiece->GetColor() == EPieceColor::BLACK) TileOwner = ETileOwner::BLACK;
-		else TileOwner = ETileOwner::WHITE;
+		if (OldOnPiece->GetColor() == EPieceColor::BLACK)
+		{
+			TileOwner = ETileOwner::BLACK;
+			GetBlackPieces().Add(OldOnPiece);
+		}	
+		else if (OldOnPiece->GetColor() == EPieceColor::WHITE)
+		{
+			TileOwner = ETileOwner::WHITE;
+			GetWhitePieces().Add(OldOnPiece);
+		}
 	}
 	else 
 	{

@@ -31,12 +31,7 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 
 	b_OnCheck = b_OnCheckmate = b_OnStalemate = false;
 
-	EatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EatAudioComponent"));
-	EatAudioComponent->SetupAttachment(RootComponent);
-
-	MoveAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MoveAudioComponent"));
-	MoveAudioComponent->SetupAttachment(RootComponent);
-
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 }
 
 // Called when the game starts or when spawned
@@ -52,16 +47,6 @@ void AChess_HumanPlayer::BeginPlay()
 	PC->PawnPromotionHUD = CreateWidget<UPawnPromotionHUD>(PC, PC->PawnPromotionHUDClass);
 	check(PC->PawnPromotionHUD);
 	PawnPromotionHUD = PC->PawnPromotionHUD;
-
-	if (EatSoundToPlay)
-	{
-		EatAudioComponent->SetSound(EatSoundToPlay);
-	}
-
-	if (MoveSoundToPlay)
-	{
-		MoveAudioComponent->SetSound(MoveSoundToPlay);
-	}
 }
 
 // Called every frame
@@ -88,12 +73,14 @@ void AChess_HumanPlayer::OnWin()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You won!"));
 	GameInstance->SetTurnMessage(TEXT("Human Wins"));
+	PlaySound(2);
 }
 
 void AChess_HumanPlayer::OnLose()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You lose!"));
 	GameInstance->SetTurnMessage(TEXT("Human Loses!"));
+	PlaySound(3);
 }
 
 void AChess_HumanPlayer::OnCheck()
@@ -107,6 +94,7 @@ void AChess_HumanPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
+	PlaySound(4);
 }
 
 void AChess_HumanPlayer::OnCheckmate()
@@ -144,7 +132,7 @@ void AChess_HumanPlayer::OnClick()
 
 				SelectedPiece->Move(CurrTile, ChessBoard->GetGameField());
 
-				MoveAudioComponent->Play();
+				PlaySound(0);
 				 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 				Piece_SelectableMoves.Empty();
@@ -199,7 +187,7 @@ void AChess_HumanPlayer::OnClick()
 
 				SelectedPiece->Eat(CurrTile,ChessBoard);
 
-				EatAudioComponent->Play();
+				PlaySound(1);
 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
@@ -228,6 +216,13 @@ void AChess_HumanPlayer::OnClick()
 		
 				
 	}
+}
+
+void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
+{
+	if (SoundsToPlay[SoundIndex])
+		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
+	AudioComponent->Play();
 }
 
 

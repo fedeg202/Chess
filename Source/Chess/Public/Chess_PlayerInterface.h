@@ -54,5 +54,4 @@ public:
 	virtual void OnCheckmate() {};
 	//virtual function to show a message when the player is in stalemate
 	virtual void OnStalemate() {};
-
 };
