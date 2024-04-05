@@ -464,11 +464,27 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 }
 
-TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy)
+TArray<FCoupleTile>& AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy)
 {
-	if (SameColor == ETileOwner::BLACK)
-		return AllBlackSelectableMoves;
-	else return AllWhiteSelectableMoves;
+	if (!bCopy)
+	{
+		if (SameColor == ETileOwner::BLACK)
+			return AllBlackSelectableMoves;
+		else return AllWhiteSelectableMoves;
+	}
+	else
+	{
+		TArray<FCoupleTile> Moves;
+		if (SameColor == ETileOwner::BLACK)
+			Moves = AllBlackSelectableMoves;
+		else Moves = AllWhiteSelectableMoves;
+		TArray<FCoupleTile> CopyMoves;
+		for (int32 i = 0; i < Moves.Num(); i++)
+		{
+			CopyMoves.Add(FCoupleTile(Moves[i]));
+		}
+		return CopyMoves;
+	}
 }
 
 TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
