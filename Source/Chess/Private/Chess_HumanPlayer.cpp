@@ -73,14 +73,14 @@ void AChess_HumanPlayer::OnWin()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You won!"));
 	GameInstance->SetTurnMessage(TEXT("Human Wins"));
-	PlaySound(2);
+	PlaySound(1);
 }
 
 void AChess_HumanPlayer::OnLose()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You lose!"));
 	GameInstance->SetTurnMessage(TEXT("Human Loses!"));
-	PlaySound(3);
+	PlaySound(2);
 }
 
 void AChess_HumanPlayer::OnCheck()
@@ -94,7 +94,7 @@ void AChess_HumanPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
-	PlaySound(4);
+	PlaySound(3);
 }
 
 void AChess_HumanPlayer::OnCheckmate()
@@ -187,7 +187,7 @@ void AChess_HumanPlayer::OnClick()
 
 				SelectedPiece->Eat(CurrTile,ChessBoard);
 
-				PlaySound(1);
+				PlaySound(4);
 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
@@ -220,6 +220,9 @@ void AChess_HumanPlayer::OnClick()
 
 void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
 {
+	if (SoundIndex == 4)
+		SoundIndex = FMath::RandRange(4, 6);
+
 	if (SoundsToPlay[SoundIndex])
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();

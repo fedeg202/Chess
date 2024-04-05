@@ -70,7 +70,7 @@ void AChess_MinimaxPlayer::OnTurn()
 		{
 			Piece->Eat(Tiles.Tile2, ChessBoard);
 
-			PlaySound(1);
+			PlaySound(4);
 
 			b_eatFlag = true;
 		}
@@ -124,7 +124,7 @@ void AChess_MinimaxPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("MinimaxPlayer in stalemate"));
-	PlaySound(4);
+	PlaySound(3);
 }
 
 void AChess_MinimaxPlayer::OnCheckmate()
@@ -358,6 +358,9 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 
 void AChess_MinimaxPlayer::PlaySound(int32 SoundIndex)
 {
+	if (SoundIndex == 4)
+		SoundIndex = FMath::RandRange(4, 6);
+
 	if (SoundsToPlay[SoundIndex])
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();

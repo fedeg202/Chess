@@ -111,7 +111,7 @@ void AChess_RandomPlayer::OnTurn()
 		{
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
 
-			PlaySound(1);
+			PlaySound(4);
 
 			b_eatFlag = true;
 		}
@@ -185,7 +185,7 @@ void AChess_RandomPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("RandomPlayer in stalemate"));
-	PlaySound(4);
+	PlaySound(3);
 }
 
 void AChess_RandomPlayer::OnCheckmate()
@@ -195,6 +195,9 @@ void AChess_RandomPlayer::OnCheckmate()
 
 void AChess_RandomPlayer::PlaySound(int32 SoundIndex)
 {
+	if (SoundIndex == 4)
+		SoundIndex = FMath::RandRange(4, 6);
+
 	if (SoundsToPlay[SoundIndex])
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();
