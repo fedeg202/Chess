@@ -23,7 +23,7 @@ void AChessGameMode::BeginPlay()
 
 	Super::BeginPlay();
 
-	IsGameOver = false;
+	b_IsGameOver = false;
 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 
@@ -47,7 +47,10 @@ void AChessGameMode::BeginPlay()
 	Players.Add(HumanPlayer);
 	
 	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	UMainMenu* MainMenu = CreateWidget<UMainMenu>(PC, MainMenuClass);
+	MainMenu = CreateWidget<UMainMenu>(PC, MainMenuClass);
+
+	PC->EndGameWidget = CreateWidget<UEndGameWidget>(PC, EndGameWidgetClass);
+
 	MainMenu->AddToPlayerScreen();
 }
 
@@ -57,8 +60,8 @@ void AChessGameMode::TurnNextPlayer()
 
 	if (CheckFor3StateRepetitionDraw())
 	{
-		PC->ChessHUD->OnStalmate();
-		b_gameEnded = true;
+		PC->OnStalemate();
+		b_IsGameOver = true;
 		Players[0]->OnStalemate();
 	}
 	else
@@ -75,14 +78,14 @@ void AChessGameMode::TurnNextPlayer()
 			CheckOnCkeckmate(Players[0]);
 			if (Players[0]->b_OnCheckmate)
 			{
-				b_gameEnded = true;
-				PC->ChessHUD->OnCheckmate(Players[0]->Color);
+				b_IsGameOver = true;
+				PC->OnCheckmate(Players[0]->Color,false);
 				Players[0]->OnLose();
 			}
 			else if (Players[0]->b_OnStalemate)
 			{
-				PC->ChessHUD->OnStalmate();
-				b_gameEnded = true;
+				PC->OnStalemate();
+				b_IsGameOver = true;
 				Players[0]->OnStalemate();
 			}
 			else if (Players[0]->b_OnCheck)
@@ -99,14 +102,14 @@ void AChessGameMode::TurnNextPlayer()
 			CheckOnCkeckmate(Players[1]);
 			if (Players[1]->b_OnCheckmate)
 			{
-				b_gameEnded = true;
-				PC->ChessHUD->OnCheckmate(Players[1]->Color);
+				b_IsGameOver = true;
+				PC->OnCheckmate(Players[1]->Color,true);
 				Players[0]->OnWin();
 			}
 			else if (Players[1]->b_OnStalemate)
 			{
-				PC->ChessHUD->OnStalmate();
-				b_gameEnded = true;
+				PC->OnStalemate();
+				b_IsGameOver = true;
 				Players[1]->OnStalemate();
 			}
 			else if (Players[1]->b_OnCheck)
@@ -122,10 +125,12 @@ void AChessGameMode::TurnNextPlayer()
 void AChessGameMode::StartGame(int32 Diff)
 {
 
+	b_IsGameOver = false;
+
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
 
-	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 	
 	if (Difficulty < 2)
 	{
@@ -214,7 +219,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 		OldPiece->Destroy();
 		switch (Name)
 		{
-		case EPieceName::ROOK:
+			case EPieceName::ROOK:
 				NewPiece = GetWorld()->SpawnActor<ABlackRook>(ChessBoard->BlackRookClass, Location, FRotator::ZeroRotator);
 				break;
 			case EPieceName::KNIGHT:
@@ -296,8 +301,14 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 void AChessGameMode::ResetGame()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
-	if (HumanPlayer->IsMyTurn == true || b_gameEnded)
+	if (HumanPlayer->IsMyTurn == true || b_IsGameOver)
 	{
+		IChess_PlayerInterface* AIPlayer = Players.Pop(true);
+		if (Difficulty < 2)
+			Cast<AChess_RandomPlayer>(AIPlayer)->Destroy();
+		else if (Difficulty >= 2)
+			Cast<AChess_MinimaxPlayer>(AIPlayer)->Destroy();
+	
 		AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		PC->ChessHUD->ResetHistoryScrollBox();
 		ChessBoard->ResetChessBoard();
@@ -310,7 +321,7 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 	ChessBoard->UnShowSelectableTiles(HumanPlayer->Piece_SelectableMoves);
-	if (HumanPlayer->IsMyTurn == true || bIsInReplay || b_gameEnded) 
+	if (HumanPlayer->IsMyTurn == true || bIsInReplay || b_IsGameOver)
 	{
 		bIsInReplay = true;
 		HumanPlayer->IsMyTurn = false;
@@ -324,21 +335,23 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 		}
 		else if (CurrentReplayMoveIndex - 1 == MoveIndex) 
 		{
-			ChessBoard->StateOccurrences[ChessBoard->GetChessboardStateString()]--;
-			ChessBoard->RemoveMovesFromStartingIndex(MoveIndex);
-			AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-			PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
-			bIsInReplay = false;
-			b_gameEnded = false;
-			if (ChessBoard->GetTopMove().Player == EColor::WHITE)
+			if (!b_IsGameOver)
 			{
-				b_turnHumanPlayer = true; //i want to use the TurnNextPlayer in order to update all the avaible moves, so i here i put true and with turn next player will be set to true
-			}	
-			else
-			{
-				b_turnHumanPlayer = false;
+				ChessBoard->StateOccurrences[ChessBoard->GetChessboardStateString()]--;
+				ChessBoard->RemoveMovesFromStartingIndex(MoveIndex);
+				AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+				PC->ChessHUD->RemoveButtonsFromTheHystoryScrollBox(MoveIndex);
+				bIsInReplay = false;
+				if (ChessBoard->GetTopMove().Player == EColor::WHITE)
+				{
+					b_turnHumanPlayer = true; //i want to use the TurnNextPlayer in order to update all the avaible moves, so i here i put true and with turn next player will be set to true
+				}
+				else
+				{
+					b_turnHumanPlayer = false;
+				}
+				TurnNextPlayer();
 			}
-			TurnNextPlayer();
 		}
 		CurrentReplayMoveIndex = MoveIndex+1;
 	}
@@ -357,4 +370,25 @@ bool AChessGameMode::CheckFor3StateRepetitionDraw()
 	else ChessBoard->StateOccurrences.Add(State,1);
 	
 	return false;
+}
+
+void AChessGameMode::ChangeCameraPosition()
+{
+	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
+	HumanPlayer->ChangeCameraPosition();
+}
+
+void AChessGameMode::ChangeDifficulty()
+{
+	IChess_PlayerInterface* AIPlayer = Players.Pop(true);
+	if (Difficulty<2)
+		Cast<AChess_RandomPlayer>(AIPlayer)->Destroy();
+	else if (Difficulty>=2)
+		Cast<AChess_MinimaxPlayer>(AIPlayer)->Destroy();
+
+	ChessBoard->ResetChessBoard();
+	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->ChessHUD->ResetHistoryScrollBox();
+	
+	MainMenu->AddToPlayerScreen();
 }

@@ -53,7 +53,7 @@ public:
 	void OnCheckmate(EColor PlayerColor);
 
 	//Method to show a draw on the HUD
-	void OnStalmate();
+	void OnStalemate();
 
 protected:
 	//Reference to the array containing all the Buttons with the moves

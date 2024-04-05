@@ -13,6 +13,10 @@ AChess_MinimaxPlayer::AChess_MinimaxPlayer()
 
 	GameInstance = Cast<UChess_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
+	USceneComponent* NewRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	RootComponent = NewRootComponent;
+
 	Color = EColor::NONE;
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));

@@ -28,8 +28,7 @@ public:
 	//Methot to set text in the text box in the Horizontal box
 	void SetText(FString String);
 
-protected:
-	//Reference to the text box in the horizontal box
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* Text;
+
 };

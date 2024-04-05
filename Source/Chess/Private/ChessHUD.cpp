@@ -48,12 +48,14 @@ void UChessHUD::ResetHistoryScrollBox()
 	for (int32 i = 0; i < HistoryButtons.Num(); i++)
 	{
 		MoveHistoryScrollBox->RemoveChild(HistoryButtons[i]);
+        HistoryButtons[i]->ConditionalBeginDestroy();
 	}
 	HistoryButtons.Empty();
 
     for (int32 i = 0; i < HorizontalHistoryBoxes.Num(); i++)
     {
         MoveHistoryScrollBox->RemoveChild(HorizontalHistoryBoxes[i]);
+        HorizontalHistoryBoxes[i]->ConditionalBeginDestroy();
     }
     HorizontalHistoryBoxes.Empty();
 }
@@ -65,6 +67,7 @@ void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
     for (; i > StartingIndex; i = HistoryButtons.Num()-1)
     {
         HistoryButtons[i]->RemoveFromParent();
+        HistoryButtons[i]->ConditionalBeginDestroy();
         HistoryButtons.Pop(true);
     }
 
@@ -72,6 +75,7 @@ void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
     for (; j > HorizontalBoxIndex; j = HorizontalHistoryBoxes.Num()-1)
     {
         HorizontalHistoryBoxes[j]->RemoveFromParent();
+        HorizontalHistoryBoxes[j]->ConditionalBeginDestroy();
         HorizontalHistoryBoxes.Pop(true);
     }
 }
@@ -105,7 +109,7 @@ void UChessHUD::OnCheckmate(EColor PlayerColor)
     HorizontalHistoryBoxes.Add(HorizontalBox);
 }
 
-void UChessHUD::OnStalmate()
+void UChessHUD::OnStalemate()
 {
     UHorizontalHistoryBox* HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);
     HorizontalBox->SetText("1/2-1/2");

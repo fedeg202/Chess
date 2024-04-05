@@ -225,4 +225,43 @@ void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
 	AudioComponent->Play();
 }
 
+void AChess_HumanPlayer::ChangeCameraPosition()
+{
+	CameraPosition++;
+	float CameraPosX = 0;
+	float CameraPosY = 0;
+	FVector CameraPos;
+
+	switch (CameraPosition)
+	{
+	case 0:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPos = FVector(CameraPosX, CameraPosX, 1050.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
+		break;
+	case 1: 
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * -4);
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size-1)) / 2;
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(1, 0, -1)).Rotator());
+		break;
+	case 2:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size + 3));
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, -1, -1)).Rotator());
+		break;
+	case 3:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * -4);
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 1, -1)).Rotator());
+		break;
+	default:
+		CameraPosition = -1;
+		ChangeCameraPosition();
+		break;
+	}
+}
+
 

@@ -6,6 +6,7 @@
 #include "Chess_PlayerInterface.h"
 #include "Chess_HumanPlayer.h"
 #include "MainMenu.h"
+#include "EndGameWidget.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
@@ -22,7 +23,6 @@ class CHESS_API AChessGameMode : public AGameModeBase
 public:
 	AChessGameMode();
 
-	bool IsGameOver;
 	// array of player interfaces
 	TArray<IChess_PlayerInterface*> Players;
 	bool b_turnHumanPlayer;
@@ -33,9 +33,14 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UMainMenu>	MainMenuClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UEndGameWidget>	EndGameWidgetClass;
+
 	// reference to a ChessBoard object
 	UPROPERTY(VisibleAnywhere)
 	AChessBoard* ChessBoard;
+
+	UMainMenu* MainMenu;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,7 +78,13 @@ public:
 	//Boolean value to handle replay functionality
 	bool bIsInReplay = false;
 	//Booelean value to handle the end of the game
-	bool b_gameEnded = false;
+	bool b_IsGameOver = false;
 
 	bool CheckFor3StateRepetitionDraw();
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeCameraPosition();
+
+	UFUNCTION(BlueprintCallable)
+	void ChangeDifficulty();
 };
