@@ -138,7 +138,7 @@ public:
 	
 	//Return all the Selectable moves of the player with the color coded in ETileOwner
 	TArray<FCoupleTile>& GetAllSelectableMovesByColor(ETileOwner SameColor);
-	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor,bool bCopy);
+	TArray<FCoupleTile> GetAllSelectableMovesByColor(ETileOwner SameColor,bool bCopy) const;
 	//Return all the moves (not only the selectable) of the player with the color coded in ETileOwner
 	TArray<FCoupleTile> GetAllMovesByColor(ETileOwner SameColor);
 
