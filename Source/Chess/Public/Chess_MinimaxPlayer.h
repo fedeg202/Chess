@@ -36,9 +36,10 @@ public:
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 
-	UAudioComponent* EatAudioComponent;
 
-	UAudioComponent* MoveAudioComponent;
+	TArray<USoundBase*> SoundsToPlay;
+
+	UAudioComponent* AudioComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,6 +75,6 @@ public:
 	int32 AlfaBetaMiniMax(int32 Depth, int32 alpha, int32 beta, bool IsMax);
 	FCoupleTile FindBestMove();
 
-
+	void PlaySound(int32 SoundIndex);
 };
 

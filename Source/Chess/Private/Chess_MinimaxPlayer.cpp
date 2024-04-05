@@ -14,6 +14,8 @@ AChess_MinimaxPlayer::AChess_MinimaxPlayer()
 	GameInstance = Cast<UChess_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	Color = EColor::NONE;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 }
 
 void AChess_MinimaxPlayer::BeginPlay()
@@ -46,11 +48,15 @@ void AChess_MinimaxPlayer::OnTurn()
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
 	if (NumPieces > 25) MiniMaxDepth = 2;
 	else if (NumPieces >= 15 && NumPieces <= 25) MiniMaxDepth = 3;
-	else if (NumPieces < 15) MiniMaxDepth = 4;
+	if (NumPieces < 15
+		|| Cast<AChessGameMode>(GetWorld()->GetAuthGameMode())->CurrentReplayMoveIndex < 4)
+		MiniMaxDepth = 4;
 
 	FTimerHandle TimerHandle;
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
+
+		UE_LOG(LogTemp, Display, TEXT("MIniMax is goinggggg"));
 
 		FCoupleTile Tiles = FindBestMove();
 		bool b_eatFlag = false;
@@ -60,7 +66,7 @@ void AChess_MinimaxPlayer::OnTurn()
 		{
 			Piece->Eat(Tiles.Tile2, ChessBoard);
 
-			EatAudioComponent->Play();
+			PlaySound(1);
 
 			b_eatFlag = true;
 		}
@@ -68,7 +74,8 @@ void AChess_MinimaxPlayer::OnTurn()
 		else 
 		{
 			Piece->Move(Tiles.Tile2, ChessBoard->GetGameField());
-			MoveAudioComponent->Play();
+			
+			PlaySound(0);
 		}
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
@@ -113,6 +120,7 @@ void AChess_MinimaxPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("MinimaxPlayer in stalemate"));
+	PlaySound(4);
 }
 
 void AChess_MinimaxPlayer::OnCheckmate()
@@ -142,6 +150,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 	{
 		if (ChessBoard->StateOccurrences[State] == 2) 
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Two occurences of the state already in, try not to go for the third"));
 			return 0;
 		}
 	}
@@ -161,7 +170,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		SameColor = ETileOwner::WHITE;
 		OppositeColor = ETileOwner::BLACK;
 
-		if (BlackCheck && BlackStale) return MaxValue;
+		if (BlackCheck && BlackStale)	return MaxValue;
 		else if (WhiteCheck && WhiteStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 	}
@@ -172,14 +181,12 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 	int32 sumWhite = 0;
 	for (int32 i = 0; i < ChessBoard->GetWhitePieces().Num(); i++)
 	{
-		if (ChessBoard->GetGameField()->GetTileBYXYPosition(ChessBoard->GetWhitePieces()[i]->GetGridPosition().X, ChessBoard->GetWhitePieces()[i]->GetGridPosition().Y)->GetTileOwner() == ETileOwner::WHITE)
 			sumWhite += ChessBoard->GetWhitePieces()[i]->GetValue();
 	}
 
 	int32 sumBlack = 0;
 	for (int32 i = 0; i < ChessBoard->GetBlackPieces().Num(); i++)
 	{
-		if (ChessBoard->GetGameField()->GetTileBYXYPosition(ChessBoard->GetBlackPieces()[i]->GetGridPosition().X, ChessBoard->GetBlackPieces()[i]->GetGridPosition().Y)->GetTileOwner() == ETileOwner::BLACK)
 			sumBlack += ChessBoard->GetBlackPieces()[i]->GetValue();
 	}
 
@@ -208,7 +215,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	APiece* tmp_Piece;
 	if (IsMax)
 	{
-		int32 Value = -MaxValue;
+		int32 Value = -(MaxValue*10);
 		ChessBoard->UpdateAllMoveBYColor(SameColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor,true);
 
@@ -252,7 +259,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	}
 	else
 	{
-		int32 Value = MaxValue;
+		int32 Value = (MaxValue * 10)+1;
 		ChessBoard->UpdateAllMoveBYColor(OppositeColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor,true);
 		
@@ -298,7 +305,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 {
 	FCoupleTile BestMove;
-	int32 BestVal = -(MaxValue+1);
+	int32 BestVal = -((MaxValue*10)+1);
 	ETileOwner SameColor = ETileOwner::BLACK;
 	APiece* tmp_Piece;
 	APiece* EventualPromotedPawn;
@@ -319,7 +326,7 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 			Moves[i].Tile2->SetOnPiece(Queen);
 		}
 		
-		int32 MoveVal = AlfaBetaMiniMax(MiniMaxDepth,-(MaxValue+1),MaxValue+1, false);
+		int32 MoveVal = AlfaBetaMiniMax(MiniMaxDepth,-((MaxValue * 10)+1), (MaxValue * 10)+1, false);
 
 		if (b_PawnPromotion)
 		{
@@ -343,5 +350,12 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI minimax best val = %d"), BestVal));
 
 	return BestMove;
+}
+
+void AChess_MinimaxPlayer::PlaySound(int32 SoundIndex)
+{
+	if (SoundsToPlay[SoundIndex])
+		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
+	AudioComponent->Play();
 }
 

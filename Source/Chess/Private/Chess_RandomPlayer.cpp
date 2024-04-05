@@ -19,6 +19,8 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 	SelectedPiece = nullptr;
 	Piece_SelectableMoves.SetNum(0);
 
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+
 }
 
 // Called when the game starts or when spawned
@@ -105,7 +107,7 @@ void AChess_RandomPlayer::OnTurn()
 		{
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
 
-			EatAudioComponent->Play();
+			PlaySound(1);
 
 			b_eatFlag = true;
 		}
@@ -113,7 +115,7 @@ void AChess_RandomPlayer::OnTurn()
 		else
 		{
 			SelectedPiece->Move(SelectedTile, ChessBoard->GetGameField());
-			MoveAudioComponent->Play();
+			PlaySound(0);
 		}
 
 		AChessGameMode* GameMode = Cast<AChessGameMode>(GetWorld()->GetAuthGameMode());
@@ -179,9 +181,17 @@ void AChess_RandomPlayer::OnStalemate()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer in stalemate"));
 	GameInstance->SetTurnMessage(TEXT("RandomPlayer in stalemate"));
+	PlaySound(4);
 }
 
 void AChess_RandomPlayer::OnCheckmate()
 {
 	this->OnLose();
+}
+
+void AChess_RandomPlayer::PlaySound(int32 SoundIndex)
+{
+	if (SoundsToPlay[SoundIndex])
+		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
+	AudioComponent->Play();
 }

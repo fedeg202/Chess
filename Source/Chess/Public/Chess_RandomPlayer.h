@@ -39,9 +39,9 @@ public:
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 
-	UAudioComponent* EatAudioComponent;
+	TArray<USoundBase*> SoundsToPlay;
 
-	UAudioComponent* MoveAudioComponent;
+	UAudioComponent* AudioComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -72,4 +72,5 @@ public:
 	//Override of OnCheckmate Chess_PlayerInterface method to show a custom message for this player when is in checkmate
 	virtual void OnCheckmate() override;
 
+	void PlaySound(int32 SoundIndex);
 };
