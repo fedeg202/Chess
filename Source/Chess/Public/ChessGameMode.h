@@ -5,7 +5,7 @@
 #include "ChessBoard.h"
 #include "Chess_PlayerInterface.h"
 #include "Chess_HumanPlayer.h"
-#include "MainMenu.h"
+#include "StartMenu.h"
 #include "EndGameWidget.h"
 
 #include "CoreMinimal.h"
@@ -31,7 +31,7 @@ public:
 	TSubclassOf<AChessBoard> ChessBoardClass;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UMainMenu>	MainMenuClass;
+	TSubclassOf<UStartMenu>	StartMenuClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UEndGameWidget>	EndGameWidgetClass;
@@ -39,8 +39,6 @@ public:
 	// reference to a ChessBoard object
 	UPROPERTY(VisibleAnywhere)
 	AChessBoard* ChessBoard;
-
-	UMainMenu* MainMenu;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -87,4 +85,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeDifficulty();
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* BackGroundMusic;
+
+	UPROPERTY(BlueprintReadWrite)
+	UAudioComponent* MusicComponent;
+
 };

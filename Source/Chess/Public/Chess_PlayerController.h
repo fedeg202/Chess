@@ -6,6 +6,7 @@
 #include "ChessHUD.h"
 #include "PawnPromotionHUD.h"
 #include "EndGameWidget.h"
+#include "StartMenu.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY()
 	UEndGameWidget* EndGameWidget;
+
+	UPROPERTY()
+	UStartMenu* StartMenu;
 
 	//Function to show the HUD
 	UFUNCTION(BlueprintCallable)

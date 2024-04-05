@@ -55,6 +55,9 @@ public:
 	//Method to show a draw on the HUD
 	void OnStalemate();
 
+	UPROPERTY(EditDefaultsOnly)
+	UAudioComponent* Music;
+
 protected:
 	//Reference to the array containing all the Buttons with the moves
 	TArray<UMoveHistoryButton*> HistoryButtons;
