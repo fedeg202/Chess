@@ -45,9 +45,12 @@ void AChess_MinimaxPlayer::OnTurn()
 		ChessHUD = PC->ChessHUD;
 	}
 
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer Turn"));
-	GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
+	if(!b_OnCheck) GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
 	if (NumPieces > 25) MiniMaxDepth = 2;
@@ -64,11 +67,12 @@ void AChess_MinimaxPlayer::OnTurn()
 
 		FCoupleTile Tiles = FindBestMove();
 		bool b_eatFlag = false;
-		APiece* Piece = Tiles.Tile1->GetOnPiece();
+		SelectedPiece = Tiles.Tile1->GetOnPiece();
+		SelectedPiece->ShowSelected();
 
 		if (Tiles.Tile2->GetTileStatus() == ETileStatus::OCCUPIED)
 		{
-			Piece->Eat(Tiles.Tile2, ChessBoard);
+			SelectedPiece->Eat(Tiles.Tile2, ChessBoard);
 
 			PlaySound(4);
 
@@ -77,7 +81,7 @@ void AChess_MinimaxPlayer::OnTurn()
 
 		else 
 		{
-			Piece->Move(Tiles.Tile2, ChessBoard->GetGameField());
+			SelectedPiece->Move(Tiles.Tile2, ChessBoard->GetGameField());
 			
 			PlaySound(0);
 		}
@@ -86,31 +90,37 @@ void AChess_MinimaxPlayer::OnTurn()
 
 		IsMyTurn = false;
 
-		if (!ChessBoard->CheckPawnPromotion(Piece))
+		if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
 		{
-			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(Piece, Tiles, b_eatFlag, false), Color);
+			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, false), Color);
 			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag, false));
 			GameMode->TurnNextPlayer();
 		}
 		else
 		{
-			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(Piece, Tiles, b_eatFlag, true), Color);
+			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, true), Color);
 			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag, false));
 			GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::QUEEN);
 		}
-	}, 1, false);
+	}, 0.1, false);
 }
 
 void AChess_MinimaxPlayer::OnWin()
 {
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer won!"));
-	GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Wins"));
+	//GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Wins"));
 }
 
 void AChess_MinimaxPlayer::OnLose()
 {
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer lose!"));
-	GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Loses!"));
+	//GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Loses!"));
 }
 
 void AChess_MinimaxPlayer::OnCheck()
@@ -122,9 +132,19 @@ void AChess_MinimaxPlayer::OnCheck()
 
 void AChess_MinimaxPlayer::OnStalemate()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer in stalemate"));
-	GameInstance->SetTurnMessage(TEXT("MinimaxPlayer in stalemate"));
-	PlaySound(3);
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+	if (b_OnStalemate)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer in stalemate"));
+		GameInstance->SetTurnMessage(TEXT("MinimaxPlayer in stalemate"));
+		PlaySound(3);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Draw by repetition!"));
+		GameInstance->SetTurnMessage(TEXT("Draw by repetition!"));
+	}
 }
 
 void AChess_MinimaxPlayer::OnCheckmate()

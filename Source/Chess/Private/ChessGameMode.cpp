@@ -19,7 +19,7 @@ AChessGameMode::AChessGameMode()
 
 	MusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicComponent"));
 	MusicComponent->SetSound(BackGroundMusic);
-	MusicComponent->SetVolumeMultiplier(0.3);
+	MusicComponent->SetVolumeMultiplier(0.15);
 }
 
 void AChessGameMode::BeginPlay()
@@ -84,13 +84,15 @@ void AChessGameMode::TurnNextPlayer()
 			{
 				b_IsGameOver = true;
 				PC->OnCheckmate(Players[0]->Color,false);
-				Players[0]->OnLose();
+				Players[0]->OnCheckmate();
+				Players[1]->OnWin();
 			}
 			else if (Players[0]->b_OnStalemate)
 			{
 				PC->OnStalemate();
 				b_IsGameOver = true;
 				Players[0]->OnStalemate();
+				Players[1]->OnStalemate();
 			}
 			else if (Players[0]->b_OnCheck)
 			{
@@ -107,6 +109,7 @@ void AChessGameMode::TurnNextPlayer()
 			if (Players[1]->b_OnCheckmate)
 			{
 				b_IsGameOver = true;
+				Players[1]->OnCheckmate();
 				PC->OnCheckmate(Players[1]->Color,true);
 				Players[0]->OnWin();
 			}

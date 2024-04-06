@@ -92,9 +92,17 @@ void AChess_HumanPlayer::OnCheck()
 
 void AChess_HumanPlayer::OnStalemate()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
-	GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
-	PlaySound(3);
+	if (b_OnStalemate)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
+		GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
+		PlaySound(3);
+	}
+	else 
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Draw by repetition!"));
+		GameInstance->SetTurnMessage(TEXT("Draw by repetition!"));
+	}
 }
 
 void AChess_HumanPlayer::OnCheckmate()
@@ -135,6 +143,7 @@ void AChess_HumanPlayer::OnClick()
 				PlaySound(0);
 				 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+				SelectedPiece->UnshowSelected();
 				Piece_SelectableMoves.Empty();
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
@@ -157,9 +166,14 @@ void AChess_HumanPlayer::OnClick()
 			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
 			{
 				if (SelectedPiece != nullptr)
+				{
 					ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+					SelectedPiece->UnshowSelected();
+				}
+					
 
 				SelectedPiece = CurrTile->GetOnPiece();
+				SelectedPiece->ShowSelected();
 
 				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
 				Tiles.Tile1 = CurrTile;
@@ -186,6 +200,7 @@ void AChess_HumanPlayer::OnClick()
 				Tiles.Tile2 = CurrTile;
 
 				SelectedPiece->Eat(CurrTile,ChessBoard);
+				SelectedPiece->UnshowSelected();
 
 				PlaySound(4);
 

@@ -115,6 +115,16 @@ int32 APiece::GetValue()
 	return Value;
 }
 
+void APiece::ShowSelected()
+{
+	StaticMeshComponent->SetMaterial(0, SelectedMaterial);
+}
+
+void APiece::UnshowSelected()
+{
+	StaticMeshComponent->SetMaterial(0, BaseMaterial);
+}
+
 // Called when the game starts or when spawned
 void APiece::BeginPlay()
 {
