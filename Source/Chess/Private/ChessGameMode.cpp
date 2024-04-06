@@ -133,6 +133,7 @@ void AChessGameMode::StartGame(int32 Diff)
 {
 
 	b_IsGameOver = false;
+	bIsInReplay = false;
 
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
@@ -297,6 +298,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
 	if (bInGame)
 	{
+		HumanPlayer->ChessHUD->AddToPlayerScreen();
 		HumanPlayer->ChessHUD->GetTopHistoryButtons()->SetTextOnButton(HumanPlayer->ChessHUD->GetTopHistoryButtons()->GetTextOnButton() + NewPiece->ToString());
 		ChessBoard->GetTopMove().PawnPromotedTo = Name;
 		TurnNextPlayer();
@@ -308,7 +310,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 void AChessGameMode::ResetGame()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
-	if (HumanPlayer->IsMyTurn == true || b_IsGameOver)
+	if (HumanPlayer->IsMyTurn == true || b_IsGameOver || bIsInReplay)
 	{
 		IChess_PlayerInterface* AIPlayer = Players.Pop(true);
 		if (Difficulty < 2)
