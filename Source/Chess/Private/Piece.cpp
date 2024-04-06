@@ -45,8 +45,8 @@ void APiece::Eat(ATile* EatTile, AChessBoard* ChessBoard)
 
 	FVector EatenLocation;
 	if (CurrTile->GetTileOwner() == ETileOwner::BLACK)
-		EatenLocation = AGameField::GetRelativeLocationByXYPosition(2, 12);
-	else EatenLocation = AGameField::GetRelativeLocationByXYPosition(6, 12);
+		EatenLocation = AGameField::GetRelativeLocationByXYPosition(3, 9);
+	else EatenLocation = AGameField::GetRelativeLocationByXYPosition(4, 9);
 
 	APiece* EatenPiece = EatTile->GetOnPiece();
 	EatenPiece->SetActorLocation(EatenLocation);

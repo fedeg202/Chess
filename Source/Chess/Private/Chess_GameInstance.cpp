@@ -3,26 +3,6 @@
 
 #include "Chess_GameInstance.h"
 
-void UChess_GameInstance::IncrementScoreHumanPlayer()
-{
-	ScoreHumanPlayer++;
-}
-
-void UChess_GameInstance::IncrementScoreAIPlayer()
-{
-	ScoreAiPlayer++;
-}
-
-int32 UChess_GameInstance::GetScoreHumanPlayer()
-{
-	return ScoreHumanPlayer;
-}
-
-int32 UChess_GameInstance::GetScoreAIPlayer()
-{
-	return ScoreAiPlayer;
-}
-
 FString UChess_GameInstance::GetTurnMessage()
 {
 	return CurrentTurnMessage;
