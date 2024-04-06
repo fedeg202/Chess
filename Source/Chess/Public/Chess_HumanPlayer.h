@@ -84,4 +84,8 @@ public:
 
 	void PlaySound(int32 SoundIndex);
 
+	int32 CameraPosition = 0;
+
+	void ChangeCameraPosition();
+
 };

@@ -5,6 +5,8 @@
 #include "CoreSharedPCH.h"
 #include "ChessHUD.h"
 #include "PawnPromotionHUD.h"
+#include "EndGameWidget.h"
+#include "StartMenu.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
@@ -52,9 +54,19 @@ public:
 	UPROPERTY()
 	UPawnPromotionHUD* PawnPromotionHUD;
 
+	UPROPERTY()
+	UEndGameWidget* EndGameWidget;
+
+	UPROPERTY()
+	UStartMenu* StartMenu;
+
 	//Function to show the HUD
 	UFUNCTION(BlueprintCallable)
 	void ShowHUD();
+
+	void OnStalemate();
+
+	void OnCheckmate(EColor Color,bool bHumanWin);
 
 protected:
 	//Function called when starting game

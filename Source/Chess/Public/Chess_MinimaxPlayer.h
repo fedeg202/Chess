@@ -50,6 +50,8 @@ protected:
 
 	int32 MiniMaxDepth = 4;
 
+	APiece* SelectedPiece;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

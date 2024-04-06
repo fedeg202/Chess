@@ -63,6 +63,16 @@ public:
 
 	int32 GetValue();
 
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInterface* BaseMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+	UMaterialInterface* SelectedMaterial;
+
+	void ShowSelected();
+
+	void UnshowSelected();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

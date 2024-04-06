@@ -73,14 +73,14 @@ void AChess_HumanPlayer::OnWin()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You won!"));
 	GameInstance->SetTurnMessage(TEXT("Human Wins"));
-	PlaySound(2);
+	PlaySound(1);
 }
 
 void AChess_HumanPlayer::OnLose()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You lose!"));
 	GameInstance->SetTurnMessage(TEXT("Human Loses!"));
-	PlaySound(3);
+	PlaySound(2);
 }
 
 void AChess_HumanPlayer::OnCheck()
@@ -92,9 +92,17 @@ void AChess_HumanPlayer::OnCheck()
 
 void AChess_HumanPlayer::OnStalemate()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
-	GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
-	PlaySound(4);
+	if (b_OnStalemate)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in stalemate"));
+		GameInstance->SetTurnMessage(TEXT("Human in stalemate"));
+		PlaySound(3);
+	}
+	else 
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Draw by repetition!"));
+		GameInstance->SetTurnMessage(TEXT("Draw by repetition!"));
+	}
 }
 
 void AChess_HumanPlayer::OnCheckmate()
@@ -135,6 +143,7 @@ void AChess_HumanPlayer::OnClick()
 				PlaySound(0);
 				 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+				SelectedPiece->UnshowSelected();
 				Piece_SelectableMoves.Empty();
 
 				if (!ChessBoard->CheckPawnPromotion(SelectedPiece))
@@ -157,9 +166,14 @@ void AChess_HumanPlayer::OnClick()
 			else if (CurrTile->GetTileStatus() == ETileStatus::OCCUPIED && CurrTile->GetTileOwner() == ETileOwner::WHITE)
 			{
 				if (SelectedPiece != nullptr)
+				{
 					ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
+					SelectedPiece->UnshowSelected();
+				}
+					
 
 				SelectedPiece = CurrTile->GetOnPiece();
+				SelectedPiece->ShowSelected();
 
 				Piece_SelectableMoves = SelectedPiece->AvaibleMoves(ChessBoard);
 				Tiles.Tile1 = CurrTile;
@@ -186,8 +200,9 @@ void AChess_HumanPlayer::OnClick()
 				Tiles.Tile2 = CurrTile;
 
 				SelectedPiece->Eat(CurrTile,ChessBoard);
+				SelectedPiece->UnshowSelected();
 
-				PlaySound(1);
+				PlaySound(4);
 
 				ChessBoard->UnShowSelectableTiles(Piece_SelectableMoves);
 
@@ -220,9 +235,51 @@ void AChess_HumanPlayer::OnClick()
 
 void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
 {
+	if (SoundIndex == 4)
+		SoundIndex = FMath::RandRange(4, 6);
+
 	if (SoundsToPlay[SoundIndex])
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();
+}
+
+void AChess_HumanPlayer::ChangeCameraPosition()
+{
+	CameraPosition++;
+	float CameraPosX = 0;
+	float CameraPosY = 0;
+	FVector CameraPos;
+
+	switch (CameraPosition)
+	{
+	case 0:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPos = FVector(CameraPosX, CameraPosX, 1050.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 0, -1)).Rotator());
+		break;
+	case 1: 
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * -4);
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size-1)) / 2;
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(1, 0, -1)).Rotator());
+		break;
+	case 2:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size + 3));
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, -1, -1)).Rotator());
+		break;
+	case 3:
+		CameraPosX = (ChessBoard->GetGameField()->TileSize * (ChessBoard->GetGameField()->Size - 1)) / 2;
+		CameraPosY = (ChessBoard->GetGameField()->TileSize * -4);
+		CameraPos = FVector(CameraPosX, CameraPosY, 850.0f);
+		SetActorLocationAndRotation(CameraPos, FRotationMatrix::MakeFromX(FVector(0, 1, -1)).Rotator());
+		break;
+	default:
+		CameraPosition = -1;
+		ChangeCameraPosition();
+		break;
+	}
 }
 
 

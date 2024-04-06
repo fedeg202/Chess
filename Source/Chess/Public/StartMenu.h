@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMenu.generated.h"
+#include "StartMenu.generated.h"
 
 /**
  * Class to manage the main menu
  */
 UCLASS()
-class CHESS_API UMainMenu : public UUserWidget
+class CHESS_API UStartMenu : public UUserWidget
 {
 	GENERATED_BODY()
 	

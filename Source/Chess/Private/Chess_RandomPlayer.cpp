@@ -12,6 +12,10 @@ AChess_RandomPlayer::AChess_RandomPlayer()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	USceneComponent* NewRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	RootComponent = NewRootComponent;
+
 	GameInstance = Cast<UChess_GameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	Color = EColor::NONE;
@@ -54,7 +58,11 @@ void AChess_RandomPlayer::OnTurn()
 		
 	IsMyTurn = true;
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer Turn"));
-	GameInstance->SetTurnMessage("RandomPlayer in Turn");
+	
+	if(!b_OnCheck) GameInstance->SetTurnMessage("RandomPlayer in Turn");
+
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
 
 	FTimerHandle TimerHandle;
 	int32 randTime;
@@ -96,6 +104,8 @@ void AChess_RandomPlayer::OnTurn()
 
 		} while (Piece_SelectableMoves.IsEmpty());
 
+		SelectedPiece->ShowSelected();
+
 		int32 ranTile = FMath::Rand() % Piece_SelectableMoves.Num();
 
 		ATile* SelectedTile = Piece_SelectableMoves[ranTile];
@@ -107,7 +117,7 @@ void AChess_RandomPlayer::OnTurn()
 		{
 			SelectedPiece->Eat(SelectedTile, ChessBoard);
 
-			PlaySound(1);
+			PlaySound(4);
 
 			b_eatFlag = true;
 		}
@@ -127,14 +137,12 @@ void AChess_RandomPlayer::OnTurn()
 		{
 			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, false), Color);
 			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag,false));
-			SelectedPiece = nullptr;
 			GameMode->TurnNextPlayer();
 		}
 		else
 		{
 			ChessHUD->AddMoveButtonToTheHistoryScrollBox(ChessBoard->CreateMoveString(SelectedPiece, Tiles, b_eatFlag, true), Color);
 			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag, false));
-			SelectedPiece = nullptr;
 			int32 randPromotion = FMath::Rand() % 4;
 			switch (randPromotion)
 			{
@@ -152,7 +160,6 @@ void AChess_RandomPlayer::OnTurn()
 				break;
 			}
 		}
-
 	}, randTime, false);
 
 	
@@ -160,14 +167,20 @@ void AChess_RandomPlayer::OnTurn()
 
 void AChess_RandomPlayer::OnWin()
 {
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer won!"));
-	GameInstance->SetTurnMessage(TEXT("RandomPlayer Wins"));
+	//GameInstance->SetTurnMessage(TEXT("RandomPlayer Wins"));
 }
 
 void AChess_RandomPlayer::OnLose()
 {
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer lose!"));
-	GameInstance->SetTurnMessage(TEXT("RandomPlayer Loses!"));
+	//GameInstance->SetTurnMessage(TEXT("RandomPlayer Loses!"));
 }
 
 void AChess_RandomPlayer::OnCheck()
@@ -179,9 +192,22 @@ void AChess_RandomPlayer::OnCheck()
 
 void AChess_RandomPlayer::OnStalemate()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer in stalemate"));
-	GameInstance->SetTurnMessage(TEXT("RandomPlayer in stalemate"));
-	PlaySound(4);
+	if (SelectedPiece != nullptr)
+		SelectedPiece->UnshowSelected();
+
+	
+	if (b_OnStalemate)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer in stalemate"));
+		GameInstance->SetTurnMessage(TEXT("RandomPlayer in stalemate"));
+		PlaySound(3);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Draw by repetition!"));
+		GameInstance->SetTurnMessage(TEXT("Draw by repetition!"));
+	}
+	
 }
 
 void AChess_RandomPlayer::OnCheckmate()
@@ -191,6 +217,9 @@ void AChess_RandomPlayer::OnCheckmate()
 
 void AChess_RandomPlayer::PlaySound(int32 SoundIndex)
 {
+	if (SoundIndex == 4)
+		SoundIndex = FMath::RandRange(4, 6);
+
 	if (SoundsToPlay[SoundIndex])
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();

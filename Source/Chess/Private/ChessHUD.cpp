@@ -105,7 +105,7 @@ void UChessHUD::OnCheckmate(EColor PlayerColor)
     HorizontalHistoryBoxes.Add(HorizontalBox);
 }
 
-void UChessHUD::OnStalmate()
+void UChessHUD::OnStalemate()
 {
     UHorizontalHistoryBox* HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);
     HorizontalBox->SetText("1/2-1/2");
