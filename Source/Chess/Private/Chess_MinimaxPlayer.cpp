@@ -54,10 +54,8 @@ void AChess_MinimaxPlayer::OnTurn()
 
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
 	if (NumPieces > 25) MiniMaxDepth = 2;
-	else if (NumPieces >= 15 && NumPieces <= 25) MiniMaxDepth = 3;
-	if (NumPieces < 15
-		|| Cast<AChessGameMode>(GetWorld()->GetAuthGameMode())->CurrentReplayMoveIndex < 4)
-		MiniMaxDepth = 4;
+	else if (NumPieces > 15 && NumPieces <= 25) MiniMaxDepth = 3;
+	else if (NumPieces <= 15) MiniMaxDepth = 4;
 
 	FTimerHandle TimerHandle;
 
@@ -102,7 +100,7 @@ void AChess_MinimaxPlayer::OnTurn()
 			ChessBoard->AddMove(FMove(Tiles, Color, b_eatFlag, false));
 			GameMode->HandlePawnPromotion(EPieceColor::BLACK, EPieceName::QUEEN);
 		}
-	}, 0.1, false);
+	}, 1, false);
 }
 
 void AChess_MinimaxPlayer::OnWin()
@@ -369,6 +367,15 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 
 			UE_LOG(LogTemp, Display, TEXT("NewBest value = %d"), MoveVal);
 		}
+		else if (MoveVal == BestVal)
+		{
+			if (FMath::RandRange(0, 1))
+			{
+				BestMove = Moves[i];
+				UE_LOG(LogTemp, Display, TEXT("SameBest value but change move, value = %d"), MoveVal);
+			}
+		}
+			
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI minimax best val = %d"), BestVal));

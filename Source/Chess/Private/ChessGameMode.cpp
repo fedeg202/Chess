@@ -19,7 +19,7 @@ AChessGameMode::AChessGameMode()
 
 	MusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicComponent"));
 	MusicComponent->SetSound(BackGroundMusic);
-	MusicComponent->SetVolumeMultiplier(0.15);
+	MusicComponent->SetVolumeMultiplier(0.1);
 }
 
 void AChessGameMode::BeginPlay()
