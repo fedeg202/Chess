@@ -19,7 +19,7 @@ AChessGameMode::AChessGameMode()
 
 	MusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicComponent"));
 	MusicComponent->SetSound(BackGroundMusic);
-	MusicComponent->SetVolumeMultiplier(0.1);
+	MusicComponent->SetVolumeMultiplier(0.2);
 }
 
 void AChessGameMode::BeginPlay()
@@ -64,9 +64,9 @@ void AChessGameMode::TurnNextPlayer()
 
 	if (CheckFor3StateRepetitionDraw())
 	{
-		PC->OnStalemate();
 		b_IsGameOver = true;
 		Players[0]->OnStalemate();
+		PC->OnStalemate();
 	}
 	else
 	{
@@ -89,10 +89,10 @@ void AChessGameMode::TurnNextPlayer()
 			}
 			else if (Players[0]->b_OnStalemate)
 			{
-				PC->OnStalemate();
 				b_IsGameOver = true;
 				Players[0]->OnStalemate();
 				Players[1]->OnStalemate();
+				PC->OnStalemate();
 			}
 			else if (Players[0]->b_OnCheck)
 			{
@@ -115,9 +115,9 @@ void AChessGameMode::TurnNextPlayer()
 			}
 			else if (Players[1]->b_OnStalemate)
 			{
-				PC->OnStalemate();
 				b_IsGameOver = true;
 				Players[1]->OnStalemate();
+				PC->OnStalemate();
 			}
 			else if (Players[1]->b_OnCheck)
 			{
