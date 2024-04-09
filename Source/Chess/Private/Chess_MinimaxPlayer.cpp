@@ -6,7 +6,10 @@
 #include "Chess_PlayerController.h"
 #include "Components/AudioComponent.h"
 
-
+/**
+ * @brief AChess_MinimaxPlayer class constructor
+ *
+ */
 AChess_MinimaxPlayer::AChess_MinimaxPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,21 +25,34 @@ AChess_MinimaxPlayer::AChess_MinimaxPlayer()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 }
 
+/**
+ * @brief Called when starting playing or on spawn
+ *
+ */
 void AChess_MinimaxPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
+/**
+ * @brief Called every tick
+ *
+ */
 void AChess_MinimaxPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
+/**
+ * @brief Called to setup the input component
+ *
+ */
 void AChess_MinimaxPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
+/**
+ * @brief Called when the player start his turn
+ *
+ */
 void AChess_MinimaxPlayer::OnTurn()
 {
 	if (ChessHUD == nullptr)
@@ -103,6 +119,10 @@ void AChess_MinimaxPlayer::OnTurn()
 	}, 1, false);
 }
 
+/**
+ * @brief Called when the player win
+ *
+ */
 void AChess_MinimaxPlayer::OnWin()
 {
 	if (SelectedPiece != nullptr)
@@ -112,6 +132,10 @@ void AChess_MinimaxPlayer::OnWin()
 	//GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Wins"));
 }
 
+/**
+ * @brief Called when the player lose
+ *
+ */
 void AChess_MinimaxPlayer::OnLose()
 {
 	if (SelectedPiece != nullptr)
@@ -121,6 +145,10 @@ void AChess_MinimaxPlayer::OnLose()
 	//GameInstance->SetTurnMessage(TEXT("MinimaxPlayer Loses!"));
 }
 
+/**
+ * @brief Called when the player is in check
+ *
+ */
 void AChess_MinimaxPlayer::OnCheck()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MinimaxPlayer is in check"));
@@ -128,6 +156,10 @@ void AChess_MinimaxPlayer::OnCheck()
 	OnTurn();
 }
 
+/**
+ * @brief Called when the player is in stalemate or draw
+ *
+ */
 void AChess_MinimaxPlayer::OnStalemate()
 {
 	if (SelectedPiece != nullptr)
@@ -145,11 +177,19 @@ void AChess_MinimaxPlayer::OnStalemate()
 	}
 }
 
+/**
+ * @brief Called when the player is on checkmate
+ *
+ */
 void AChess_MinimaxPlayer::OnCheckmate()
 {
 	this->OnLose();
 }
 
+/**
+ * @brief Method to evaluate the board for the minimax algorithm
+ *
+ */
 int32 AChess_MinimaxPlayer::EvaluateBoard()
 {
 	int32 Value = 0;
@@ -223,6 +263,16 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 
 }
 
+/**
+ * @brief Minimax algorithm to choose the best move of the AI
+ * 
+ * @param Depth depth of the algorithm
+ * @param alpha alpha of the alphabeta pruning minimax algorithm
+ * @param beta beta of the alphabeta pruning minimax algorithm
+ * @param IsMax bool value to handle the min e max player alternation in the algorithm
+ * 
+ * @return Value obtained applying the algorithm
+ */
 int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta, bool IsMax)
 {
 	if (Depth == 0) return EvaluateBoard();
@@ -237,6 +287,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	APiece* tmp_Piece;
 	if (IsMax)
 	{
+		//max is playing with the blacks
 		int32 Value = -(MaxValue*10);
 		ChessBoard->UpdateAllMoveBYColor(SameColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor,true);
@@ -245,6 +296,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 
 		for (int32 i = 0; i < Moves.Num(); i++)
 		{
+			//Do the move ("Virtually" because the actors doesn't moves but only changes the state of the chessboard)
 			tmp_Piece = ChessBoard->VirtualMove(Moves[i]);
 
 			b_PawnPromotion = ChessBoard->CheckPawnPromotion(SameColor);
@@ -266,11 +318,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
-
+			//Undo the move
 			ChessBoard->VirtualUnMove(Moves[i],tmp_Piece);
 
 			
-
+			//Alpha beta pruning
 			if (Value >= beta) return Value;
 			alpha = FMath::Max(alpha, Value);
 		}
@@ -281,6 +333,7 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 	}
 	else
 	{
+		//Min is playing with the whites
 		int32 Value = (MaxValue * 10)+1;
 		ChessBoard->UpdateAllMoveBYColor(OppositeColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor,true);
@@ -289,7 +342,9 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 
 		for (int32 i = 0; i < Moves.Num(); i++)
 		{
+			//Do the move ("Virtually" because the actors doesn't moves but only changes the state of the chessboard)
 			tmp_Piece = ChessBoard->VirtualMove(Moves[i]);
+
 			b_PawnPromotion = ChessBoard->CheckPawnPromotion(OppositeColor);
 			if (b_PawnPromotion)
 			{
@@ -309,9 +364,10 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 				Moves[i].Tile2->SetOnPiece(EventualPromotedPawn);
 				Queen->Destroy();
 			}
-
+			//Undo the move
 			ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
 
+			//Alpha beta pruning
 			if (Value <= alpha) return Value;
 			beta = FMath::Min(alpha, Value);
 			
@@ -324,6 +380,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 
 }
 
+/**
+* @brief Method to obtain the best move computed with the minimax algorithm
+*
+* @return FCoupleTile struct with the two tiles of the best move computed
+*/
 FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 {
 	FCoupleTile BestMove;
@@ -383,6 +444,11 @@ FCoupleTile AChess_MinimaxPlayer::FindBestMove()
 	return BestMove;
 }
 
+/**
+ * @brief Method to play a sound during game
+ *
+ * @param SoundIndex index of the sound to play (4 is the one of the eat or capture and there are 3 different sounds of the capture chosen randomly)
+ */
 void AChess_MinimaxPlayer::PlaySound(int32 SoundIndex)
 {
 	if (SoundIndex == 4)

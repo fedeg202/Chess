@@ -6,7 +6,10 @@
 #include "Chess_PlayerController.h"
 #include "Components/AudioComponent.h"
 
-// Sets default values
+/**
+ * @brief AChess_RandomPlayer class constructor
+ *
+ */
 AChess_RandomPlayer::AChess_RandomPlayer()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -27,27 +30,40 @@ AChess_RandomPlayer::AChess_RandomPlayer()
 
 }
 
-// Called when the game starts or when spawned
+/**
+ * @brief Called when starting playing or on spawn
+ *
+ */
 void AChess_RandomPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
 }
 
-// Called every frame
+/**
+ * @brief Called every tick
+ *
+ */
 void AChess_RandomPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
+/**
+ * @brief Called to setup the input component
+ *
+ */
 void AChess_RandomPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
+/**
+ * @brief Called when the player start his turn
+ *
+ */
 void AChess_RandomPlayer::OnTurn()
 {
 	if (ChessHUD == nullptr)
@@ -165,6 +181,10 @@ void AChess_RandomPlayer::OnTurn()
 	
 }
 
+/**
+ * @brief Called when the player win
+ *
+ */
 void AChess_RandomPlayer::OnWin()
 {
 	if (SelectedPiece != nullptr)
@@ -174,6 +194,10 @@ void AChess_RandomPlayer::OnWin()
 	//GameInstance->SetTurnMessage(TEXT("RandomPlayer Wins"));
 }
 
+/**
+ * @brief Called when the player lose
+ *
+ */
 void AChess_RandomPlayer::OnLose()
 {
 	if (SelectedPiece != nullptr)
@@ -183,6 +207,10 @@ void AChess_RandomPlayer::OnLose()
 	//GameInstance->SetTurnMessage(TEXT("RandomPlayer Loses!"));
 }
 
+/**
+ * @brief Called when the player is in check
+ *
+ */
 void AChess_RandomPlayer::OnCheck()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RandomPlayer is in check"));
@@ -190,6 +218,10 @@ void AChess_RandomPlayer::OnCheck()
 	OnTurn();
 }
 
+/**
+ * @brief Called when the player is in stalemate or draw
+ *
+ */
 void AChess_RandomPlayer::OnStalemate()
 {
 	if (SelectedPiece != nullptr)
@@ -210,11 +242,19 @@ void AChess_RandomPlayer::OnStalemate()
 	
 }
 
+/**
+ * @brief Called when the player is in checkmate
+ *
+ */
 void AChess_RandomPlayer::OnCheckmate()
 {
 	this->OnLose();
 }
-
+/**
+ * @brief Method to play a sound during game
+ *
+ * @param SoundIndex index of the sound to play (4 is the one of the eat or capture and there are 3 different sounds of the capture chosen randomly)
+ */
 void AChess_RandomPlayer::PlaySound(int32 SoundIndex)
 {
 	if (SoundIndex == 4)

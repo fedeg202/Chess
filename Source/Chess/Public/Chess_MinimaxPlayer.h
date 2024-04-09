@@ -36,20 +36,21 @@ public:
 	UPROPERTY()
 	UChessHUD* ChessHUD;
 
-
+	//Reference to an array of sounds to play
 	TArray<USoundBase*> SoundsToPlay;
-
+	//Reference to the audio component to play sounds during the game
 	UAudioComponent* AudioComponent;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	//Bool value to manage the turn of this player
 	bool IsMyTurn = false;
-
+	//Max value of the chessboard evalutor
 	int32 MaxValue = 10000;
-
+	//Minimax algorithm depth
 	int32 MiniMaxDepth = 4;
-
+	//Reference to the turn selected piece
 	APiece* SelectedPiece;
 
 public:
@@ -73,10 +74,13 @@ public:
 	//Override of OnCheckmate Chess_PlayerInterface method to show a custom message for this player when is in checkmate
 	virtual void OnCheckmate() override;
 
+	//Method to evaluate the board
 	int32 EvaluateBoard();
+	//AlphaBeta pruning MIniMax algorithm
 	int32 AlfaBetaMiniMax(int32 Depth, int32 alpha, int32 beta, bool IsMax);
+	//Method to find the best move using the minimax algorithm
 	FCoupleTile FindBestMove();
-
+	//Method to play sounds during game
 	void PlaySound(int32 SoundIndex);
 };
 

@@ -46,9 +46,10 @@ public:
 	//Boolen value to manage the turn
 	bool IsMyTurn = false;
 
+	//Array of sound to be played during the game
 	UPROPERTY(EditAnywhere)
 	TArray<USoundBase*> SoundsToPlay;
-
+	//Audio component to play sounds during the game
 	UAudioComponent* AudioComponent;
 
 protected:
@@ -64,28 +65,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//Overrride of the PlayerInterface method called when the player is in turn
+	//Override of the PlayerInterface method called when the player is in turn
 	virtual void OnTurn() override;
-	//Overrride of the PlayerInterface method called when the player win
+	//Override of the PlayerInterface method called when the player win
 	virtual void OnWin() override;
-	//Overrride of the PlayerInterface method called when the player lose
+	//Override of the PlayerInterface method called when the player lose
 	virtual void OnLose() override;
 
-	//Overrride of the PlayerInterface method called when the player is in on Check
+	//Override of the PlayerInterface method called when the player is in on Check
 	virtual void OnCheck() override;
-	//Overrride of the PlayerInterface method called when the player is in Stalemate
+	//Override of the PlayerInterface method called when the player is in Stalemate
 	virtual void OnStalemate() override;
-	//Overrride of the PlayerInterface method called when the player is in Checkmate
+	//Override of the PlayerInterface method called when the player is in Checkmate
 	virtual void OnCheckmate() override;
 
-	//Methot to handle the player click
+	//Method to handle the player click
 	UFUNCTION()
 	void OnClick();
 
+	//Method to play a sound during the game
 	void PlaySound(int32 SoundIndex);
 
+	//Parameter to keep track of the camera position
 	int32 CameraPosition = 0;
-
+	//Method to change the camera position
 	void ChangeCameraPosition();
 
 };

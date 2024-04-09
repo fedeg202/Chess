@@ -4,18 +4,30 @@
 #include "Chess_PlayerController.h"
 #include "Components/InputComponent.h"
 
+/**
+ * @brief AChess_PlayerController class constructor
+ *
+ */
 AChess_PlayerController::AChess_PlayerController()
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 }
 
+/**
+ * @brief Method to show the hud at the start of the game (Bleuprint callable)
+ *
+ */
 void AChess_PlayerController::ShowHUD()
 {
 	if (ChessHUD->IsValidLowLevel())
 		ChessHUD->AddToPlayerScreen();
 }
 
+/**
+ * @brief Method to manage the widgets in case of stalemate
+ *
+ */
 void AChess_PlayerController::OnStalemate()
 {
 	ChessHUD->OnStalemate();
@@ -27,6 +39,13 @@ void AChess_PlayerController::OnStalemate()
 	EndGameWidget->PointText->SetText(FText::FromString("1/2-1/2"));
 }
 
+/**
+ * @brief Method to manage the widgets in case of chekmate
+ * 
+ * @param Color EColor of the player in checkmate
+ * @param bHumanWin boolean value to keep track if the winner is the human player
+ *
+ */
 void AChess_PlayerController::OnCheckmate(EColor Color,bool bHumanWin)
 {
 	ChessHUD->OnCheckmate(Color);
@@ -56,6 +75,10 @@ void AChess_PlayerController::OnCheckmate(EColor Color,bool bHumanWin)
 
 }
 
+/**
+ * @brief Called when starting the game or when spawned
+ *
+ */
 void AChess_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -66,6 +89,10 @@ void AChess_PlayerController::BeginPlay()
 	}
 }
 
+/**
+ * @brief Method Setup the input component
+ *
+ */
 void AChess_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -77,6 +104,10 @@ void AChess_PlayerController::SetupInputComponent()
 	}
 }
 
+/**
+ * @brief Method to manage the HumanPlayer click
+ *
+ */
 void AChess_PlayerController::ClickOnGrid()
 {
 	const auto HumanPlayer = Cast<AChess_HumanPlayer>(GetPawn());

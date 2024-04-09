@@ -9,7 +9,9 @@
 
 
 
-// Sets default values
+/**
+* @brief AChess_HumanPlayer class contructor
+*/
 AChess_HumanPlayer::AChess_HumanPlayer()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -34,7 +36,10 @@ AChess_HumanPlayer::AChess_HumanPlayer()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 }
 
-// Called when the game starts or when spawned
+/**
+ * @brief Called when the game starts or when spawned
+ *
+ */
 void AChess_HumanPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -49,19 +54,29 @@ void AChess_HumanPlayer::BeginPlay()
 	PawnPromotionHUD = PC->PawnPromotionHUD;
 }
 
-// Called every frame
+/**
+ * @brief Called every frame
+ *
+ */
 void AChess_HumanPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-// Called to bind functionality to input
+/**
+ * @brief Called to bind functionality to input
+ *
+ */
 void AChess_HumanPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+/**
+ * @brief Called when the player is on turn
+ *
+ */
 void AChess_HumanPlayer::OnTurn()
 {
 	IsMyTurn = true;
@@ -69,6 +84,10 @@ void AChess_HumanPlayer::OnTurn()
 	GameInstance->SetTurnMessage(TEXT("Human Turn"));
 }
 
+/**
+ * @brief Called when the player win
+ *
+ */
 void AChess_HumanPlayer::OnWin()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You won!"));
@@ -76,6 +95,10 @@ void AChess_HumanPlayer::OnWin()
 	PlaySound(1);
 }
 
+/**
+ * @brief Called when the player lose
+ *
+ */
 void AChess_HumanPlayer::OnLose()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You lose!"));
@@ -83,6 +106,10 @@ void AChess_HumanPlayer::OnLose()
 	PlaySound(2);
 }
 
+/**
+ * @brief Called when the player is in check
+ *
+ */
 void AChess_HumanPlayer::OnCheck()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("You're in check"));
@@ -90,6 +117,10 @@ void AChess_HumanPlayer::OnCheck()
 	IsMyTurn = true;
 }
 
+/**
+ * @brief Called when the player is in stalemate or draw
+ *
+ */
 void AChess_HumanPlayer::OnStalemate()
 {
 	if (b_OnStalemate)
@@ -105,11 +136,19 @@ void AChess_HumanPlayer::OnStalemate()
 	}
 }
 
+/**
+ * @brief Called when the player is on checkmate
+ *
+ */
 void AChess_HumanPlayer::OnCheckmate()
 {
 	this->OnLose();
 }
 
+/**
+ * @brief Called to handle the clicks
+ *
+ */
 void AChess_HumanPlayer::OnClick()
 {
 	FHitResult Hit = FHitResult(ForceInit);
@@ -120,6 +159,7 @@ void AChess_HumanPlayer::OnClick()
 
 	if (Hit.bBlockingHit && IsMyTurn)
 	{
+		//Gettin the hitten tile
 		if (ATile* HitTile = Cast<ATile>(Hit.GetActor()))
 		{
 			CurrTile = HitTile;
@@ -129,7 +169,6 @@ void AChess_HumanPlayer::OnClick()
 			FVector2D Position = CurrPiece->GetGridPosition();
 			CurrTile = ChessBoard->GetGameField()->GetTileBYXYPosition(Position.X, Position.Y);
 		}
-
 
 		if (CurrTile != nullptr) 
 		{
@@ -233,6 +272,11 @@ void AChess_HumanPlayer::OnClick()
 	}
 }
 
+/**
+ * @brief Method to play a sound during game
+ * 
+ * @param SoundIndex index of the sound to play (4 is the one of the eat or capture and there are 3 different sounds of the capture chosen randomly)
+ */
 void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
 {
 	if (SoundIndex == 4)
@@ -242,7 +286,10 @@ void AChess_HumanPlayer::PlaySound(int32 SoundIndex)
 		AudioComponent->SetSound(SoundsToPlay[SoundIndex]);
 	AudioComponent->Play();
 }
-
+/**
+ * @brief Method to change the human player camera position, toggle between 4 positions
+ *
+ */
 void AChess_HumanPlayer::ChangeCameraPosition()
 {
 	CameraPosition++;

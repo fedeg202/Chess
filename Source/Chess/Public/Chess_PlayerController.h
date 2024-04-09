@@ -53,10 +53,12 @@ public:
 	//Reference to the PawnPromotion widget
 	UPROPERTY()
 	UPawnPromotionHUD* PawnPromotionHUD;
-
+	
+	//Reference to the end game widget
 	UPROPERTY()
 	UEndGameWidget* EndGameWidget;
 
+	//Reference to the start menu
 	UPROPERTY()
 	UStartMenu* StartMenu;
 
@@ -64,8 +66,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShowHUD();
 
+	//Method to correct display messages on the end game widget
 	void OnStalemate();
 
+	//Method to correct display messages on the end game widget
 	void OnCheckmate(EColor Color,bool bHumanWin);
 
 protected:
