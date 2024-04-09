@@ -14,7 +14,7 @@
 #include "Chess_RandomPlayer.generated.h"
 
 /*
-* Class to implement the random player, inherit from Pawn and Chess_PlayerInterface
+* @brief Class to implement the random player, inherit from Pawn and Chess_PlayerInterface
 */
 
 UCLASS()

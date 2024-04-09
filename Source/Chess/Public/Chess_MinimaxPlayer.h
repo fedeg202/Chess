@@ -14,7 +14,7 @@
 #include "Chess_MinimaxPlayer.generated.h"
 
 /*
-* Class to implement the Minimax player, inherit from Pawn and Chess_PlayerInterface
+* @brief Class to implement the Minimax player, inherit from Pawn and Chess_PlayerInterface
 */
 
 UCLASS()

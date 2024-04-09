@@ -15,6 +15,9 @@
 #include "Chess_HumanPlayer.generated.h"
 
 
+/**
+*@brief Class to implement the Human Player, inherit from the Unreal Class APawn and the interface class IChess_PlayerInterface
+*/
 UCLASS()
 class CHESS_API AChess_HumanPlayer : public APawn, public IChess_PlayerInterface
 {

@@ -4,11 +4,20 @@
 #include "King.h"
 #include "ChessBoard.h"
 
+/**
+ * @brief AKing class constructor
+ *
+ */
 AKing::AKing() : APiece()
 {
 	Name = EPieceName::KING;
 }
 
+/**
+ * @brief Compute all the possible moves a king can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the king
+ */
 TArray<FVector2D> AKing::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -30,7 +39,14 @@ TArray<FVector2D> AKing::Moves()
 	return Moves;
 }
 
-TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner OpponentColor)
+/**
+ * @brief This method compute all the avaible moves of the king based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the king coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the king can go
+ */
+TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner SameColor)
 {
 	int32 Size = ChessBoard->GetGameField()->Size;
 
@@ -39,12 +55,12 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 	TArray<FVector2D> Move = Moves();
 	FVector2D tmp_move;
 	ATile* tile;
-	ETileOwner SameColor = ETileOwner::NONE;
+	ETileOwner OpponentColor = ETileOwner::NONE;
 
-	if (OpponentColor == ETileOwner::BLACK)
-		SameColor = ETileOwner::WHITE;
+	if (SameColor == ETileOwner::BLACK)
+		OpponentColor = ETileOwner::WHITE;
 	else
-		SameColor = ETileOwner::BLACK;
+		OpponentColor = ETileOwner::BLACK;
 	
 
 	for (int32 i = 0; i < Move.Num(); i++) {
@@ -65,27 +81,51 @@ TArray<ATile*> AKing::AvaibleMovesByColor(AChessBoard* ChessBoard, ETileOwner Op
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString AKing::ToString()
 {
 	return "K";
 }
 
+/**
+ * @brief AWhiteKing class constructor
+ *
+ */
 AWhiteKing::AWhiteKing() : AKing()
 {
 	Color = EPieceColor::WHITE;
 }
-
+/**
+ * @brief This method is used to return all the avaible moves of the White King piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White King can go
+ */
 TArray<ATile*> AWhiteKing::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	return AvaibleMovesByColor(ChessBoard, ETileOwner::BLACK);
+	return AvaibleMovesByColor(ChessBoard, ETileOwner::WHITE);
 }
 
+/**
+ * @brief ABlackKing class constructor
+ *
+ */
 ABlackKing::ABlackKing() : AKing()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black King piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black King can go
+ */
 TArray<ATile*> ABlackKing::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	return AvaibleMovesByColor(ChessBoard, ETileOwner::WHITE);
+	return AvaibleMovesByColor(ChessBoard, ETileOwner::BLACK);
 }

@@ -6,6 +6,13 @@
 #include "Chess_PlayerController.h"
 
 
+/*
+* @brief Method to add a button to the history scroll box, if is a black move you simply add it to the last horizontal box,
+*        if is white move create a new horizontal box and put the button in the horizontal box
+*
+* @param MoveCode the string that has to be putted in the buttonù
+* @param Color the color the player that made the move
+*/
 void UChessHUD::AddMoveButtonToTheHistoryScrollBox(FString MoveCode, EColor Color)
 {
     UMoveHistoryButton* MoveButton;
@@ -43,6 +50,10 @@ void UChessHUD::AddMoveButtonToTheHistoryScrollBox(FString MoveCode, EColor Colo
     }
 }
 
+/*
+* @brief Method to reset the history scroll box to its starting state
+*
+*/
 void UChessHUD::ResetHistoryScrollBox()
 {
 	for (int32 i = 0; i < HistoryButtons.Num(); i++)
@@ -58,6 +69,12 @@ void UChessHUD::ResetHistoryScrollBox()
     HorizontalHistoryBoxes.Empty();
 }
 
+/*
+* @brief Method to remove all the buttons from the history scroll box starting from the button that has the index that
+*        is passed as a parameter
+* 
+* @param StartingIndex index from where starting to remove all the buttons that have a greater index
+*/
 void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
 {
     int32 HorizontalBoxIndex = FMath::Floor(StartingIndex / 2);
@@ -76,16 +93,31 @@ void UChessHUD::RemoveButtonsFromTheHystoryScrollBox(int32 StartingIndex)
     }
 }
 
+/*
+* @brief Method to obtain the top element of the HistoryButtons array
+*
+* @return reference to the top history button
+*/
 UMoveHistoryButton* UChessHUD::GetTopHistoryButtons()
 {
 	return HistoryButtons.Top();
 }
 
+/*
+* @brief Method to obtain the top element of the HistoryBoxes array
+*
+* @return reference to the top history box
+*/
 UHorizontalHistoryBox* UChessHUD::GetTopHorizontalHistoryBoxes()
 {
     return HorizontalHistoryBoxes.Top();
 }
 
+/*
+* @brief Method to complete the algebraic notation of the history buttons in case of one of the player has been
+*        putted in check
+*
+*/
 void UChessHUD::OnCheck()
 {
     UMoveHistoryButton* TopButton = HistoryButtons.Top();
@@ -93,6 +125,10 @@ void UChessHUD::OnCheck()
         TopButton->SetTextOnButton(TopButton->GetTextOnButton() + "+");
 }
 
+/*
+* @brief Method to complete the algebraic notation of the history buttons and the notation of the win in case of one of the player has been
+*        putted in checkmate
+*/
 void UChessHUD::OnCheckmate(EColor PlayerColor)
 {
     UMoveHistoryButton* TopButton = HistoryButtons.Top();
@@ -105,7 +141,10 @@ void UChessHUD::OnCheckmate(EColor PlayerColor)
     MoveHistoryScrollBox->AddChild(HorizontalBox);
     HorizontalHistoryBoxes.Add(HorizontalBox);
 }
-
+/*
+* @brief Method put the notation of the stalemate
+*
+*/
 void UChessHUD::OnStalemate()
 {
     UHorizontalHistoryBox* HorizontalBox = CreateWidget<UHorizontalHistoryBox>(this, HorizontalBoxClass);

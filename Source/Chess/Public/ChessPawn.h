@@ -8,7 +8,7 @@
 
 
 /**
- * Classes to implement the pawn piece, that inherit from the generic piece class
+ * @brief Class to implement the pawn piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API AChessPawn : public APiece
@@ -25,6 +25,9 @@ public:
 	FString ToString() override;
 };
 
+/**
+ * @brief Classes to implement the white pawn piece, that inherit from the AChessPawn class
+ */
 UCLASS()
 class CHESS_API AWhitePawn : public AChessPawn
 {
@@ -38,6 +41,9 @@ public:
 	
 };
 
+/**
+ * @brief Classes to implement the black pawn piece, that inherit from the AChessPawn class
+ */
 UCLASS()
 class CHESS_API ABlackPawn : public AChessPawn
 {

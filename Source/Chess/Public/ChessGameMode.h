@@ -13,7 +13,7 @@
 #include "ChessGameMode.generated.h"
 
 /**
- * 
+ * @brief Class to implement the ChessGame mode that inherit from the AGameModeBase
  */
 UCLASS()
 class CHESS_API AChessGameMode : public AGameModeBase
@@ -21,18 +21,19 @@ class CHESS_API AChessGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	//Set the default value for this actor
 	AChessGameMode();
 
 	// array of player interfaces
 	TArray<IChess_PlayerInterface*> Players;
 	bool b_turnHumanPlayer;
-
+	//Reference to the class of the chessboard
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AChessBoard> ChessBoardClass;
-
+	//Reference to the class of the starting menu
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UStartMenu>	StartMenuClass;
-
+	//Reference to the class of the end game widget
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UEndGameWidget>	EndGameWidgetClass;
 
@@ -48,7 +49,7 @@ public:
 	// called at the start of the game
 	UFUNCTION(BlueprintCallable)
 	void StartGame(int32 Diff);
-
+	//Value that rapresent the chosen difficulty
 	int32 Difficulty = 0;
 
 	//Called to update booleans OnCheck value of the player interface at the and of every turn
@@ -78,17 +79,22 @@ public:
 	//Booelean value to handle the end of the game
 	bool b_IsGameOver = false;
 
+	//Function to check if there has been three times same state thus making the game a draw
 	bool CheckFor3StateRepetitionDraw();
 
+	//Blueprint callable function to change the human player camera from the chessHud
 	UFUNCTION(BlueprintCallable)
 	void ChangeCameraPosition();
 
+	//Blueprint callable function to return to the starting menu where you can change the difficulty of the game
 	UFUNCTION(BlueprintCallable)
 	void ChangeDifficulty();
 
+	//Reference to the backgorund music
 	UPROPERTY(EditAnywhere)
 	USoundBase* BackGroundMusic;
 
+	//Reference to the sound component that play the background music
 	UPROPERTY(BlueprintReadWrite)
 	UAudioComponent* MusicComponent;
 

@@ -7,7 +7,7 @@
 #include "King.generated.h"
 
 /**
- * Classes to implement the king piece, that inherit from the generic piece class
+ * @brief Class to implement the king piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API AKing : public APiece
@@ -25,6 +25,9 @@ public:
 
 };
 
+/**
+ * @brief Class to implement the White King that inherint from AKing
+ */
 UCLASS()
 class CHESS_API AWhiteKing : public AKing
 {
@@ -36,6 +39,9 @@ public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
 };
 
+/**
+ * @brief Class to implement the Black King that inherint from AKing
+ */
 UCLASS()
 class CHESS_API ABlackKing : public AKing
 {

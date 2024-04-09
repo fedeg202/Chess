@@ -7,7 +7,7 @@
 #include "Bishop.generated.h"
 
 /**
- *  Classes to implement the bishop piece, that inherit from the generic piece class
+ *  @brief Class to implement the bishop piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API ABishop : public APiece
@@ -24,6 +24,9 @@ public:
 	FString ToString() override;
 };
 
+/**
+*@brief Class to implement the White bishop piece, that inherit from the ABishop class
+*/
 UCLASS()
 class CHESS_API AWhiteBishop : public ABishop
 {
@@ -36,6 +39,9 @@ public:
 
 };
 
+/**
+*@brief Class to implement the Black bishop piece, that inherit from the ABishop class
+*/
 UCLASS()
 class CHESS_API ABlackBishop : public ABishop
 {

@@ -12,6 +12,10 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundWave.h"
 
+/*
+* @brief AChessGameMode class contructor
+*
+*/
 AChessGameMode::AChessGameMode()
 {
 	PlayerControllerClass = AChess_PlayerController::StaticClass();
@@ -22,6 +26,10 @@ AChessGameMode::AChessGameMode()
 	MusicComponent->SetVolumeMultiplier(0.2);
 }
 
+/**
+ * @brief Called when starting playing or on spawn
+ *
+ */
 void AChessGameMode::BeginPlay()
 {
 
@@ -58,6 +66,10 @@ void AChessGameMode::BeginPlay()
 	PC->StartMenu->AddToPlayerScreen();
 }
 
+/**
+ * @brief Method to end the turn and pass the turn to the other player
+ *
+ */
 void AChessGameMode::TurnNextPlayer()
 {
 	AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -129,6 +141,11 @@ void AChessGameMode::TurnNextPlayer()
 	}
 }
 
+/**
+ * @brief Called to start the game from the blueprint
+ * 
+ * @param Diff the chosen diffculty
+ */
 void AChessGameMode::StartGame(int32 Diff)
 {
 
@@ -169,36 +186,57 @@ void AChessGameMode::StartGame(int32 Diff)
 	Players[0]->OnTurn();
 }
 
+/**
+ * @brief Method to update the boolean value b_OnCheck ff the player
+ * 
+ * @param P the player (player interface) that you want to check if is on check
+ */
 void AChessGameMode::CheckOnCheck(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
 		P->b_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::WHITE);
 	}
-	else
+	else if (P->Color == EColor::BLACK)
 	{
 		P->b_OnCheck = ChessBoard->CheckOnCheck(ETileOwner::BLACK);
 	}
 }
 
+/**
+ * @brief Method to update the boolean value b_OnCheckmate of the player
+ *
+ * @param P the player (player interface) that you want to check if is on checkmate
+ */
 void AChessGameMode::CheckOnCkeckmate(IChess_PlayerInterface* P)
 {
 	P->b_OnCheckmate = P->b_OnCheck && P->b_OnStalemate;
 }
 
+/**
+ * @brief Method to update the boolean value b_OnStalemate of the player
+ *
+ * @param P the player (player interface) that you want to check if is on checkmate
+ */
 void AChessGameMode::CheckOnStalemate(IChess_PlayerInterface* P)
 {
 	if (P->Color == EColor::WHITE)
 	{
 		P->b_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::WHITE);
 	}
-
-	else
+	else if (P->Color == EColor::BLACK)
 	{
 		P->b_OnStalemate = ChessBoard->CheckOnStalemate(ETileOwner::BLACK);
 	}
 }
 
+/**
+ * @brief Method to handle the pawn promotions, it manage the destruction of the pawn and the spawn of the new piece chosen
+ *
+ * @param Color of the pieces that has a pawn that will be promoted
+ * @param Name of the piece that is wanted the pawn to be promoted to
+ * @param bInGame boolean value to differentiate between in game promotion and promotion called when replaying the game
+ */
 void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool bInGame)
 {
 	APiece* OldPiece = nullptr;
@@ -307,6 +345,10 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 	
 }
 
+/**
+ * @brief Method to reset the game to the start
+ *
+ */
 void AChessGameMode::ResetGame()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
@@ -326,6 +368,12 @@ void AChessGameMode::ResetGame()
 	
 }
 
+/**
+ * @brief Method to handle the replay functionality by going forward or backward or continuing the game from where you have chosen,ù
+ *		  called by blueprints when the right button is pressed
+ *
+ * @param MoveIndex index of the move where you want to go
+ */
 void AChessGameMode::HandleReplay(int32 MoveIndex)
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
@@ -376,6 +424,11 @@ void AChessGameMode::HandleReplay(int32 MoveIndex)
 	}
 }
 
+/**
+ * @brief Method to check for a drawn by repetition and add the current state to the count of the state occurences
+ *
+ * @return true if the actual state imply a drawn by repetition, false otherwise
+ */
 bool AChessGameMode::CheckFor3StateRepetitionDraw()
 {
 	FString State = ChessBoard->GetChessboardStateString();
@@ -391,12 +444,20 @@ bool AChessGameMode::CheckFor3StateRepetitionDraw()
 	return false;
 }
 
+/**
+ * @brief Method change the camera position of the human player
+ *
+ */
 void AChessGameMode::ChangeCameraPosition()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
 	HumanPlayer->ChangeCameraPosition();
 }
 
+/**
+ * @brief Method to change diffculty by going to the starting menu, called by blueprints after pressing the right button
+ *
+ */
 void AChessGameMode::ChangeDifficulty()
 {
 	MusicComponent->Stop();

@@ -5,7 +5,10 @@
 #include "Chess_PlayerController.h"
 #include "ChessGameMode.h"
 
-// Sets default values
+/*
+* @brief AChessBoard class constructor
+*/
+
 AChessBoard::AChessBoard()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -19,43 +22,80 @@ AChessBoard::AChessBoard()
 
 }
 
+/*
+* @brief Getter of the array of the white pieces
+* 
+* @return reference to the array of the white pieces
+*/
 TArray<APiece*>& AChessBoard::GetWhitePieces()
 {
 	return WhitePieces;
 }
-
+/*
+* @brief Getter of the array of the eaten white pieces
+*
+* @return reference to the array of the eaten white pieces
+*/
 TArray<APiece*>& AChessBoard::GetEatenWhitePieces()
 {
 	return EatenWhitePieces;
 }
-
+/*
+* @brief Getter of the array of the black pieces
+*
+* @return reference to the array of the black pieces
+*/
 TArray<APiece*>& AChessBoard::GetBlackPieces()
 {
 	return BlackPieces;
 }
-
+/*
+* @brief Getter of the array of the eaten black pieces
+*
+* @return reference to the array of the eaten black pieces
+*/
 TArray<APiece*>& AChessBoard::GetEatenBlackPieces()
 {
 	return EatenBlackPieces;
 }
 
+/*
+* @brief Method to obtain the array of pieces based on the color coded in the SameColor parameter
+* 
+* @param SameColor color of the piece that you want to obtain
+* 
+* @return reference to the array of the chosen color piece
+*/
 TArray<APiece*>& AChessBoard::GetPiecesByColor(ETileOwner SameColor)
 {
 	if (SameColor == ETileOwner::BLACK) return GetBlackPieces();
 	else return GetWhitePieces();
 }
 
+/*
+* @brief Getter of the GameField
+* 
+* @return reference to the GameField
+*/
 AGameField* AChessBoard::GetGameField()
 {
 	return GameField;
 }
 
+/*
+* @brief Method to spawn the game field (all the tiles)
+*
+*/
 void AChessBoard::SpawnGameField()
 {
 	FVector Location(0, 0, 0);
 	GameField = GetWorld()->SpawnActor<AGameField>(GameFieldClass, Location, FRotator::ZeroRotator);
 }
 
+/*
+* @brief Method to spawn all the white pieces at the start of the game or when resetting
+*
+*/
 void AChessBoard::SpawnWhitePieces()
 {
 	int32 x = 1;
@@ -128,6 +168,10 @@ void AChessBoard::SpawnWhitePieces()
 	WhitePieces.Add(Obj);
 }
 
+/*
+* @brief Method to spawn all the black pieces at the start of the game or when resetting
+*
+*/
 void AChessBoard::SpawnBlackPieces()
 {
 	int32 x = GameField->Size - 2;
@@ -202,6 +246,11 @@ void AChessBoard::SpawnBlackPieces()
 
 }
 
+/*
+* @brief Method to show all the selectable tile by changing the material to make them different from the others
+* 
+* @param SelectableTiles array of reference to tiles that you want to be "marked" as selectable
+*/
 void AChessBoard::ShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 {
 	ATile* Tile;
@@ -223,6 +272,11 @@ void AChessBoard::ShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 	}
 }
 
+/*
+* @brief Method to unshow all the selectable tile by changing the material to make them different from the others
+*
+* @param SelectableTiles array of reference to tiles that you want to be restored to the state before been "marked" as selectable
+*/
 void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 {
 	ATile* Tile;
@@ -242,6 +296,11 @@ void AChessBoard::UnShowSelectableTiles(TArray<ATile*>& SelectableTiles)
 	}
 }
 
+/*
+* @brief Method to add a piece to the white piece array, and to handle the visibility of the pieces in that array
+*
+* @param EatenPiece pointer to the piece that you want to add
+*/
 void AChessBoard::AddWhiteEatenPiece(APiece* EatenPiece)
 {
 	if (EatenWhitePieces.IsEmpty())
@@ -253,6 +312,11 @@ void AChessBoard::AddWhiteEatenPiece(APiece* EatenPiece)
 	}
 }
 
+/*
+* @brief Method to add a piece to the black piece array, and to handle the visibility of the pieces in that array
+*
+* @param EatenPiece pointer to the piece that you want to add
+*/
 void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 {
 	if (EatenBlackPieces.IsEmpty())
@@ -264,6 +328,11 @@ void AChessBoard::AddBlackEatenPiece(APiece* EatenPiece)
 	}
 }
 
+/*
+* @brief Method to pop a white piece from the white eaten piece array, and to handle the visibility of the pieces in that array
+*
+* @return pointer to the piece that has been popped
+*/
 APiece* AChessBoard::PopWhiteEatenPiece()
 {
 	if (EatenWhitePieces.Num() > 1)
@@ -278,6 +347,11 @@ APiece* AChessBoard::PopWhiteEatenPiece()
 		
 }
 
+/*
+* @brief Method to pop a piece from the black eaten piece array, and to handle the visibility of the piece in that array
+*
+* @return pointer to the piece that has been popped
+*/
 APiece* AChessBoard::PopBlackEatenPiece()
 {
 	if (EatenBlackPieces.Num() > 1)
@@ -290,6 +364,12 @@ APiece* AChessBoard::PopBlackEatenPiece()
 		return EatenBlackPieces.Pop(true);
 }
 
+/*
+* @brief Method to check if the king of the player with the color coded in the SameColor parameter is in check
+*
+* @param SameColor color of the player that you want to control the state of ckeck of the king
+* @return true if it is on check, false if it isn't
+*/
 bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 {
 	TArray<FCoupleTile> AllOpponentSelectableMoves;
@@ -312,7 +392,13 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor)
 	return false;
 }
 
-bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Tmp_Moves)
+/*
+* @brief Method to check if the king of the player with the color coded in the SameColor parameter is in check, based on the moves of the other player in the Tmp_moves array
+*
+* @param Tmp_Moves moves of the opponent of the player you want to check if is in check
+* @return true if it is on check, false if it isn't
+*/
+bool AChessBoard::CheckOnCheck(TArray<FCoupleTile> Tmp_Moves)
 {
 	for (int32 i = 0; i < Tmp_Moves.Num(); i++)
 	{
@@ -323,11 +409,12 @@ bool AChessBoard::CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Tmp_Mov
 	return false;
 }
 
-bool AChessBoard::CheckOnCheckmate(ETileOwner SameColor)
-{
-	return CheckOnCheck(SameColor) && CheckOnStalemate(SameColor);
-}
-
+/*
+* @brief Method to check if the king of the player with the color coded in the SameColor parameter is in stalemate
+*
+* @param SameColor color of the player that you want to control the state of ckeck of the king
+* @return true if it is on stalemate, false if it isn't
+*/
 bool AChessBoard::CheckOnStalemate(ETileOwner SameColor)
 {
 	if (SameColor == ETileOwner::BLACK)
@@ -338,6 +425,12 @@ bool AChessBoard::CheckOnStalemate(ETileOwner SameColor)
 		else return false;
 }
 
+/*
+* @brief Method to make a "virtual" move, changing the state of the chessboard as the piece actually moved but without graphically moving the actor
+*
+* @param Tiles tiles that are involved in the move
+* @return a pointer to the eventual "virtual eaten" piece, nullptr if there is no eaten piece
+*/
 APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 {
 	APiece* OldOnPiece = Tiles.Tile2->GetOnPiece();
@@ -363,6 +456,12 @@ APiece* AChessBoard::VirtualMove(FCoupleTile Tiles)
 	return OldOnPiece;
 }
 
+/*
+* @brief Method to unmake a "virtual" move, reverting the state of the chessboard to bring it back before the virtual move
+*
+* @param OldOnPiece the eventually eaten piece that is needed to be bringed beck in the actual game
+* 
+*/
 void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 {
 	ETileStatus Status;
@@ -372,7 +471,7 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 
 	if (Tiles.Tile2->GetOnPiece() == nullptr)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
+		UE_LOG(LogTemp, Display, TEXT("Warning,is a null pointer"));
 	}
 	
 
@@ -401,6 +500,12 @@ void AChessBoard::VirtualUnMove(FCoupleTile Tiles, APiece* OldOnPiece)
 	Tiles.Tile2->SetStatusAndOwnerAndOnPiece(Status, TileOwner, OldOnPiece);
 }
 
+/*
+* @brief Method to compute all the possible moves of the player that has the piece of the color coded in the Color parameter, and put it in the correct attribute of the chessboard class
+*
+* @param Color color of the pieces that you want to compute the moves of
+*
+*/
 void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 {
 	TArray<APiece*> ColorPieces;
@@ -434,12 +539,12 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 			if (CoupleTile_tmp.Tile1->GetOnPiece() == nullptr)
 			{
-				UE_LOG(LogTemp, Display, TEXT("Mannaggia è null pointer"));
+				UE_LOG(LogTemp, Display, TEXT("Warning is a null pointer"));
 			}
 
 			tmp_piece = VirtualMove(CoupleTile_tmp);
 			AllOppositeColorMoves = GetAllMovesByColor(OppositeColor);
-			if (CheckOnCheck(Color, AllOppositeColorMoves))
+			if (CheckOnCheck(AllOppositeColorMoves))
 				TilesToRemove.Add(APieceSelectableMoves[j]);
 			VirtualUnMove(CoupleTile_tmp, tmp_piece);
 		}
@@ -466,6 +571,12 @@ void AChessBoard::UpdateAllMoveBYColor(ETileOwner Color)
 
 }
 
+/*
+* @brief Getter of the attribute All*color*SelectableMoves of the class based on the SameColor parameter
+*
+* @param SameColor color of the pieces that you want to have all selectable move of
+* @return reference to an array of FCoupleTile with all the moves of the chosen color
+*/
 TArray<FCoupleTile>& AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor)
 {
 	if (SameColor == ETileOwner::BLACK)
@@ -473,6 +584,13 @@ TArray<FCoupleTile>& AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameCo
 	else return AllWhiteSelectableMoves;
 }
 
+/*
+* @brief Method to get a copy of the attribute All*color*SelectableMoves of the class based on the SameColor parameter
+*
+* @param SameColor color of the pieces that you want to have all selectable move of
+* @param bCopy bool to assure that you want to use this method instead of the normal getter
+* @return reference to an array of FCoupleTile with all the selectable moves of the chosen color
+*/
 TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameColor, bool bCopy) const
 {
 	TArray<FCoupleTile> Moves;
@@ -487,6 +605,13 @@ TArray<FCoupleTile> AChessBoard::GetAllSelectableMovesByColor(ETileOwner SameCol
 	return CopyMoves;
 }
 
+/*
+* @brief Method to obtainall the moves of the player with the color coded in the SameColor parameter, the difference between the AllMoves and the
+*		 AllSelectableMoves is that the AllMoves are also the one that put you own king in check, that are not allowed in the chess rules
+*
+* @param SameColor color of the pieces that you want to have all move of
+* @return an array of FCoupleTile with all the moves of the chosen color
+*/
 TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
 {
 	TArray<APiece*> ColorPieces;
@@ -519,6 +644,10 @@ TArray<FCoupleTile> AChessBoard::GetAllMovesByColor(ETileOwner SameColor)
 	return AllColorMoves;
 }
 
+/*
+* @brief Method to reset the chessboard to its starting state
+*
+*/
 void AChessBoard::ResetChessBoard()
 {
 	GameField->ResetField();
@@ -556,11 +685,23 @@ void AChessBoard::ResetChessBoard()
 
 }
 
+/*
+* @brief Method check if the piece passed as a parameter is elegible for a pawn promotion
+* 
+* @param Piece pointer to the piece that you want to check
+* @return true if the piece is a pawn and reached the opposite end of the gamefield, false otherwise
+*/
 bool AChessBoard::CheckPawnPromotion(APiece* Piece)
 {
 	return Piece->GetName() == EPieceName::PAWN && ((Piece->GetColor() == EPieceColor::WHITE && Piece->GetGridPosition().X == GetGameField()->Size - 1) || (Piece->GetColor() == EPieceColor::BLACK && Piece->GetGridPosition().X == 0));
 }
 
+/*
+* @brief Method check if one of the piece with the color passed as a parameter is elegible for a pawn promotion
+*
+* @param Color color of the piece that you want to check
+* @return true if there is a pawn on the opposite end compared to the start, false otherwise
+*/
 bool AChessBoard::CheckPawnPromotion(ETileOwner Color)
 {
 	if (Color == ETileOwner::BLACK)
@@ -581,7 +722,16 @@ bool AChessBoard::CheckPawnPromotion(ETileOwner Color)
 	}
 }
 
-FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_eatFlag, bool b_promotionFlag,bool b_checkFlag,bool b_checkmateFlag)
+/*
+* @brief Method create a string that describe the move with the Long Algebraic Notation
+* 
+* @param Piece that made the move
+* @param Tiles tiles involved in the move
+* @param b_eatFlag boolean value to keep track if the move involved an eating of a piece
+* @param b_promotionFlag boolean value to keep track if the move involved a pawn promotion
+* @return string with the move coded in the long algerbraic notation
+*/
+FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_eatFlag, bool b_promotionFlag)
 {
 	FString Result;
 	FString Eat;
@@ -597,29 +747,36 @@ FString AChessBoard::CreateMoveString(APiece* Piece, FCoupleTile Tiles, bool b_e
 	else
 		Promotion = "";
 
-	if (b_checkFlag)
-		Check = "+";
-	else
-		Check = "";
-
-	if (b_checkmateFlag)
-		Check = "#";
-
 	Result = Piece->ToString() + Tiles.Tile1->ToString() + Eat + Tiles.Tile2->ToString() + Promotion;
 
 	return Result;
 }
 
+/*
+* @brief Method to push a move to the AllMoves array that contains all the move of the game
+*
+* @param Move the move to be added
+*/
 void AChessBoard::AddMove(FMove Move)
 {
 	AllMoves.Push(Move);
 }
 
+/*
+* @brief Getter of the AllMoves array by reference
+*
+*/
 TArray<FMove>& AChessBoard::GetAllMoves()
 {
 	return AllMoves;
 }
 
+/*
+* @brief Method to restore the chessboard going backward to a state identified by an index in the allmoves array
+*
+* @param CurrentMoveIndex the index from where the chessboard starts
+* @param TargetMoveIndex the index that is the target
+*/
 void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 TargetMoveindex)
 {
 	for (int32 i = CurrentMoveIndex; i > TargetMoveindex; i--)
@@ -736,6 +893,12 @@ void AChessBoard::RestoreChessboardToMoveBackward(int32 CurrentMoveIndex,int32 T
 	}
 }
 
+/*
+* @brief Method to restore the chessboard going forward to a state identified by an index in the allmoves array
+*
+* @param CurrentMoveIndex the index from where the chessboard starts
+* @param TargetMoveIndex the index that is the target
+*/
 void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 TargetMoveIndex)
 {
 	for (int32 i = CurrentMoveindex; i <= TargetMoveIndex; i++)
@@ -757,11 +920,21 @@ void AChessBoard::RestoreChessboardToMoveForward(int32 CurrentMoveindex, int32 T
 	}
 }
 
+/*
+* @brief Getter of the top element of the AllMoves array
+* 
+* @return reference the top element of the AllMoves array
+*/
 FMove& AChessBoard::GetTopMove()
 {
 	return AllMoves.Top();
 }
 
+/*
+* @brief Method to remove all the move from the AllMoves array that have an index bigger than the parameter one
+*
+* @param StartingIndex the index from where starting to remove elements
+*/
 void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
 {
 	int32 i = AllMoves.Num()-1;
@@ -771,6 +944,11 @@ void AChessBoard::RemoveMovesFromStartingIndex(int32 StartingIndex)
 	}
 }
 
+/*
+* @brief Method to obtain a string that describe the state of the chessboard to keep track of all the occurences of the state in the match
+*
+* @return A string that describe the state of the chessboard
+*/
 FString AChessBoard::GetChessboardStateString()
 {
 	FString State = "";
@@ -794,7 +972,10 @@ FString AChessBoard::GetChessboardStateString()
 
 
 
-// Called when the game starts or when spawned
+/*
+* @brief Method called when the game start or when spawned that spawn all the components of the chessboard
+*
+*/
 void AChessBoard::BeginPlay()
 {
 	Super::BeginPlay();

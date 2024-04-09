@@ -17,7 +17,7 @@
 #include "Chess_PlayerController.generated.h"
 
 /**
- * Class to implement the player controller
+ * @brief Class to implement the player controller
 */
 UCLASS()
 class CHESS_API AChess_PlayerController : public APlayerController

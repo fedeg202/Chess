@@ -11,7 +11,7 @@
 
 
 /*
-* Class to implement the gamefield made of all the tiles
+* @brief Class to implement the gamefield made of all the tiles
 */
 
 UCLASS()

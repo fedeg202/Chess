@@ -24,7 +24,7 @@ class UChess_PlayerInterface : public UInterface
 };
 
 /**
- *  Class to implement a custom chess player interface
+ * @brief Class to implement a custom chess player interface
  */
 class CHESS_API IChess_PlayerInterface
 {

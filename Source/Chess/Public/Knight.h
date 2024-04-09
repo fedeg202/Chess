@@ -7,7 +7,7 @@
 #include "Knight.generated.h"
 
 /**
- *  Classes to implement the knight piece, that inherit from the generic piece class
+ * @brief Class to implement the knight piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API AKnight : public APiece
@@ -24,6 +24,9 @@ public:
 	FString ToString() override;
 };
 
+/**
+ * @brief Clas to implement the white knight piece, that inherit from the AKnight class
+ */
 UCLASS()
 class CHESS_API AWhiteKnight : public AKnight
 {
@@ -35,6 +38,9 @@ public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
 };
 
+/**
+ * @brief Clas to implement the black knight piece, that inherit from the AKnight class
+ */
 UCLASS()
 class CHESS_API ABlackKnight : public AKnight
 {

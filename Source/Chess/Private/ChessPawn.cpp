@@ -4,12 +4,21 @@
 #include "ChessPawn.h"
 #include "ChessBoard.h"
 
+/**
+ * @brief AChessPawn class constructor
+ *
+ */
 AChessPawn::AChessPawn():APiece()
 {
 	Name = EPieceName::PAWN;
 	Value = 100;
 }
 
+/**
+ * @brief Compute all the possible moves a pawn can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the pawn
+ */
 TArray<FVector2D> AChessPawn::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -32,6 +41,13 @@ TArray<FVector2D> AChessPawn::Moves()
 	return Moves;
 }
 
+/**
+ * @brief This method compute all the avaible moves of the pawn based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the pawn coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the pawn can go
+ */
 TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	int32 Size = GameField->Size;
@@ -91,16 +107,31 @@ TArray<ATile*> AChessPawn::AvaibleMovesByColor(AGameField* GameField, ETileOwner
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString AChessPawn::ToString()
 {
 	return "P";
 }
 
+/**
+ * @brief AWhitePawn class constructor
+ *
+ */
 AWhitePawn::AWhitePawn() : AChessPawn()
 {
 	Color = EPieceColor::WHITE;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the White Pawn piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White Pawn can go
+ */
 TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Useful when using virtual move (it implement a "virtual eaten")
@@ -110,11 +141,21 @@ TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
+/**
+ * @brief ABlackPawn class constructor
+ *
+ */
 ABlackPawn::ABlackPawn() : AChessPawn()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black Pawn piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black Pawn can go
+ */
 TArray<ATile*> ABlackPawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Useful when using virtual move (it implement a "virtual eaten")

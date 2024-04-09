@@ -13,7 +13,7 @@
 
 
 /**
- * Class to implement the main HUD displayed during game
+ * @brief Class to implement the main HUD displayed during game, inherit from UUserWidget
  */
 UCLASS()
 class CHESS_API UChessHUD : public UUserWidget
@@ -21,12 +21,13 @@ class CHESS_API UChessHUD : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	//reference to the class of the WhiteMoveHistoryButton
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UWhiteMoveHistoryButton> WhiteMoveHistoryButtonClass;
-
+	//reference to the class of the BlackMoveHistoryButton
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBlackMoveHistoryButton> BlackMoveHistoryButtonClass;
-
+	//reference to the class of the HorizontalBox
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UHorizontalHistoryBox> HorizontalBoxClass;
 
@@ -54,9 +55,6 @@ public:
 
 	//Method to show a draw on the HUD
 	void OnStalemate();
-
-	UPROPERTY(EditDefaultsOnly)
-	UAudioComponent* Music;
 
 protected:
 	//Reference to the array containing all the Buttons with the moves

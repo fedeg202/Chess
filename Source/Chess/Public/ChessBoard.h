@@ -16,6 +16,9 @@
 #include "ChessBoard.generated.h"
 
 
+/*
+* @brief Struct to keep all the information needed for every move, in order to be able to undo it with the replay function
+*/
 
 USTRUCT()
 struct FMove
@@ -41,7 +44,7 @@ public:
 
 
 /*
-* Class to implement the complete Chessboard, tiles + pieces
+* @brief Class to implement the complete Chessboard, tiles + pieces
 */
 
 UCLASS()
@@ -122,9 +125,7 @@ public:
 	//Method to check if the player with the color coded in ETileOwner, is in check
 	bool CheckOnCheck(ETileOwner SameColor);
 	//Method to check if the player with the color coded in ETileOwner, and with the opponent that has the moves passed as an argument is in check;
-	bool CheckOnCheck(ETileOwner SameColor, TArray<FCoupleTile> Moves);
-	//Method to check if the player with the color coded in ETileOwner, is in checkmate
-	bool CheckOnCheckmate(ETileOwner SameColor);
+	bool CheckOnCheck(TArray<FCoupleTile> Moves);
 	//Method to check if the player with the color coded in ETileOwner, is in stalemate
 	bool CheckOnStalemate(ETileOwner SameColor);
 
@@ -151,7 +152,7 @@ public:
 	bool CheckPawnPromotion(ETileOwner Color);
 
 	//Method to create the string that encode the move
-	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false, bool b_checkFlag = false, bool b_checkmateFlag = false);
+	FString CreateMoveString(APiece* Piece, FCoupleTile Tiles,bool b_eatFlag = false,bool b_promotionFlag = false);
 
 	//Method to add the move to the AllMoves array
 	void AddMove(FMove Move);
