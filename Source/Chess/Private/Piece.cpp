@@ -45,11 +45,11 @@ void APiece::Eat(ATile* EatTile, AChessBoard* ChessBoard)
 
 	FVector EatenLocation;
 	if (CurrTile->GetTileOwner() == ETileOwner::BLACK)
-		EatenLocation = AGameField::GetRelativeLocationByXYPosition(2, 12);
-	else EatenLocation = AGameField::GetRelativeLocationByXYPosition(6, 12);
+		EatenLocation = AGameField::GetRelativeLocationByXYPosition(3, 9);
+	else EatenLocation = AGameField::GetRelativeLocationByXYPosition(4, 9);
 
 	APiece* EatenPiece = EatTile->GetOnPiece();
-	EatenPiece->SetActorLocation(EatenLocation);
+	EatenPiece->SetActorLocation(EatenLocation + ZPosition);
 
 	if (CurrTile->GetTileOwner() == ETileOwner::BLACK) 
 	{
@@ -77,7 +77,7 @@ void APiece::Move(ATile* Tile,AGameField* GameField)
 	ATile* CurrTile = GameField->GetTileBYXYPosition(PieceGridPosition.X, PieceGridPosition.Y);
 	CurrTile->SetOnPiece(nullptr);
 	FVector ToLocation = AGameField::GetRelativeLocationByXYPosition(Tile->GetGridPosition().X, Tile->GetGridPosition().Y);
-	this->SetActorLocation(ToLocation);
+	this->SetActorLocation(ToLocation + ZPosition);
 	Tile->SetOnPiece(this);
 	this->SetGridPosition(Tile->GetGridPosition().X, Tile->GetGridPosition().Y);
 	if (CurrTile->GetTileOwner() == ETileOwner::WHITE)

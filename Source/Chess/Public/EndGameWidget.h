@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* PointText;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* ResultText;
+
 	bool bHumanWin;
 
 	bool bStale;

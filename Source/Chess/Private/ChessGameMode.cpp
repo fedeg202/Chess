@@ -19,7 +19,7 @@ AChessGameMode::AChessGameMode()
 
 	MusicComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicComponent"));
 	MusicComponent->SetSound(BackGroundMusic);
-	MusicComponent->SetVolumeMultiplier(0.1);
+	MusicComponent->SetVolumeMultiplier(0.2);
 }
 
 void AChessGameMode::BeginPlay()
@@ -64,9 +64,9 @@ void AChessGameMode::TurnNextPlayer()
 
 	if (CheckFor3StateRepetitionDraw())
 	{
-		PC->OnStalemate();
 		b_IsGameOver = true;
 		Players[0]->OnStalemate();
+		PC->OnStalemate();
 	}
 	else
 	{
@@ -89,10 +89,10 @@ void AChessGameMode::TurnNextPlayer()
 			}
 			else if (Players[0]->b_OnStalemate)
 			{
-				PC->OnStalemate();
 				b_IsGameOver = true;
 				Players[0]->OnStalemate();
 				Players[1]->OnStalemate();
+				PC->OnStalemate();
 			}
 			else if (Players[0]->b_OnCheck)
 			{
@@ -115,9 +115,9 @@ void AChessGameMode::TurnNextPlayer()
 			}
 			else if (Players[1]->b_OnStalemate)
 			{
-				PC->OnStalemate();
 				b_IsGameOver = true;
 				Players[1]->OnStalemate();
+				PC->OnStalemate();
 			}
 			else if (Players[1]->b_OnCheck)
 			{
@@ -133,6 +133,7 @@ void AChessGameMode::StartGame(int32 Diff)
 {
 
 	b_IsGameOver = false;
+	bIsInReplay = false;
 
 	if (Diff!=Difficulty)
 		Difficulty = Diff;
@@ -297,6 +298,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(Players[0]);
 	if (bInGame)
 	{
+		HumanPlayer->ChessHUD->AddToPlayerScreen();
 		HumanPlayer->ChessHUD->GetTopHistoryButtons()->SetTextOnButton(HumanPlayer->ChessHUD->GetTopHistoryButtons()->GetTextOnButton() + NewPiece->ToString());
 		ChessBoard->GetTopMove().PawnPromotedTo = Name;
 		TurnNextPlayer();
@@ -308,7 +310,7 @@ void AChessGameMode::HandlePawnPromotion(EPieceColor Color,EPieceName Name,bool 
 void AChessGameMode::ResetGame()
 {
 	AChess_HumanPlayer* HumanPlayer = Cast<AChess_HumanPlayer>(*TActorIterator<AChess_HumanPlayer>(GetWorld()));
-	if (HumanPlayer->IsMyTurn == true || b_IsGameOver)
+	if (HumanPlayer->IsMyTurn == true || b_IsGameOver || bIsInReplay)
 	{
 		IChess_PlayerInterface* AIPlayer = Players.Pop(true);
 		if (Difficulty < 2)

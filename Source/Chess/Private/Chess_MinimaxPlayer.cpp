@@ -53,9 +53,9 @@ void AChess_MinimaxPlayer::OnTurn()
 	if(!b_OnCheck) GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
-	if (NumPieces > 25) MiniMaxDepth = 2;
-	else if (NumPieces > 15 && NumPieces <= 25) MiniMaxDepth = 3;
-	else if (NumPieces <= 15) MiniMaxDepth = 4;
+	if (NumPieces > 22) MiniMaxDepth = 2;
+	else if (NumPieces > 12 && NumPieces <= 22) MiniMaxDepth = 3;
+	else if (NumPieces <= 12) MiniMaxDepth = 4;
 
 	FTimerHandle TimerHandle;
 
@@ -172,7 +172,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 	{
 		if (ChessBoard->StateOccurrences[State] == 2) 
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Two occurences of the state already in, try not to go for the third"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Two occurences of the state already in, try not to go for the third"));
 			return 0;
 		}
 	}
@@ -187,7 +187,7 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		else if (BlackCheck && BlackStale) return -MaxValue;
 		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
 	}
-	else
+	else if (Color == EColor::WHITE)
 	{
 		SameColor = ETileOwner::WHITE;
 		OppositeColor = ETileOwner::BLACK;

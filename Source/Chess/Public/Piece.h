@@ -94,4 +94,6 @@ protected:
 	EPieceName Name;
 
 	int32 Value;
+
+	FVector ZPosition = FVector(0, 0, 10);
 };

@@ -23,6 +23,7 @@ void AChess_PlayerController::OnStalemate()
 
 	EndGameWidget->AddToPlayerScreen();
 	EndGameWidget->MessageText->SetText(FText::FromString("Almost!"));
+	EndGameWidget->ResultText->SetText(FText::FromString(Cast<UChess_GameInstance>(GetGameInstance())->GetTurnMessage()));
 	EndGameWidget->PointText->SetText(FText::FromString("1/2-1/2"));
 }
 
@@ -36,10 +37,12 @@ void AChess_PlayerController::OnCheckmate(EColor Color,bool bHumanWin)
 	if (bHumanWin)
 	{
 		EndGameWidget->MessageText->SetText(FText::FromString("Congratulations!"));
+		EndGameWidget->ResultText->SetText(FText::FromString("You won!"));
 	}
 	else
 	{
 		EndGameWidget->MessageText->SetText(FText::FromString("Our greatest glory is not in never falling, but in rising every time we fall"));
+		EndGameWidget->ResultText->SetText(FText::FromString("You lost!"));
 	}
 
 	if (Color == EColor::WHITE)
