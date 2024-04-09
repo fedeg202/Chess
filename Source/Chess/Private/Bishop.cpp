@@ -4,12 +4,23 @@
 #include "Bishop.h"
 #include "ChessBoard.h"
 
+/**
+ * @brief ABishop class constructor
+ *
+ */
+
 ABishop::ABishop() : APiece()
 {
 	Name = EPieceName::BISHOP;
 	Value = 300;
 }
 
+
+/**
+ * @brief Compute all the possible moves a bishop can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the bishop
+ */
 TArray<FVector2D> ABishop::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -31,6 +42,14 @@ TArray<FVector2D> ABishop::Moves()
 	return Moves;
 }
 
+
+/**
+ * @brief This method compute all the avaible moves of the bishop based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the bishop coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the bishop can go
+ */
 TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	TArray<ATile*> AvaibleMoves;
@@ -59,7 +78,7 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 		{
 			ATile* tile = GameField->GetTileBYXYPosition(tmp_move.X, tmp_move.Y);
 			if (num_move % upLeftNum == 0)
-				if (UpLeft) //left
+				if (UpLeft) //Upleft
 				{
 					if (tile->GetTileStatus() == ETileStatus::OCCUPIED)
 					{
@@ -78,7 +97,7 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 				}
 
 			else if (num_move % downLeftNum == 0)
-				if (DownLeft)
+				if (DownLeft)//DownLeft
 				{
 					if (tile->GetTileStatus() == ETileStatus::OCCUPIED)
 					{
@@ -97,7 +116,7 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 				}
 
 			else if (num_move % downRightNum == 0)
-				if (DownRight)
+				if (DownRight)//DownRight
 				{
 					if (tile->GetTileStatus() == ETileStatus::OCCUPIED)
 					{
@@ -115,7 +134,7 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 				}
 
 			else if (num_move % upRightNum == 0)
-				if (UpRight)
+				if (UpRight)//UpRight
 				{
 					if (tile->GetTileStatus() == ETileStatus::OCCUPIED)
 					{
@@ -138,16 +157,31 @@ TArray<ATile*> ABishop::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString ABishop::ToString()
 {
 	return "B";
 }
 
+/**
+ * @brief AWhiteBishop class constructor
+ *
+ */
 AWhiteBishop::AWhiteBishop() : ABishop()
 {
 	Color = EPieceColor::WHITE;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the White Bishop piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White Bishop can go
+ */
 TArray<ATile*> AWhiteBishop::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -157,11 +191,21 @@ TArray<ATile*> AWhiteBishop::AvaibleMoves(AChessBoard* ChessBoard)
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
+/**
+ * @brief ABlackBishop class constructor
+ *
+ */
 ABlackBishop::ABlackBishop() : ABishop()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black Bishop piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black Bishop can go
+ */
 TArray<ATile*> ABlackBishop::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
