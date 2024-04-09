@@ -89,7 +89,8 @@ UHorizontalHistoryBox* UChessHUD::GetTopHorizontalHistoryBoxes()
 void UChessHUD::OnCheck()
 {
     UMoveHistoryButton* TopButton = HistoryButtons.Top();
-    TopButton->SetTextOnButton(TopButton->GetTextOnButton() + "+");
+    if (!TopButton->GetTextOnButton().Contains("+"))
+        TopButton->SetTextOnButton(TopButton->GetTextOnButton() + "+");
 }
 
 void UChessHUD::OnCheckmate(EColor PlayerColor)
