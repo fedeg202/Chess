@@ -7,7 +7,7 @@
 #include "Rook.generated.h"
 
 /**
- * Classes to implement the rook piece, that inherit from the generic piece class
+ * @brief Class to implement the rook piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API ARook : public APiece
@@ -25,6 +25,9 @@ public:
 
 };
 
+/**
+ * @brief Class to implement the white rook piece, that inherit from the ARook class
+ */
 UCLASS()
 class CHESS_API AWhiteRook : public ARook
 {
@@ -36,6 +39,9 @@ public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
 };
 
+/**
+ * @brief Class to implement the black rook piece, that inherit from the ARook class
+ */
 UCLASS()
 class CHESS_API ABlackRook : public ARook
 {

@@ -7,7 +7,7 @@
 #include "Queen.generated.h"
 
 /**
- *  Classes to implement the queen piece, that inherit from the generic piece class
+ * @brief Class to implement the queen piece, that inherit from the generic piece class
  */
 UCLASS()
 class CHESS_API AQueen : public APiece
@@ -25,6 +25,9 @@ public:
 
 };
 
+/**
+ * @brief Class to implement the white queen piece, that inherit from the AQueen class
+ */
 UCLASS()
 class CHESS_API AWhiteQueen : public AQueen
 {
@@ -36,6 +39,9 @@ public:
 	virtual TArray<ATile*> AvaibleMoves(AChessBoard* ChessBoard) override;
 };
 
+/**
+ * @brief Class to implement the black queen piece, that inherit from the AQueen class
+ */
 UCLASS()
 class CHESS_API ABlackQueen : public AQueen
 {

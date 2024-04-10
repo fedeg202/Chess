@@ -5,17 +5,25 @@
 #include "ChessBoard.h"
 
 
+/**
+ * @brief AKnight class constructor
+ *
+ */
 AKnight::AKnight() : APiece()
 {
 	Name = EPieceName::KNIGHT;
 	Value = 300;
 }
 
+/**
+ * @brief Compute all the possible moves a knight can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the knight
+ */
 TArray<FVector2D> AKnight::Moves()
 {
 	TArray<FVector2D> Moves;
 
-	// Definisci il vettore base per i movimenti del cavallo
 	const FVector2D BaseMove1(2,1);
 	const FVector2D BaseMove2(2, -1);
 	const FVector2D BaseMove3(1, 2);
@@ -34,6 +42,13 @@ TArray<FVector2D> AKnight::Moves()
 	return Moves;
 }
 
+/**
+ * @brief This method compute all the avaible moves of the knight based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the knight coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the knight can go
+ */
 TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	TArray<ATile*> AvaibleMoves;
@@ -55,31 +70,54 @@ TArray<ATile*> AKnight::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sa
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString AKnight::ToString()
 {
 	return "N";
 }
 
-
+/**
+ * @brief AWhiteKnight class constructor
+ *
+ */
 AWhiteKnight::AWhiteKnight():AKnight()
 {
 	Color = EPieceColor::WHITE;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the White Knight piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White Knight can go
+ */
 TArray<ATile*> AWhiteKnight::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
 	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
 		return TArray<ATile*>();
 	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
+/**
+ * @brief ABlackKnight class constructor
+ *
+ */
 ABlackKnight::ABlackKnight() : AKnight()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black Knight piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black Knight can go
+ */
 TArray<ATile*> ABlackKnight::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move

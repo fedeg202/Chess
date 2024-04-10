@@ -25,7 +25,7 @@ public:
 };
 
 /**
- * @brief Clas to implement the white knight piece, that inherit from the AKnight class
+ * @brief Class to implement the white knight piece, that inherit from the AKnight class
  */
 UCLASS()
 class CHESS_API AWhiteKnight : public AKnight
@@ -39,7 +39,7 @@ public:
 };
 
 /**
- * @brief Clas to implement the black knight piece, that inherit from the AKnight class
+ * @brief Class to implement the black knight piece, that inherit from the AKnight class
  */
 UCLASS()
 class CHESS_API ABlackKnight : public AKnight

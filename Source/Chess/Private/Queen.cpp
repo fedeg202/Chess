@@ -4,12 +4,21 @@
 #include "Queen.h"
 #include "ChessBoard.h"
 
+/**
+ * @brief AQueen class constructor
+ *
+ */
 AQueen::AQueen() : APiece()
 {
 	Name = EPieceName::QUEEN;
 	Value = 1000;
 }
 
+/**
+ * @brief Compute all the possible moves a queen can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the queen
+ */
 TArray<FVector2D> AQueen::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -36,6 +45,13 @@ TArray<FVector2D> AQueen::Moves()
 	return Moves;
 }
 
+/**
+ * @brief This method compute all the avaible moves of the queen based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the queen coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the queen can go
+ */
 TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	TArray<ATile*> AvaibleMoves;
@@ -73,16 +89,31 @@ TArray<ATile*> AQueen::AvaibleMovesByColor(AGameField* GameField, ETileOwner Sam
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString AQueen::ToString()
 {
 	return "Q";
 }
 
+/**
+ * @brief AWhiteQueen class contructor
+ *
+ */
 AWhiteQueen::AWhiteQueen() : AQueen()
 {
 	Color = EPieceColor::WHITE;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the White Queen piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White Queen can go
+ */
 TArray<ATile*> AWhiteQueen::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move
@@ -92,11 +123,21 @@ TArray<ATile*> AWhiteQueen::AvaibleMoves(AChessBoard* ChessBoard)
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
+/**
+ * @brief ABlackQueen class contructor
+ *
+ */
 ABlackQueen::ABlackQueen() : AQueen()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black Queen piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black Queen can go
+ */
 TArray<ATile*> ABlackQueen::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move

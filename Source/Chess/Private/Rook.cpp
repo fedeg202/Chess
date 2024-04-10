@@ -4,12 +4,21 @@
 #include "Rook.h"
 #include "ChessBoard.h"
 
+/**
+ * @brief ARook class constructor
+ *
+ */
 ARook::ARook() : APiece()
 {
 	Name = EPieceName::ROOK;
 	Value = 500;
 }
 
+/**
+ * @brief Compute all the possible moves a rook can do freely and return it as an array of 2D vector
+ *
+ * @return array of FVector2D with the moves of the rook
+ */
 TArray<FVector2D> ARook::Moves()
 {
 	TArray<FVector2D> Moves;
@@ -32,6 +41,13 @@ TArray<FVector2D> ARook::Moves()
 	return Moves;
 }
 
+/**
+ * @brief This method compute all the avaible moves of the rook based on his position and his color coded in ETileOwner
+ *
+ * @param GameField the gamefield
+ * @param SameColor color of the queen coded in ETileOwner
+ * @return TArray of ATile pointer with all the tile where the rook can go
+ */
 TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner SameColor)
 {
 	TArray<ATile*> AvaibleMoves;
@@ -139,19 +155,33 @@ TArray<ATile*> ARook::AvaibleMovesByColor(AGameField* GameField, ETileOwner Same
 	return AvaibleMoves;
 }
 
+/**
+ * @brief This method return the character that identify this piece in the chess notation
+ *
+ * @return FString with the character that identify this piece in chess notation
+ */
 FString ARook::ToString()
 {
 	return "R";
 }
 
+/**
+ * @brief AWhiteRook class contructor
+ *
+ */
 AWhiteRook::AWhiteRook() : ARook()
 {
 	Color = EPieceColor::WHITE;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the White Rook piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the White Rook can go
+ */
 TArray<ATile*> AWhiteRook::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
 	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
 		return TArray<ATile*>();
 	else
@@ -159,11 +189,21 @@ TArray<ATile*> AWhiteRook::AvaibleMoves(AChessBoard* ChessBoard)
 
 }
 
+/**
+ * @brief ABlackRook class contructor
+ *
+ */
 ABlackRook::ABlackRook() : ARook()
 {
 	Color = EPieceColor::BLACK;
 }
 
+/**
+ * @brief This method is used to return all the avaible moves of the Black Rook piece
+ *
+ * @param ChessBoard the chessboard where the piece is
+ * @return TArray of ATile pointer with all the tile where the Black Rook can go
+ */
 TArray<ATile*> ABlackRook::AvaibleMoves(AChessBoard* ChessBoard)
 {
 	//Utile in combo con virtual move

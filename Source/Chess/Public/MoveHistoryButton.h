@@ -11,7 +11,7 @@
 
 
 /**
- * Button to be shown in the Move History
+ * @brief Class to implement the Button to be shown in the Move History
  */
 UCLASS()
 class CHESS_API UMoveHistoryButton : public UUserWidget
@@ -41,6 +41,9 @@ protected:
 	UTextBlock* Text;
 };
 
+/**
+ * @brief Class to implement the Button to be shown in the Move History for the White Moves, that inherit from the UMoveHistoryButton class
+ */
 UCLASS()
 class CHESS_API UWhiteMoveHistoryButton : public UMoveHistoryButton
 {
@@ -50,6 +53,9 @@ public:
 
 };
 
+/**
+ * @brief Class to implement the Button to be shown in the Move History for the Black Moves, that inherit from the UMoveHistoryButton class
+ */
 UCLASS()
 class CHESS_API UBlackMoveHistoryButton : public UMoveHistoryButton
 {

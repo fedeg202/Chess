@@ -9,6 +9,10 @@ class AChessBoard;
 #include "GameFramework/Actor.h"
 #include "Piece.generated.h"
 
+/**
+ * @brief Enum to handle the name of the pieces
+ *
+ */
 UENUM()
 enum class EPieceName : uint8
 {
@@ -20,6 +24,10 @@ enum class EPieceName : uint8
 	KING		UMETA(DisplayName = "King"),
 };
 
+/**
+ * @brief Enum to handle the color of the pieces
+ *
+ */
 UENUM()
 enum class EPieceColor : uint8
 {
@@ -28,7 +36,7 @@ enum class EPieceColor : uint8
 };
 
 /*
-* Class for Generic Chess Piece, that is the father class of all the chess pieces
+* @brief Class for Generic Chess Piece, that is the father class of all the chess pieces
 */
 
 UCLASS()
@@ -63,11 +71,17 @@ public:
 
 	int32 GetValue();
 
+	/*
+	* @brief Reference to the material interface for the piece when is normal
+	*/
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	UMaterialInterface* BaseMaterial;
 
+	/*
+	* @brief Reference to the material interface for the piece when is selected
+	*/
 	UPROPERTY(EditAnywhere, Category = "Materials")
-	UMaterialInterface* SelectedMaterial;
+	UMaterialInterface* SelectedMaterial; 
 
 	void ShowSelected();
 
@@ -77,23 +91,39 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//Reference to a scene component
+	/*
+	* @brief Reference to a scene component
+	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 	USceneComponent* Scene;
 
-	//Reference to Static Mesh component
+	/*
+	* @brief Reference to the static mesh component
+	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 	UStaticMeshComponent* StaticMeshComponent;
 
-	//Grid position of the piece
+	/*
+	* @brief Position of the piece in the grid
+	*/
 	FVector2D PieceGridPosition;
 
-	//Color of the piece
+	/*
+	* @brief Color of the piece
+	*/
 	EPieceColor Color;
-	//"Name" of the piece
+	/*
+	* @brief name of the piece
+	*/
 	EPieceName Name;
 
+	/*
+	* @brief Value of the piece
+	*/
 	int32 Value;
 
+	/*
+	* @brief ZOffset position to make the entire piece stay out of the tiles
+	*/
 	FVector ZPosition = FVector(0, 0, 10);
 };

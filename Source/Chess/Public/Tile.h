@@ -8,26 +8,46 @@
 #include "GameFramework/Actor.h"
 #include "Tile.generated.h"
 
+//Forward declaration of the APiece class
 class APiece;
 
-
+/**
+ * @brief Struct to keep a couple of tiles together, used in the array of moves to keep the tile that are involved in the move
+ *
+ */
 USTRUCT()
 struct FCoupleTile 
 {
 	GENERATED_BODY()
 
 public:
+	/**
+	 * @brief pointer to the first tile of the couple (the order is important)
+	*/	
 	ATile* Tile1;
+	/**
+	* @brief pointer to the second tile of the couple (the order is important)
+	*/
+
 	ATile* Tile2;
+	/**
+	* @brief struct constructor keeped default
+	*/
 
 	FCoupleTile() = default;
 
+	/**
+	* @brief definition of the == operator for this struct
+	*/
 	bool operator==(const FCoupleTile& Other) const
 	{
 		return (Tile1 == Other.Tile1 && Tile2 == Other.Tile2);
 	}
 };
 
+/**
+ * @brief Enumeration to keep track of the status of the tiles
+*/
 UENUM()
 enum class ETileStatus : uint8
 {
@@ -37,6 +57,9 @@ enum class ETileStatus : uint8
 	EATABLE		UMETA(DisplayName = "Eatable")
 };
 
+/**
+ * @brief Enumeration to keep track of the owner of the tile
+*/
 UENUM()
 enum class ETileOwner : uint8
 {
@@ -46,6 +69,9 @@ enum class ETileOwner : uint8
 };
 
 
+/**
+ * @brief Clsss to implement the tile that inherit from the AActor unreal class
+*/
 UCLASS()
 class CHESS_API ATile : public AActor
 {
@@ -90,27 +116,46 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-		//reference to a Scene componenent
+	/**
+	* @brief reference to the scene component
+	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 		USceneComponent* Scene;
-		//refrence to a mesh component
+	/**
+	* @brief reference to Mesh Component
+	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components");
 		UStaticMeshComponent* StaticMeshComponent;
-		// status of the tile
+	/**
+	* @brief status of the tile
+	*/
 		ETileStatus Status;
-		//grid position fo the tile
+	/**
+	* @brief Tile grid position
+	*/
 		FVector2D TileGridPosition;
-		//color owner of the tile
+	/**
+	* @brief Tile owner 
+	*/
 		ETileOwner TileOwner;
 
-		//reference to a array of material, 0 -> standard tile, 1->selectable tile, 2-> selectable occupied tile
+	/**
+	* @brief Array of materials
+	* @details [0]->normal tile, [1]->Selectable tile, [2]->selectable and occupied tile
+	*/
 	UPROPERTY(EditAnywhere);
-		TArray<UMaterial*> MaterialArray;
-		// reference to the piece on the tile
+	TArray<UMaterial*> MaterialArray;
+	/**
+	* @brief reference to the piece on the tile (nullptr if there isn't)
+	*/
 		APiece* OnPiece;
 };
 
 
+/**
+ * @brief Class to implement the white tile that inherit from the ATile class
+ * @see ATile
+*/
 UCLASS()
 class CHESS_API ATileWhite : public ATile
 {
@@ -124,6 +169,10 @@ protected:
 
 };
 
+/**
+ * @brief Class to implement the white tile that inherit from the ATile class
+ * @see ATile
+*/
 UCLASS()
 class CHESS_API ATileBlack : public ATile
 {
