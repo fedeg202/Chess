@@ -134,11 +134,7 @@ AWhitePawn::AWhitePawn() : AChessPawn()
  */
 TArray<ATile*> AWhitePawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Useful when using virtual move (it implement a "virtual eaten")
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
 /**
@@ -158,9 +154,5 @@ ABlackPawn::ABlackPawn() : AChessPawn()
  */
 TArray<ATile*> ABlackPawn::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Useful when using virtual move (it implement a "virtual eaten")
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

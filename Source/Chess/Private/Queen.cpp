@@ -116,11 +116,7 @@ AWhiteQueen::AWhiteQueen() : AQueen()
  */
 TArray<ATile*> AWhiteQueen::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
 /**
@@ -140,9 +136,5 @@ ABlackQueen::ABlackQueen() : AQueen()
  */
 TArray<ATile*> ABlackQueen::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
-		return TArray<ATile*>();
-	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

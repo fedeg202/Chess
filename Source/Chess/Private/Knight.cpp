@@ -97,10 +97,7 @@ AWhiteKnight::AWhiteKnight():AKnight()
  */
 TArray<ATile*> AWhiteKnight::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
 }
 
 /**
@@ -120,9 +117,5 @@ ABlackKnight::ABlackKnight() : AKnight()
  */
 TArray<ATile*> ABlackKnight::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

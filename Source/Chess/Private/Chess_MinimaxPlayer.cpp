@@ -69,9 +69,9 @@ void AChess_MinimaxPlayer::OnTurn()
 	if(!b_OnCheck) GameInstance->SetTurnMessage("MinimaxPlayer in Turn");
 
 	int32 NumPieces = ChessBoard->GetBlackPieces().Num() + ChessBoard->GetWhitePieces().Num();
-	if (NumPieces > 22) MiniMaxDepth = 2;
-	else if (NumPieces > 12 && NumPieces <= 22) MiniMaxDepth = 3;
-	else if (NumPieces <= 12) MiniMaxDepth = 4;
+	if (NumPieces > 16) MiniMaxDepth = 2;
+	else if (NumPieces > 8 && NumPieces <= 16) MiniMaxDepth = 3;
+	else if (NumPieces <= 8) MiniMaxDepth = 4;
 
 	FTimerHandle TimerHandle;
 
@@ -212,7 +212,8 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 	{
 		if (ChessBoard->StateOccurrences[State] == 2) 
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Two occurences of the state already in, try not to go for the third"));
+			UE_LOG(LogTemp, Display, TEXT("Value tmp = 0"))
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Two occurences of the state already in, try not to go for the third"));
 			return 0;
 		}
 	}
@@ -223,9 +224,20 @@ int32 AChess_MinimaxPlayer::EvaluateBoard()
 		SameColor = ETileOwner::BLACK;
 		OppositeColor = ETileOwner::WHITE;
 
-		if (WhiteCheck && WhiteStale) return MaxValue;
-		else if (BlackCheck && BlackStale) return -MaxValue;
-		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) return 0;
+		if (WhiteCheck && WhiteStale) 
+		{
+			UE_LOG(LogTemp, Display, TEXT("Value tmp = %d"), MaxValue);
+			return MaxValue;
+		}
+		else if (BlackCheck && BlackStale)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Value tmp = %d"), -MaxValue);
+			return -MaxValue;
+		}
+		else if ((!WhiteCheck && WhiteStale) || (!BlackCheck && BlackStale)) {
+			UE_LOG(LogTemp, Display, TEXT("Value tmp = 0"));
+			return 0;
+		}
 	}
 	else if (Color == EColor::WHITE)
 	{
@@ -292,7 +304,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 		ChessBoard->UpdateAllMoveBYColor(SameColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(SameColor,true);
 
-		if (Moves.Num() == 0) return EvaluateBoard();
+		if (Moves.Num() == 0)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Max is playing no moves avaible,next value is the evaluated and returned one"));
+			return EvaluateBoard();
+		}
 
 		for (int32 i = 0; i < Moves.Num(); i++)
 		{
@@ -323,7 +339,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 
 			
 			//Alpha beta pruning
-			if (Value >= beta) return Value;
+			if (Value >= beta)
+			{
+				UE_LOG(LogTemp, Display, TEXT("Max is playing, alpha-beta pruning value = %d"), Value);
+				return Value;
+			}
 			alpha = FMath::Max(alpha, Value);
 		}
 
@@ -338,7 +358,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 		ChessBoard->UpdateAllMoveBYColor(OppositeColor);
 		TArray <FCoupleTile> Moves = ChessBoard->GetAllSelectableMovesByColor(OppositeColor,true);
 		
-		if (Moves.Num() == 0) return EvaluateBoard();
+		if (Moves.Num() == 0)
+		{
+			UE_LOG(LogTemp, Display, TEXT("Min is playing no moves avaible,next value is the evaluated and returned one"));
+			return EvaluateBoard();
+		}
 
 		for (int32 i = 0; i < Moves.Num(); i++)
 		{
@@ -368,7 +392,11 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 			ChessBoard->VirtualUnMove(Moves[i], tmp_Piece);
 
 			//Alpha beta pruning
-			if (Value <= alpha) return Value;
+			if (Value <= alpha) 
+			{
+				UE_LOG(LogTemp, Display, TEXT("Min is playing, alpha-beta pruning value = %d"), Value);
+				return Value;
+			}
 			beta = FMath::Min(alpha, Value);
 			
 		}

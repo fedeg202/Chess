@@ -182,11 +182,7 @@ AWhiteRook::AWhiteRook() : ARook()
  */
 TArray<ATile*> AWhiteRook::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::WHITE)
-		return TArray<ATile*>();
-	else
 		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::WHITE);
-
 }
 
 /**
@@ -206,9 +202,5 @@ ABlackRook::ABlackRook() : ARook()
  */
 TArray<ATile*> ABlackRook::AvaibleMoves(AChessBoard* ChessBoard)
 {
-	//Utile in combo con virtual move
-	if (ChessBoard->GetGameField()->GetTileBYXYPosition(GetGridPosition().X, GetGridPosition().Y)->GetTileOwner() != ETileOwner::BLACK)
-		return TArray<ATile*>();
-	else
-		return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
+	return AvaibleMovesByColor(ChessBoard->GetGameField(), ETileOwner::BLACK);
 }

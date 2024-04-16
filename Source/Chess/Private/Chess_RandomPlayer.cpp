@@ -81,11 +81,8 @@ void AChess_RandomPlayer::OnTurn()
 		SelectedPiece->UnshowSelected();
 
 	FTimerHandle TimerHandle;
-	int32 randTime;
+	int32 randTime = FMath::RandRange(1, 4);
 
-
-
-	do { randTime = FMath::Rand() % 5; } while (randTime < 2);
 	
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() {
 		FCoupleTile Tiles;
