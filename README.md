@@ -18,5 +18,7 @@
 ### Technologies
 - C++
 - Unreal Engine 5.2
-<br>
-### Sample Game
+<hr>
+
+### Game Sample
+![Game Sample](./Content/Images/GameSample.png)
