@@ -142,7 +142,7 @@ void UChessHUD::OnCheckmate(EColor PlayerColor)
     HorizontalHistoryBoxes.Add(HorizontalBox);
 }
 /*
-* @brief Method put the notation of the stalemate
+* @brief Method put the notation of the stalemate/draw
 *
 */
 void UChessHUD::OnStalemate()

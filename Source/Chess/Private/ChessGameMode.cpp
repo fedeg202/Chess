@@ -455,7 +455,7 @@ void AChessGameMode::ChangeCameraPosition()
 }
 
 /**
- * @brief Method to change diffculty by going to the starting menu, called by blueprints after pressing the right button
+ * @brief Method to change difficulty by going to the starting menu, called by blueprints after pressing the right button
  *
  */
 void AChessGameMode::ChangeDifficulty()
