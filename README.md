@@ -21,11 +21,11 @@
 <hr>
 
 ### Game Samples
-Normal game
+#### Normal game
 ![Game Sample](./Content/Images/GameSample.png)
-Selected Piece and avaible tiles
+#### Selected Piece and avaible tiles
 ![Game Sample1](./Content/Images/GameSample1.png)
-End game
+#### End game
 ![Game Sample](./Content/Images/GameSample2.png)
-Start game
+#### Start game
 ![Game Sample](./Content/Images/GameSample3.png)
