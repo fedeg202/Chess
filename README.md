@@ -15,7 +15,7 @@
 - To use the replay functionality:
   * Click on one of the moves on the list and after the click the chessboard will go back (or forward) to that move
   * Click again on the same move to start playing from that situation
-### Technologies
+### Technologies used
 - C++
 - Unreal Engine 5.2
 <hr>
