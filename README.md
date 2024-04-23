@@ -20,5 +20,12 @@
 - Unreal Engine 5.2
 <hr>
 
-### Game Sample
+### Game Samples
+Normal game
 ![Game Sample](./Content/Images/GameSample.png)
+Selected Piece and avaible tiles
+![Game Sample1](./Content/Images/GameSample(1).png)
+End game
+![Game Sample](./Content/Images/GameSample(2).png)
+Start game
+![Game Sample](./Content/Images/GameSample(3).png)
