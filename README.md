@@ -24,8 +24,8 @@
 Normal game
 ![Game Sample](./Content/Images/GameSample.png)
 Selected Piece and avaible tiles
-![Game Sample1](./Content/Images/GameSample(1).png)
+![Game Sample1](./Content/Images/GameSample1.png)
 End game
-![Game Sample](./Content/Images/GameSample(2).png)
+![Game Sample](./Content/Images/GameSample2.png)
 Start game
-![Game Sample](./Content/Images/GameSample(3).png)
+![Game Sample](./Content/Images/GameSample3.png)
