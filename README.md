@@ -11,7 +11,7 @@
      * hard: minimax player and no possibility to replay
 ## How to play
 - Choose a difficulty from the starting menu
-- When is your turn choose a white piece of the chessboard, the selected piece will be highlighted and the tiles where he can go with his legal moves will be marked, if there aren't tiles marked the piece doesn't have legal moves avible so you have to choose another piece
+- When is your turn choose a white piece of the chessboard, the selected piece will be highlighted and the tiles where he can go with his legal moves will be marked, if there aren't tiles marked the piece doesn't have legal moves avaible so you have to choose another piece
 - To use the replay functionality:
   * Click on one of the moves on the list and after the click the chessboard will go back (or forward) to that move
   * Click again on the same move to start playing from that situation
