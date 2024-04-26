@@ -289,6 +289,17 @@ int32 AChess_MinimaxPlayer::AlfaBetaMiniMax(int32 Depth,int32 alpha, int32 beta,
 {
 	if (Depth == 0) return EvaluateBoard();
 
+	FString State = ChessBoard->GetChessboardStateString();
+	
+	if (ChessBoard->StateOccurrences.Contains(State))
+	{
+		if (ChessBoard->StateOccurrences[State] == 2)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Try to avoid the draw by repetition"));
+			return 0;
+		}
+	}
+
 	ETileOwner SameColor = ETileOwner::BLACK;
 	ETileOwner OppositeColor = ETileOwner::WHITE;
 
