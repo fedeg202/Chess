@@ -474,6 +474,7 @@ void AChessGameMode::ChangeDifficulty()
 
 		AChess_PlayerController* PC = Cast<AChess_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		PC->ChessHUD->ResetHistoryScrollBox();
+		PC->ChessHUD->RemoveFromParent();
 
 		PC->StartMenu->AddToPlayerScreen();
 	}
